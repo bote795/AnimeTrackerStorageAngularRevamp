@@ -27,25 +27,25 @@
                   Add Anime
                 </a>
                 <div style="float:right;">
-                  <input type="checkbox" id="mutliple">Multiple additions
+                  <input ng-click="toggleMultiple()" type="checkbox" id="mutliple">Multiple additions
                 </div>
               </h4>
             </div>
             <div id="collapseOne" class="panel-collapse collapse">
               <div class="panel-body">
                 <!--form-->
-                <form id="addAnime"class="form-horizontal">
+                <form ng-submit="addNew()" id="addAnime"class="form-horizontal">
                   <fieldset><!-- fieldset -->
                     <div class="form-group"><!-- AnimeNameField -->
                       <label for="inputAnimeName" class="col-lg-2 control-label">Anime Name</label>
                       <div class="col-lg-10">
-                        <input type="text" class="form-control" name="inputName" placeholder="Anime Name ... bleach,Naruto, etc.">
+                        <input ng-model="newAnimeName" type="text" class="form-control" name="inputName" placeholder="Anime Name ... bleach,Naruto, etc.">
                       </div>
                     </div><!-- end AnimeNameField -->
                     <div class="form-group"><!-- EpField -->
                       <label for="inputEpisode" class="col-lg-2 control-label">Episode Number</label>
                       <div class="col-lg-10">
-                        <input type="text" class="form-control" name="inputEpisode" placeholder="Epsiode Number ex: 1">
+                        <input ng-model="newAnimeEpisode" type="text" class="form-control" name="inputEpisode" placeholder="Epsiode Number ex: 1">
                       </div>
                     </div><!--end EpField -->
                     <div class="form-group"><!-- form group Submit -->
@@ -83,7 +83,7 @@
             </tr>
           </thead><!--end thead -->
           <tbody><!-- tbody -->
-            <tr ng-repeat="anime in animeArray">
+            <tr ng-repeat="anime in animeArray | orderBy: 'name'" >
                 <td> {{ ($index + 1)  +"." }}
                   <!-- show the homeurl if it contains it -->
                   <a ng-show="anime['homeUrl'] != 'home'" href="{{anime['homeUrl']}}" target="_newtab">{{anime["name"]}}</a>
