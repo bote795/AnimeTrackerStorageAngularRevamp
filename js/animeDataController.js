@@ -3,6 +3,7 @@ app.controller('AnimeDataController', function($scope) {
     $scope.newAnimeEpisode = "";
     $scope.mutlipleNewAnime =false;
     $scope.key = "savedAnimes";
+    $scope.isCollapsed =false;
     var animes =JSON.parse("[[\"\\n\\t\\tDungeon ni Deai wo Motomeru no wa Machigatteiru Darou ka\",8,1,\"http://www.animefreak.tv/watch/dungeon-ni-deai-wo-motomeru-no-wa-machigatteiru-darou-ka-episode-9-online\",\"home\",10],[\"\\n\\t\\tFate/Stay Night: Unlimited Blade Works (TV)\",14,0,\"url\",\"home\",2],[\"\\n\\t\\tKekkai Sensen\",8,0,\"url\",\"home\",2],[\"\\n\\t\\tVampire Holmes\",7,0,\"url\",\"home\",4],[\"Arslan Senki\",8,0,\"url\",\"home\",2],[\"Fairy Tail 2014\",59,0,\"url\",\"http://www.animefreak.tv/watch/fairy-tail-2014-online\",2],[\"Gunslinger Stratos: The Animation\",7,0,\"url\",\"home\",4],[\"Marvels agents of s h i e l d s2\",19,0,\"url\",\"home\",20],[\"One Piece\",694,0,\"url\",\"home\",2],[\"Owari no Seraph\",8,0,\"url\",\"home\",10],[\"World Trigger\",31,0,\"url\",\"home\",\" out of 50\"]]");
     $scope.animeArray=[];
 	for (var i = 0; i < animes.length; i++) {
@@ -70,7 +71,7 @@ app.controller('AnimeDataController', function($scope) {
 		$scope.newAnimeName = "";	
 		$scope.newAnimeEpisode = "";
 		if(!$scope.mutlipleNewAnime)
-			$('#collapseOne').collapse('hide')
+		$('#collapseOne').collapse('hide')
 
 	}
 	$scope.basicNew = function(name, ep){
