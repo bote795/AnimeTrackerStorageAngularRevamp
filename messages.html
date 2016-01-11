@@ -1,4 +1,4 @@
-<div class="tab-pane" id="messages">
+<div ng-controller="updateWebsitesController" class="tab-pane" id="messages">
   <div class="panel-group" id="accordion">
     <div class="panel panel-default">
       <div class="panel-heading" id="foo">
@@ -10,12 +10,12 @@
       </div>
       <div id="collapseTwo" class="panel-collapse collapse">
         <div class="panel-body">
-          <form id="addUpdates" class="form-horizontal">
+          <form  ng-submit="addNew()" id="addUpdates" class="form-horizontal">
             <fieldset><!-- fieldset -->
               <div class="form-group"><!-- urlField -->
                 <label for="inputurl" class="col-lg-2 control-label">URL</label>
                 <div class="col-lg-10">
-                  <input type="text" class="form-control" name="inputurl" placeholder="www.animeseason.com/">
+                  <input type="text" ng-model="formUrl" class="form-control" name="inputurl" placeholder="www.animeseason.com/">
                 </div>
               </div><!-- end urlField -->
               <div class="container">
@@ -23,7 +23,7 @@
                   <div class="row">
                     <div class="col-lg-6">
                       <label class="switch-light progress" ><!-- onclick="" -->
-                        <input name="linktype" type="checkbox">
+                        <input ng-model="isHtml" name="linktype" type="checkbox">
                         <span>
                           Type Of Link
                           <span aria-label="Off" title="Off">HTML</span>
@@ -35,7 +35,7 @@
                     </div>
                     <div class="col-lg-6">
                       <label class="switch-light progress" ><!-- onclick="" -->
-                        <input id="xpath_bool" name="xpath_bool" type="checkbox">
+                        <input id="xpath_bool" ng-model="isCustomXpath" name="xpath_bool" type="checkbox">
                         <span>
                           Custom Xpath
                           <span aria-label="Off" title="Off">NO</span>
@@ -51,13 +51,13 @@
               <div id="xpath" class="form-group hide"><!-- xpathField -->
                 <label for="inputXPATH" class="col-lg-2 control-label">Custom xpath</label>
                 <div class="col-lg-10">
-                  <input type="text" class="form-control" name="inputxpath" placeholder="xpath example: '//@href ' is default">
+                  <input type="text"  ng-model="customXpath" class="form-control" name="inputxpath" placeholder="xpath example: '//@href ' is default">
                 </div>
               </div><!--end xpathField -->           
               <div id="custom" class="form-group hide"><!-- custom -->
                 <label for="inputcustom" class="col-lg-2 control-label">Custom link</label>
                 <div class="col-lg-10">
-                  <input type="text" class="form-control" name="urlcustom" placeholder="Custom url for start of /anime-name">
+                  <input type="text" ng-model="customHtml" class="form-control" name="urlcustom" placeholder="Custom url for start of /anime-name">
                 </div>
               </div><!--end custom --> 
               <div class="form-group"><!-- form group Submit -->
