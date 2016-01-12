@@ -4,7 +4,7 @@ app.controller('updateWebsitesController', function($scope, $http) {
 	$scope.isCustomXpath =false;
 	$scope.customXpath="";
 	$scope.formUrl="";
-
+	$scope.animeUpdatesArray=[];
 	$scope.addNew = function () {
 		console.log($scope.isHtml);
 		console.log($scope.customHtml);
@@ -43,6 +43,7 @@ app.controller('updateWebsitesController', function($scope, $http) {
 	//that can be used for yql api
 	$scope.testLink= function (animePageInfo)
 	{
+		//work around since queryCreationApi doesn't automatically have xpath for this test
 		animePageInfo["xpath"]="xpath='"+ animePageInfo["xpath"] +"'";
 		var yqlAPI = $scope.queryCreationYqlAPI(animePageInfo);
 		var test = false;
@@ -94,7 +95,7 @@ app.controller('updateWebsitesController', function($scope, $http) {
 					//if false then test main url or url specificly typed by user
 					if (!reply.bool) 
 					{
-					  	$scope.addMainUrl(reply.url, reply.path, animePageInfo, isReady);
+					  	$scope.addMainUrl(reply.url, reply.path, animePageInfo, $scope.isReady);
 					}
 					else
 				   	{
@@ -149,8 +150,11 @@ app.controller('updateWebsitesController', function($scope, $http) {
 		if(typeof r === 'undefined'
 		 || typeof r.data === 'undefined'
 		 || typeof r.data.query === 'undefined'
+		 || r.data.query.results == null
 		 || typeof r.data.query.results === 'undefined'
-		 || r.data.query.results == null)
+		 || r.data.query.results.a == null
+		 || typeof r.data.query.results.a === 'undefined')
+		 
 			return true;
 
 		return false;
@@ -248,7 +252,7 @@ app.controller('updateWebsitesController', function($scope, $http) {
 			}
 			else if(temp["type"]=="html")
 			 {
-			    $.each(r.query.results.a, function(){ 
+			    $.each(r.data.query.results.a, function(){ 
 			 if(typeof this.href === 'undefined')
 			  {
 			    $target.addClass('alert alert-dismissable alert-danger');
@@ -269,10 +273,10 @@ app.controller('updateWebsitesController', function($scope, $http) {
 	$scope.isReady = function(MainUrlTest, temp) {
 	    $("#confirmation").show();
 	    var $target = $("#readysumbit");
+	    $target.prop({ disabled: false});
 	    //tested 2nd url either from user input or just mainurl from provided url
 	    if(MainUrlTest.bool)
 	    {
-	      $target.prop({ disabled: false});
 	      temp["domainNeeded"]=true;
 	      temp["domain"]=MainUrlTest.url;
 	      $("#output").append(JSON.stringify(temp));
@@ -280,10 +284,8 @@ app.controller('updateWebsitesController', function($scope, $http) {
 	    else
 	    {
 	      //main url typed returned a url so should be workin.
-	      $target.prop({ disabled: false});
 	      $("#output").append(JSON.stringify(temp));
 	        $target.prop('checked',true);
-	        console.log(temp);
 	       if(temp["website"] == "http://www.gogoanime.com/")
 	       {
 	          temp["xpath"]='xpath="//div[@class=\'post\']//li"';
@@ -292,12 +294,49 @@ app.controller('updateWebsitesController', function($scope, $http) {
 	       {
 	        temp["xpath"] = 'xpath="//@href"';
 	       }
-	       //save url to list
-	       //urls.push(temp)
-	       //UpdatesListManager.save(urls);
-	       alert("successfully submitted");
-	       //resetAddUpdatesUrl();
 	    }
+        //save url to list
+       //urls.push(temp)
+       //UpdatesListManager.save(urls);
+       console.log(temp);
+       $scope.animeUpdatesArray.push(temp);
+       alert("successfully submitted");
+       //resetAddUpdatesUrl();
+	}
+
+	//default urls to get updates from
+	$scope.defaultUpdateWebsites = function(){
+		return [
+			{
+				domain: "http://www.lovemyanime.net",
+				domainNeeded: true,
+				type: "html",
+				website: "http://www.lovemyanime.net/latest-anime-episodes/",
+				xpath: 'xpath="//div[@class=\'noraml-page_in_box_mid\']//div[@class=\'noraml-page_in_box_mid_link\']//@href"'
+
+			},
+			{
+				website: "http://www.animefreak.tv/tracker",
+				domainNeeded: true,
+				type: "html",
+				domain: "http://www.animefreak.tv",
+				xpath: 'xpath="//div[@class=\'view-content\']//tbody//tr//@href"'				
+			},
+			{
+				website: "http://www.animeseason.com/",
+				domainNeeded: true,
+				type: "html",
+				domain: "http://www.animeseason.com",
+				xpath: 'xpath="//div[@id=\'frontpage_left_col\']//@href"'				
+			},
+			{
+				website: "http://www.gogoanime.com/",
+				domainNeeded: false,
+				type: "html",
+				domain: "",
+				xpath: 'xpath="//div[@class=\'post\']//li"'				
+			}
+		]
 	}
 });
 

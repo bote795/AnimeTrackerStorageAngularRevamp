@@ -60,8 +60,8 @@ app.controller('AnimeDataController', function($scope) {
 	//adds a new anime to the dictionary
 	$scope.addNew = function()
 	{
-		var name = $scope.newAnimeName;
-		var ep = $scope.newAnimeEpisode;
+		var name = $scope.newAnimeName.trim();
+		var ep = $scope.newAnimeEpisode.trim();
 		if ($scope.duplicateAnime(name)) 
 		{
 			return;
@@ -95,4 +95,3 @@ app.controller('AnimeDataController', function($scope) {
      return false;
 	}
 });
-
