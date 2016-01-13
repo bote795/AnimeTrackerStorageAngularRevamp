@@ -1,0 +1,24 @@
+<div ng-controller="AnimeDataController" class="container">
+	<h3>Edit Anime Info</h3>
+	<div class="">
+	  <label >Name</label>
+	  <input class="form-control" type="text" value="{{animeArray[detailId]['name']}}">
+	</div>
+	<div >
+	  <label>Ep</label>
+	  <input class="form-control"  type="text" value="{{animeArray[detailId]['ep']}}">
+	</div>
+	<div >
+	  <label>Home Url for this Anime AKA "Link"</label>
+	  <input class="form-control"  type="text" value="{{animeArray[detailId]['homeUrl']}}">
+	</div>
+	<div >
+	  <label>Total Eps</label>
+	  <input class="form-control"  type="text" value="{{animeArray[detailId]['totalEps']}}">
+	</div>
+	<br>
+  	<button type="submit" class="btn btn-primary">Submit</button>
+  	<br>
+  	<br>
+  	<br>
+</div>

@@ -1,4 +1,4 @@
-app.controller('AnimeDataController', function($scope) {
+app.controller('AnimeDataController', function($scope,$routeParams) {
     $scope.newAnimeName = "";
     $scope.newAnimeEpisode = "";
     $scope.mutlipleNewAnime =false;
@@ -16,8 +16,9 @@ app.controller('AnimeDataController', function($scope) {
 	  tempDict["totalEps"] = animes[i][5];
 	  $scope.animeArray.push(tempDict);
 	};
-	console.log($scope.animeArray);
-
+	if ($routeParams.id) {
+	$scope.detailId = $routeParams.id;
+    }
 	$scope.add =function (anime) {
 		anime.ep ++;
 	}
@@ -27,9 +28,6 @@ app.controller('AnimeDataController', function($scope) {
 	$scope.delete =function (anime) {
 		var index= $scope.animeArray.indexOf(anime);
 		$scope.animeArray.splice(index,1);
-	}
-	$scope.test =function (anime) {
-		console.log(anime);
 	}
 	//retrieves what should be displayed for the episode
 	$scope.Episode = function (anime) {

@@ -1,18 +1,58 @@
-app.controller('updateWebsitesController', function($scope, $http) {
+app.controller('updateWebsitesController', function($scope, $http, $routeParams) {
 	$scope.isHtml=false; //is it html
 	$scope.customHtml="";
 	$scope.isCustomXpath =false;
 	$scope.customXpath="";
 	$scope.formUrl="";
-	$scope.animeUpdatesArray=[];
+	if ($routeParams.id) {
+	$scope.detailId = $routeParams.id;
+    }
+	//default urls to get updates from
+	$scope.defaultUpdateWebsites = function(){
+		return [
+			{
+				domain: "http://www.lovemyanime.net",
+				domainNeeded: true,
+				type: "html",
+				website: "http://www.lovemyanime.net/latest-anime-episodes/",
+				xpath: 'xpath="//div[@class=\'noraml-page_in_box_mid\']//div[@class=\'noraml-page_in_box_mid_link\']//@href"'
+
+			},
+			{
+				website: "http://www.animefreak.tv/tracker",
+				domainNeeded: true,
+				type: "html",
+				domain: "http://www.animefreak.tv",
+				xpath: 'xpath="//div[@class=\'view-content\']//tbody//tr//@href"'				
+			},
+			{
+				website: "http://www.animeseason.com/",
+				domainNeeded: true,
+				type: "html",
+				domain: "http://www.animeseason.com",
+				xpath: 'xpath="//div[@id=\'frontpage_left_col\']//@href"'				
+			},
+			{
+				website: "http://www.gogoanime.com/",
+				domainNeeded: false,
+				type: "html",
+				domain: "",
+				xpath: 'xpath="//div[@class=\'post\']//li"'				
+			}
+		]
+	}
+	$scope.animeUpdatesArray= $scope.defaultUpdateWebsites();
 	$scope.addNew = function () {
-		console.log($scope.isHtml);
-		console.log($scope.customHtml);
-		console.log($scope.isCustomXpath);
-		console.log($scope.customXpath);
-		console.log($scope.formUrl);
 		var temp = $scope.defaultValues($scope.formUrl, $scope.isHtml);
 		$scope.testLink(temp);
+	}
+	//delete entry
+	$scope.delete = function(website){
+		var index= $scope.animeUpdatesArray.indexOf(website);
+		$scope.animeUpdatesArray.splice(index,1);
+	}
+	$scope.updateUrlOrder = function(){
+		console.log("index");
 	}
 	$scope.defaultValues = function(url, isHtml)
 	{
@@ -296,47 +336,23 @@ app.controller('updateWebsitesController', function($scope, $http) {
 	       }
 	    }
         //save url to list
-       //urls.push(temp)
-       //UpdatesListManager.save(urls);
        console.log(temp);
        $scope.animeUpdatesArray.push(temp);
        alert("successfully submitted");
-       //resetAddUpdatesUrl();
+       $scope.resetAddUpdatesUrl();
 	}
 
-	//default urls to get updates from
-	$scope.defaultUpdateWebsites = function(){
-		return [
-			{
-				domain: "http://www.lovemyanime.net",
-				domainNeeded: true,
-				type: "html",
-				website: "http://www.lovemyanime.net/latest-anime-episodes/",
-				xpath: 'xpath="//div[@class=\'noraml-page_in_box_mid\']//div[@class=\'noraml-page_in_box_mid_link\']//@href"'
 
-			},
-			{
-				website: "http://www.animefreak.tv/tracker",
-				domainNeeded: true,
-				type: "html",
-				domain: "http://www.animefreak.tv",
-				xpath: 'xpath="//div[@class=\'view-content\']//tbody//tr//@href"'				
-			},
-			{
-				website: "http://www.animeseason.com/",
-				domainNeeded: true,
-				type: "html",
-				domain: "http://www.animeseason.com",
-				xpath: 'xpath="//div[@id=\'frontpage_left_col\']//@href"'				
-			},
-			{
-				website: "http://www.gogoanime.com/",
-				domainNeeded: false,
-				type: "html",
-				domain: "",
-				xpath: 'xpath="//div[@class=\'post\']//li"'				
-			}
-		]
+	$scope.resetAddUpdatesUrl = function()
+	{
+	    $("#xpath").hide();
+	    $("#custom").hide();
+	    $("#confirmation").hide();
+	    $("#addUpdates")[0].reset();
+	    $("#output").html("");
+	    $(".datareply").html("");
+
 	}
+
 });
 

@@ -6,9 +6,16 @@
   The <b>highest website being the first</b> website to check for your animes and then checking the second one and so on.
   </p>
   <ul id="sortable" class="list-group">
+    <li ng-repeat="webPageInfo in animeUpdatesArray"class="ui-state-default list-group-item">
+      <span class="ui-icon ui-icon-arrowthick-2-n-s">
+        {{webPageInfo["website"]}}
+        <a href="#/edit/Website/{{$index}}" ><i class="fa fa-pencil-square-o fa-lg"></i></a>
+        <button type='button' ng-click="delete(webPageInfo)"class='close Remove'>x</button>
+      </span>
+    </li>
   </ul>
   <label  class="switch-light progress"><!-- onclick="" -->
-    <input id="updatelist" type="checkbox">
+    <input id="updatelist" type="checkbox" ng-click="updateUrlOrder">
     <span>
       Submit
       <span aria-label="Off" title="Off">No</span>

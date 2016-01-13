@@ -1,5 +1,12 @@
-var app = angular.module('myApp', ['ngRoute']);
-
+var app = angular.module('myApp', ['ngRoute'])
+.config( [
+    '$compileProvider',
+    function( $compileProvider )
+    {   
+        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
+        // Angular before v1.2 uses $compileProvider.urlSanitizationWhitelist(...)
+    }
+]);
  
 app.config(function ($routeProvider) {
     $routeProvider.
@@ -14,6 +21,14 @@ app.config(function ($routeProvider) {
     when('/settings', {
         templateUrl: 'settings.html',
         controller: 'updateWebsitesController'
+    }).
+    when('/edit/Website/:id', {
+        templateUrl: 'editWebsite.html',
+        controller :'updateWebsitesController'
+    }).
+    when('/edit/Anime/:id', {
+        templateUrl: 'editAnime.html',
+        controller :'AnimeDataController'
     }).
    otherwise({
         redirectTo: '/home'

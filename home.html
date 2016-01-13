@@ -78,17 +78,7 @@
                           {{Episode(anime)}}
                         </button>
                         <button type="button" class="btn btn-default" ng-click="add(anime)">+</button>
-                        <button type="button" class="btn btn-default" data-container="body" data-toggle="popover" 
-                        data-content=
-                        "<form id=&quot;homelink&quot; class=&quot;form-horizontal&quot;>
-                          <fieldset>
-                            <div class=&quot;form-group&quot;><div class=&quot;col-lg-3&quot;>
-                              <input type=&quot;text&quot; class=&quot;form-control&quot; id=1 name=&quot;animeHome&quot; placeholder=&quot;Enter animes home url&quot;>
-                              <button type=&quot;submit&quot; class=&quot;btn btn-primary&quot; >Submit</button>
-                            </div></div> 
-                          </fieldset><!--end fieldset -->
-                        </form>"
-                         data-original-title="" title="" data-placement="left">Link</button>
+                        <button type="button" class="btn btn-default"><a href="#/edit/Anime/{{$index}}" ><i class="fa fa-pencil-square-o fa-lg"></i></a></button>
                         <button type="button" class="btn btn-default" ng-click="delete(anime)">X</button>
                     </div>
                     <a ng-show='anime["isNewEpAvialable"] && anime["newEpUrl"] != "url"'href="{{anime['newEpUrl']}}" target='_newtab'><span class='badge'>New</span></a>

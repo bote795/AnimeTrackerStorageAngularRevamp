@@ -1,0 +1,16 @@
+<div ng-controller="updateWebsitesController" class="container">
+	<h3>Edit Webpage Info</h3>
+	<div class="">
+	  <label >Retrieve updates Url</label>
+	  <input class="form-control" type="text" value="{{animeUpdatesArray[detailId]['website']}}">
+	</div>
+	<div ng-show="animeUpdatesArray[detailId]['domainNeeded']">
+	  <label for="ex3">Main Domain</label>
+	  <input class="form-control"  type="text" value="{{animeUpdatesArray[detailId]['domain']}}">
+	</div>
+	<br>
+  	<button type="submit" class="btn btn-primary">Submit</button>
+  	<br>
+  	<br>
+  	<br>
+</div>
