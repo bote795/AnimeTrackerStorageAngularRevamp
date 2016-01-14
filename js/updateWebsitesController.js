@@ -7,6 +7,7 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
 	if ($routeParams.id) {
 	$scope.detailId = $routeParams.id;
     }
+    $scope.updateOrder=false;
 	//default urls to get updates from
 	$scope.defaultUpdateWebsites = function(){
 		return [

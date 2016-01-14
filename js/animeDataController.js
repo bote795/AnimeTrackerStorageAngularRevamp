@@ -8,7 +8,7 @@ app.controller('AnimeDataController', function($scope,$routeParams) {
     $scope.animeArray=[];
 	for (var i = 0; i < animes.length; i++) {
 	  var tempDict={};
-	  tempDict["name"] = animes[i][0];
+	  tempDict["name"] = animes[i][0].trim();
 	  tempDict["ep"] = animes[i][1];
 	  tempDict["isNewEpAvialable"] = animes[i][2];
 	  tempDict["newEpUrl"] = animes[i][3];
@@ -21,9 +21,15 @@ app.controller('AnimeDataController', function($scope,$routeParams) {
     }
 	$scope.add =function (anime) {
 		anime.ep ++;
+		$scope.resetNewEpFields(anime);
 	}
 	$scope.minus =function (anime) {
 		anime.ep --;
+		$scope.resetNewEpFields(anime);
+	}
+	$scope.resetNewEpFields =function(anime){
+		anime["isNewEpAvialable"]=0;
+		anime["newEpUrl"]="url";
 	}
 	$scope.delete =function (anime) {
 		var index= $scope.animeArray.indexOf(anime);
@@ -91,5 +97,14 @@ app.controller('AnimeDataController', function($scope,$routeParams) {
        }
      }
      return false;
+	}
+	$scope.anyNewEps = function () {
+		for (var i = 0; i < $scope.animeArray.length; i++) {
+			if($scope.animeArray[i]["isNewEpAvialable"] == 1)
+			{
+				return true;
+			}
+		};
+		return false;
 	}
 });
