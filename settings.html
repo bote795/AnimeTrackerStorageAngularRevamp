@@ -1,28 +1,17 @@
-<div class="tab-pane container" id="settings">
+<div ng-controler="updateWebsitesController"class="tab-pane container" id="settings">
   <!-- settings -->
-  <button type="button" class="btn btn-primary btn-xs close defaultRestart">Reset</button>
+  <button type="button" ng-click="resetUpdateWebsites()" class="btn btn-primary btn-xs close defaultRestart">Reset</button>
   <h4>Updates Urls</h4>
   <p>Drag and drop the following urls in the order you like your anime to show up from. 
   The <b>highest website being the first</b> website to check for your animes and then checking the second one and so on.
   </p>
-  <ul id="sortable" class="list-group">
-    <li ng-repeat="webPageInfo in animeUpdatesArray"class="ui-state-default list-group-item">
-      <span class="ui-icon ui-icon-arrowthick-2-n-s">
+  <ul ui-sortable="sortableOptions" ng-model="animeUpdatesArray" >
+      <li ng-repeat="webPageInfo in animeUpdatesArray" class="ui-state-default list-group-item" >
         {{webPageInfo["website"]}}
         <a href="#/edit/Website/{{$index}}" ><i class="fa fa-pencil-square-o fa-lg"></i></a>
         <button type='button' ng-click="delete(webPageInfo)"class='close Remove'>x</button>
-      </span>
-    </li>
-  </ul>
-  <label  class="switch-light progress"><!-- onclick="" -->
-    <input id="updatelist" type="checkbox">
-    <span>
-      Submit
-      <span aria-label="Off" title="Off">No</span>
-      <span aria-label="On" title="On">Yes</span>
-    </span>
-    <a class="progress-bar"></a>
-  </label>
+      </li>
+    </ul>
   <hr>
   <!-- settings finished -->
 </div>

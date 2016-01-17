@@ -7,7 +7,6 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
 	if ($routeParams.id) {
 	$scope.detailId = $routeParams.id;
     }
-    $scope.updateOrder=false;
 	//default urls to get updates from
 	$scope.defaultUpdateWebsites = function(){
 		return [
@@ -42,19 +41,30 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
 			}
 		]
 	}
-	$scope.animeUpdatesArray= $scope.defaultUpdateWebsites();
 	$scope.addNew = function () {
 		var temp = $scope.defaultValues($scope.formUrl, $scope.isHtml);
 		$scope.testLink(temp);
 	}
+
+	$scope.animeUpdatesArray= $scope.defaultUpdateWebsites();
+	$scope.resetUpdateWebsites = function(){
+		$scope.animeUpdatesArray= $scope.defaultUpdateWebsites();
+	}
+
+	$scope.sortableOptions = {
+	 	stop: function(e, ui) {
+      		//saves new order automatically just need to call something to save to 
+      		//localStorage or set sync
+
+	    }, 
+	    axis: 'y'
+	 };
 	//delete entry
 	$scope.delete = function(website){
 		var index= $scope.animeUpdatesArray.indexOf(website);
 		$scope.animeUpdatesArray.splice(index,1);
 	}
-	$scope.updateUrlOrder = function(){
-		console.log("index");
-	}
+
 	$scope.defaultValues = function(url, isHtml)
 	{
 	  	var tempDict = {};
@@ -342,8 +352,6 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
        alert("successfully submitted");
        $scope.resetAddUpdatesUrl();
 	}
-
-
 	$scope.resetAddUpdatesUrl = function()
 	{
 	    $("#xpath").hide();
@@ -354,6 +362,5 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
 	    $(".datareply").html("");
 
 	}
-
 });
 
