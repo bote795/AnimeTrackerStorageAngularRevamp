@@ -39,7 +39,7 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
 				domain: "",
 				xpath: 'xpath="//div[@class=\'post\']//li"'				
 			}
-		]
+		];
 	}
 	$scope.addNew = function () {
 		var temp = $scope.defaultValues($scope.formUrl, $scope.isHtml);

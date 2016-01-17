@@ -7,7 +7,15 @@
            "48": "assets/icon48.png",
           "128": "assets/icon128.png" },    
   "content_security_policy": "script-src 'self' https://query.yahooapis.com/; object-src 'self' " ,
-
+  "background": {
+    "scripts": ["js/lib/jquery-2.0.2.min.js",
+                "js/helperFunctions.js" ,
+                "js/Manager.js" ,
+                "js/animeDataManager.js" ,
+                "js/upateWebsiteManager.js" ,
+               "js/eventPage.js" ],
+    "persistent": false
+  },
   "browser_action": {
     "default_icon": "assets/icon.png",
     "default_popup": "popup.html"
