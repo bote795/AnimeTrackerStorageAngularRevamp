@@ -78,3 +78,7 @@ function  updates() {
     animeDataManager.save(anime);
   });
 }
+
+//30min = 1800000 milliseconds
+//UpdateRequest();
+setInterval(function(){updates();},1800000);
