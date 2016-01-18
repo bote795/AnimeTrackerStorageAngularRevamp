@@ -117,37 +117,50 @@ function requestAnimeSite(animePageInfo)
 /*
 	Function does a request to wiki and sends
 	anime names to check for the totoal number of eps for that anime
-	takes in an animeArray and a callback
-	format: 
-		field ["name"] 
-		field ["ep"] 
-		field ["isNewEpAvialable"] 
-		field ["newEpUrl"]
-		field ["homeUrl"] 
-		field ["totalEps"] 
-	calback will return 
-	name: with the anime name
-	totalEps: 
-	if fount 'out of X' else will update the number plus 2
-	so that it will get checked later
+	takes in an callback
+	calback will return nothing 
+	
 */
-function FindTotalEps (animeArray,callback) {
-  var promises=[];
-  for (var i = 0; i < animeArray.length; i++) {
-    promises.push(checkForTotalEps(animeArray[i]));
-  };
-  $.when.apply($, promises).then(function() {
-   var temp=arguments; // The array of resolved objects as a pseudo-array
-   var filtered=[];
-    for (var i = 0; i < arguments.length; i++) {
-      if (temp[i] != null)
-      {
-        filtered.push(temp[i]);
-      }
-    }
-    console.log(filtered);
-    callback(filtered);          
-  })
+function FindTotalEps (callback) {
+    animeDataManager.load(function (animeArray) {
+      var promises=[];
+      for (var i = 0; i < animeArray.length; i++) {
+        promises.push(checkForTotalEps(animeArray[i]));
+      };
+      $.when.apply($, promises).then(function() {
+       var temp=arguments; // The array of resolved objects as a pseudo-array
+       var filtered=[];
+        for (var i = 0; i < arguments.length; i++) {
+          if (temp[i] != null)
+          {
+            filtered.push(temp[i]);
+          }
+        }
+        /*
+          filtered fields
+          name: with the anime name
+          totalEps: 
+          if fount 'out of X' else will update the number plus 2
+          so that it will get checked later
+        */
+        for (var i = 0; i < filtered.length; i++) {
+          var x=0;
+          for (x = 0; x < animeArray.length; x++)
+          {
+            if (filtered[i]["name"]== animeArray[x]["name"]) 
+            {
+              animeArray[x]["totalEps"]=filtered[i]["totalEps"];
+              break;
+            }
+          }
+        }
+        if (filtered.length > 0) 
+        {
+          animeDataManager.save(animeArray);
+        }
+        callback();          
+      })
+    });
 }
 //Fuction sends a request to yql api to check 
 //for total number of eps for that anime

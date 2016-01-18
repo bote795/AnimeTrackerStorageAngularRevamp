@@ -4,7 +4,6 @@ var app = angular.module('myApp', ['ngRoute','ui.sortable'])
     function( $compileProvider )
     {   
         $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
-        // Angular before v1.2 uses $compileProvider.urlSanitizationWhitelist(...)
     }
 ]);
  
@@ -42,7 +41,9 @@ app.run(function($rootScope) {
     var spinner = new Spinner().spin(spintarget);
     //check for updates then check for total eps
     updates(function() {
-         $rootScope.$broadcast('reloadAnime',{});
-        spinner.stop();
+        FindTotalEps(function() {
+             $rootScope.$broadcast('reloadAnime',{});
+            spinner.stop();            
+        });
     });
 });
