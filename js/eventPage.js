@@ -59,17 +59,33 @@ chrome.runtime.onMessage.addListener(
             add 1 to ep and save
 
       */    
-      console.log("check link for new ep activated");
-      sendResponse({status: 200});
+      animeDataManager.load(function (anime) {
+        var temp= request.sentUrl;
+        temp =temp.toLowerCase();
+        
+        for (var i = 0; i < anime.length; i++) 
+        {
+          var name =anime[i]["name"];
+          if(NextEp(temp,name,anime[i]["ep"]))
+          {
+            anime[i]["ep"]++;
+            anime[i]["isNewEpAvialable"]=0;
+            anime[i]["newEpUrl"]="url";
+            break;
+          }
+        }
+        animeDataManager.save(anime);
+        console.log("check link for new ep activated");
+        sendResponse({status: 200});
+      });
     } // close if
-    
 });
 /*
   check for updates
   check if theres a new ep for any of the animes 
   in list and update info accordingly
 */
-function  updates() {
+function  updates(callback) {
   animeDataManager.load(function (anime) {
     updateWebsiteManager.load(function(animeUpdatesArray) {
       checkForNewEps(animeUpdatesArray, function (data) {
@@ -116,11 +132,13 @@ function  updates() {
         };//end up main for loop
         //save new anime data
         animeDataManager.save(anime);
+        if (typeof callback === 'function')
+        {
+          callback();
+        }
       });
     });
   });
-  
-
 }
 //30min = 1800000 milliseconds
 //UpdateRequest();
