@@ -83,4 +83,4 @@ chrome.runtime.onMessage.addListener(
 
 //30min = 1800000 milliseconds
 //UpdateRequest();
-//setInterval(function(){updates();},1800000);
+setInterval(function(){updates();},1800000);
