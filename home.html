@@ -69,7 +69,7 @@
                         <button type="button" class="btn btn-default"><a href="#/edit/Anime/{{animeArray.indexOf(anime)}}" ><i class="fa fa-pencil-square-o fa-lg"></i></a></button>
                         <button type="button" class="btn btn-default" ng-click="delete(anime)">X</button>
                     </div>
-                    <a ng-show='anime["isNewEpAvialable"] && anime["newEpUrl"] != "url"'href="{{anime['newEpUrl']}}" target='_newtab'><span class='badge'>New</span></a>
+                    <a ng-show='anime["isNewEpAvialable"] && anime["newEpUrl"] != "url"'ng-href="{{anime['newEpUrl']}}" ng-click="add(anime)" target='_newtab'><span class='badge'>New</span></a>
                 </div>
             </td>
         </tr>
@@ -104,7 +104,7 @@
                         <button type="button" class="btn btn-default"><a href="#/edit/Anime/{{animeArray.indexOf(anime)}}" ><i class="fa fa-pencil-square-o fa-lg"></i></a></button>
                         <button type="button" class="btn btn-default" ng-click="delete(anime)">X</button>
                     </div>
-                    <a ng-show='anime["isNewEpAvialable"] && anime["newEpUrl"] != "url"'href="{{anime['newEpUrl']}}" target='_newtab'><span class='badge'>New</span></a>
+                    <a ng-show='anime["isNewEpAvialable"] && anime["newEpUrl"] != "url"'ng-href="{{anime['newEpUrl']}}" ng-click="add(anime)"target='_newtab'><span class='badge'>New</span></a>
                 </div>
             </td>
         </tr>
