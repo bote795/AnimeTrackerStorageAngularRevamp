@@ -35,5 +35,23 @@ updateWebsiteManager.prototype.default = function() {
     }
   ];
 };
-
+/*
+  upgrade 1.9 fix formating to use in sync
+  parse from localstorage and save to sync using 
+  new format
+*/
+Manager.prototype.upgrade = function () {
+    var default_values = JSON.parse(localStorage[this.key]);
+    var data = [];
+    for (var i = 0; i < default_values.length; i++) {
+      var tempDict = {};
+        tempDict["website"]=default_values[i][0];
+        tempDict["xpath"]=default_values[i][1];
+        tempDict["type"]=default_values[i][2];
+        tempDict["domainNeeded"]=default_values[i][3];
+        tempDict["domain"]=default_values[i][4];
+      data.push(tempDict);
+    };
+    return data;
+}
 var updateWebsiteManager = new updateWebsiteManager(); 

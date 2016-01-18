@@ -22,9 +22,25 @@ Manager.prototype.load = function(callback){
         //if key is undefined
         else if (!chrome.runtime.error)
         {
-            //lets save the default values and key
-            tempThis.save(tempThis.default())
-            callback(tempThis.default());
+            var data;
+            //new user didn't have to upgrade
+            if (localStorage[this.key]=== undefined) 
+            {
+                //lets save the default values and key
+                data=tempThis.default();
+            }
+            /*
+                upgrade from localStorage to sync
+                retrieve data from localstorage and
+                fix format to new format 
+                save to sync
+            */
+            else
+            {
+                data =tempThis.upgrade();
+            }
+            tempThis.save(data)
+            callback(data);
         }
         else if(chrome.runtime.error)
         {
@@ -33,6 +49,9 @@ Manager.prototype.load = function(callback){
         }
     }); 
 };
+Manager.prototype.upgrade = function () {
+  return [];
+}
 Manager.prototype.save = function(array){
     var save={};
     save[this.key]=array;
