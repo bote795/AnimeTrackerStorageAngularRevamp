@@ -23,8 +23,18 @@ app.controller('AnimeDataController', function($scope,$routeParams) {
 	    	if ($routeParams.id) {
 				$scope.edit.name =$scope.animeArray[$scope.detailId]['name'];
 				$scope.edit.ep =$scope.animeArray[$scope.detailId]['ep'];
-				$scope.edit.homeUrl =$scope.animeArray[$scope.detailId]['homeUrl'];
-				$scope.edit.totalEps =$scope.animeArray[$scope.detailId]['totalEps'];
+				if ($scope.animeArray[$scope.detailId]['homeUrl'] == 'home') 
+				{
+					$scope.edit.homeUrl="";
+				}
+				else
+					$scope.edit.homeUrl =$scope.animeArray[$scope.detailId]['homeUrl'];
+				if (typeof $scope.animeArray[$scope.detailId]['totalEps'] === 'number') 
+				{
+					$scope.edit.totalEps="";
+				}
+				else
+					$scope.edit.totalEps =$scope.animeArray[$scope.detailId]['totalEps'];
 	    	};
 	    	$scope.$apply();
 	    });
@@ -107,7 +117,28 @@ app.controller('AnimeDataController', function($scope,$routeParams) {
 	$scope.editForm = function () {
 		console.log("it went in");
 		var fields= ["name", "ep", "homeUrl", "totalEps"];
+		
 		for (var i = 0; i < fields.length; i++) {
+				/*
+				fix some fields to let it keep working
+			*/
+			if (i == 2 && $scope.edit[fields[i]] == "" ) 
+			{
+				$scope.animeArray[$scope.detailId][fields[i]]="home";
+				continue;
+			}
+
+			if (i == 3 && typeof $scope.edit[fields[i]] === 'number') 
+			{
+				$scope.animeArray[$scope.detailId][fields[i]]="out of " + $scope.edit.totalEps;
+				continue;
+			}
+			else if (i == 3)
+			{
+				//give it back old number to later check for new ep
+				$scope.animeArray[$scope.detailId][fields[i]] = $scope.animeArray[$scope.detailId]["totalEps"];
+				continue;
+			}
 			$scope.animeArray[$scope.detailId][fields[i]]=$scope.edit[fields[i]];
 		};
 		$scope.edit.sucess=true;
