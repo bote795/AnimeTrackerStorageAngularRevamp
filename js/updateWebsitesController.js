@@ -4,9 +4,14 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
 	$scope.isCustomXpath =false;
 	$scope.customXpath="";
 	$scope.formUrl="";
+	$scope.edit = {};
+	$scope.edit.website;
+	$scope.edit.domain;
+	$scope.edit.sucess=false;
 	if ($routeParams.id) {
-	$scope.detailId = $routeParams.id;
+		$scope.detailId = $routeParams.id;
     }
+    $scope.edit.reOrderSucess=false;
 	//default urls to get updates from
 	$scope.defaultUpdateWebsites = function(){
 		return [
@@ -50,6 +55,10 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
 	$scope.init = function () {
 	    updateWebsiteManager.load(function(data) {
 	    	$scope.animeUpdatesArray=data;
+    		if ($routeParams.id) {
+				$scope.edit.website=$scope.animeUpdatesArray[$scope.detailId]["website"];
+				$scope.edit.domain=$scope.animeUpdatesArray[$scope.detailId]["domain"];
+		    }
 	    	$scope.$apply();
 	    });
 	};
@@ -59,10 +68,16 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
 	}
 
 	$scope.sortableOptions = {
+	    activate: function () {
+	    	$scope.edit.reOrderSucess=false;
+	    	console.log(":basdjf")
+	    	$scope.$apply();
+	    },
 	 	stop: function(e, ui) {
       		//saves new order automatically just need to call something to save to 
       		//localStorage or set sync
-      		updateWebsiteManager.save($scope.animeUpdatesArray);
+      		$scope.edit.reOrderSucess=true;
+      		$scope.save();
 	    }, 
 	    axis: 'y'
 	 };
@@ -70,8 +85,16 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
 	$scope.delete = function(website){
 		var index= $scope.animeUpdatesArray.indexOf(website);
 		$scope.animeUpdatesArray.splice(index,1);
+		$scope.save();
 	}
-
+	$scope.editForm = function() {
+		var fields = ["website", "domain"];
+		for (var i = 0; i < fields.length; i++) {
+			$scope.animeUpdatesArray[$scope.detailId][fields[i]]=$scope.edit[fields[i]];
+		};
+		$scope.edit.sucess = true;
+		$scope.save();
+	}
 	$scope.defaultValues = function(url, isHtml)
 	{
 	  	var tempDict = {};
@@ -356,7 +379,7 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
         //save url to list
        console.log(temp);
        $scope.animeUpdatesArray.push(temp);
-       updateWebsiteManager.save($scope.animeUpdatesArray);
+       $scope.save();
        alert("successfully submitted");
        $scope.resetAddUpdatesUrl();
 	}
@@ -369,6 +392,9 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
 	    $("#output").html("");
 	    $(".datareply").html("");
 
+	}
+	$scope.save = function () {
+      updateWebsiteManager.save($scope.animeUpdatesArray);
 	}
 });
 

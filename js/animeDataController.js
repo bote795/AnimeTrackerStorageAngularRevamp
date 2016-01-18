@@ -1,12 +1,31 @@
 app.controller('AnimeDataController', function($scope,$routeParams) {
+    //used to handle form on home for new anime
     $scope.newAnimeName = "";
     $scope.newAnimeEpisode = "";
     $scope.mutlipleNewAnime =false;
-    $scope.key = "savedAnimes";
     $scope.isCollapsed =false;
+
+    $scope.key = "savedAnimes";
+    
+    //used for edit form on eidtAnime
+    $scope.edit={};
+    $scope.edit.name;
+    $scope.edit.ep;
+    $scope.edit.homeUrl;
+    $scope.edit.totalEps;
+    $scope.edit.sucess=false;
+	if ($routeParams.id) {
+		$scope.detailId = $routeParams.id;
+    }
     $scope.init = function () {
 	    animeDataManager.load(function(data) {
 	    	$scope.animeArray=data;
+	    	if ($routeParams.id) {
+				$scope.edit.name =$scope.animeArray[$scope.detailId]['name'];
+				$scope.edit.ep =$scope.animeArray[$scope.detailId]['ep'];
+				$scope.edit.homeUrl =$scope.animeArray[$scope.detailId]['homeUrl'];
+				$scope.edit.totalEps =$scope.animeArray[$scope.detailId]['totalEps'];
+	    	};
 	    	$scope.$apply();
 	    });
 	};
@@ -20,18 +39,16 @@ app.controller('AnimeDataController', function($scope,$routeParams) {
 	    });
 	 	console.log("reloadAnime");
 	 });
-	if ($routeParams.id) {
-		$scope.detailId = $routeParams.id;
-    }
+
 	$scope.add =function (anime) {
 		anime.ep ++;
 		$scope.resetNewEpFields(anime);
-		animeDataManager.save($scope.animeArray);
+		$scope.save();
 	}
 	$scope.minus =function (anime) {
 		anime.ep --;
 		$scope.resetNewEpFields(anime);
-		animeDataManager.save($scope.animeArray);
+		$scope.save();
 	}
 	$scope.resetNewEpFields =function(anime){
 		anime["isNewEpAvialable"]=0;
@@ -40,7 +57,7 @@ app.controller('AnimeDataController', function($scope,$routeParams) {
 	$scope.delete =function (anime) {
 		var index= $scope.animeArray.indexOf(anime);
 		$scope.animeArray.splice(index,1);
-		animeDataManager.save($scope.animeArray);
+		$scope.save();
 
 	}
 	//retrieves what should be displayed for the episode
@@ -84,6 +101,19 @@ app.controller('AnimeDataController', function($scope,$routeParams) {
 		$scope.newAnimeEpisode = "";
 		if(!$scope.mutlipleNewAnime)
 			$('#collapseOne').collapse('hide')
+		$scope.save();
+	}
+	//edit form in editAnime
+	$scope.editForm = function () {
+		console.log("it went in");
+		var fields= ["name", "ep", "homeUrl", "totalEps"];
+		for (var i = 0; i < fields.length; i++) {
+			$scope.animeArray[$scope.detailId][fields[i]]=$scope.edit[fields[i]];
+		};
+		$scope.edit.sucess=true;
+		$scope.save();
+	}
+	$scope.save = function() {
 		animeDataManager.save($scope.animeArray);
 	}
 	$scope.basicNew = function(name, ep){

@@ -1,15 +1,23 @@
 <div ng-controller="updateWebsitesController" class="container">
 	<h3>Edit Webpage Info</h3>
-	<div class="">
-	  <label >Retrieve updates Url</label>
-	  <input class="form-control" type="text" value="{{animeUpdatesArray[detailId]['website']}}">
+	<div ng-show="edit.sucess"class="alert alert-success">
+	  <strong>Success!</strong>
 	</div>
-	<div ng-show="animeUpdatesArray[detailId]['domainNeeded']">
-	  <label for="ex3">Main Domain</label>
-	  <input class="form-control"  type="text" value="{{animeUpdatesArray[detailId]['domain']}}">
-	</div>
-	<br>
-  	<button type="submit" class="btn btn-primary">Submit</button>
+	<form ng-submit="editForm()">
+		<div class="form-group">
+		  <label >Retrieve updates Url</label>
+		  <input class="form-control" type="text" ng-model="edit.website">
+		</div>
+		<div ng-show="animeUpdatesArray[detailId]['domainNeeded']" class="form-group">
+		  <label for="ex3">Main Domain</label>
+		  <input class="form-control"  type="text" ng-model="edit.domain">
+		</div>
+		<br>
+	  	<button type="submit" class="btn btn-primary">Submit</button>
+	  	<a href="#settings">
+	  		<button class="btn btn-default">Cancel</button>
+	  	</a>
+  	</form>
   	<br>
   	<br>
   	<br>

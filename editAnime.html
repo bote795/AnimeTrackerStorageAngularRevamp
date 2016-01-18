@@ -1,23 +1,31 @@
 <div ng-controller="AnimeDataController" class="container">
 	<h3>Edit Anime Info</h3>
-	<div class="">
-	  <label >Name</label>
-	  <input class="form-control" type="text" value="{{animeArray[detailId]['name']}}">
+	<div ng-show="edit.sucess"class="alert alert-success">
+	  <strong>Success!</strong>
 	</div>
-	<div >
-	  <label>Ep</label>
-	  <input class="form-control"  type="text" value="{{animeArray[detailId]['ep']}}">
-	</div>
-	<div >
-	  <label>Home Url for this Anime AKA "Link"</label>
-	  <input class="form-control"  type="text" value="{{animeArray[detailId]['homeUrl']}}">
-	</div>
-	<div >
-	  <label>Total Eps</label>
-	  <input class="form-control"  type="text" value="{{animeArray[detailId]['totalEps']}}">
-	</div>
-	<br>
-  	<button type="submit" class="btn btn-primary">Submit</button>
+	<form ng-submit="editForm()">
+		<div class="form-group">
+		  <label >Name</label>
+		  <input class="form-control" ng-model="edit.name"type="text" >
+		</div>
+		<div class="form-group" >
+		  <label>Ep</label>
+		  <input class="form-control" ng-model="edit.ep" type="text" >
+		</div>
+		<div class="form-group">
+		  <label>Home Url for this Anime AKA "Link"</label>
+		  <input class="form-control"  ng-model="edit.homeUrl" >
+		</div>
+		<div class="form-group">
+		  <label>Total Eps</label>
+		  <input class="form-control" ng-model="edit.totalEps" >
+		</div>
+		<br>
+	  	<button type="submit" class="btn btn-primary">Submit</button>
+	  	<a href="#home">
+	  		<button class="btn btn-default">Cancel</button>
+	  	</a>
+	</form>
   	<br>
   	<br>
   	<br>
