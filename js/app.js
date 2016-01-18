@@ -21,6 +21,10 @@ app.config(function ($routeProvider) {
         templateUrl: 'settings.html',
         controller: 'updateWebsitesController'
     }).
+    when('/anilist', {
+        templateUrl: 'anilist.html',
+        controller: 'anilistController'
+    }).
     when('/edit/Website/:id', {
         templateUrl: 'editWebsite.html',
         controller :'updateWebsitesController'

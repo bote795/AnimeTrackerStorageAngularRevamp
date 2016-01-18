@@ -1,0 +1,20 @@
+<div ng-controller="anilistController" class="container">
+	<a href="https://anilist.co/api/auth/authorize?grant_type=authorization_pin&client_id=bote795-nuwwf&response_type=pin" target='_newtab'>Anilist</a>
+	<form ng-submit="saveCode()">
+		<div class="form-group">
+			<label for="pin">Pase Pin Code</label>
+			<input ng-model="PinCode"  type="text" class="form-control">
+		</div>
+		<button type="submit">Submit</button>
+	</form>
+	<form ng-submit="findAnime()">
+		<div class="form-group">
+			<label for="pin">Pase Pin Code</label>
+			<input ng-model="anime"  type="text" class="form-control">
+		</div>
+		<button type="submit">Submit</button>
+	</form>
+	<br>
+	<br>
+	<br>
+</div>
