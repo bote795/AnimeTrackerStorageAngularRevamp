@@ -46,7 +46,14 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
 		$scope.testLink(temp);
 	}
 
-	$scope.animeUpdatesArray= $scope.defaultUpdateWebsites();
+	$scope.animeUpdatesArray= [];
+	$scope.init = function () {
+	    updateWebsiteManager.load(function(data) {
+	    	$scope.animeUpdatesArray=data;
+	    	$scope.$apply();
+	    });
+	};
+	$scope.init();
 	$scope.resetUpdateWebsites = function(){
 		$scope.animeUpdatesArray= $scope.defaultUpdateWebsites();
 	}
@@ -55,7 +62,7 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
 	 	stop: function(e, ui) {
       		//saves new order automatically just need to call something to save to 
       		//localStorage or set sync
-
+      		updateWebsiteManager.save($scope.animeUpdatesArray);
 	    }, 
 	    axis: 'y'
 	 };
@@ -349,6 +356,7 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
         //save url to list
        console.log(temp);
        $scope.animeUpdatesArray.push(temp);
+       updateWebsiteManager.save($scope.animeUpdatesArray);
        alert("successfully submitted");
        $scope.resetAddUpdatesUrl();
 	}

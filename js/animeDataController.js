@@ -4,28 +4,34 @@ app.controller('AnimeDataController', function($scope,$routeParams) {
     $scope.mutlipleNewAnime =false;
     $scope.key = "savedAnimes";
     $scope.isCollapsed =false;
-    var animes =JSON.parse("[[\"\\n\\t\\tDungeon ni Deai wo Motomeru no wa Machigatteiru Darou ka\",8,1,\"http://www.animefreak.tv/watch/dungeon-ni-deai-wo-motomeru-no-wa-machigatteiru-darou-ka-episode-9-online\",\"home\",10],[\"\\n\\t\\tFate/Stay Night: Unlimited Blade Works (TV)\",14,0,\"url\",\"home\",2],[\"\\n\\t\\tKekkai Sensen\",8,0,\"url\",\"home\",2],[\"\\n\\t\\tVampire Holmes\",7,0,\"url\",\"home\",4],[\"Arslan Senki\",8,0,\"url\",\"home\",2],[\"Fairy Tail 2014\",59,0,\"url\",\"http://www.animefreak.tv/watch/fairy-tail-2014-online\",2],[\"Gunslinger Stratos: The Animation\",7,0,\"url\",\"home\",4],[\"Marvels agents of s h i e l d s2\",19,0,\"url\",\"home\",20],[\"One Piece\",694,0,\"url\",\"home\",2],[\"Owari no Seraph\",8,0,\"url\",\"home\",10],[\"World Trigger\",31,0,\"url\",\"home\",\" out of 50\"]]");
-    $scope.animeArray=[];
-	for (var i = 0; i < animes.length; i++) {
-	  var tempDict={};
-	  tempDict["name"] = animes[i][0].trim();
-	  tempDict["ep"] = animes[i][1];
-	  tempDict["isNewEpAvialable"] = animes[i][2];
-	  tempDict["newEpUrl"] = animes[i][3];
-	  tempDict["homeUrl"] = animes[i][4];
-	  tempDict["totalEps"] = animes[i][5];
-	  $scope.animeArray.push(tempDict);
+    $scope.init = function () {
+	    animeDataManager.load(function(data) {
+	    	$scope.animeArray=data;
+	    	$scope.$apply();
+	    });
 	};
+	$scope.animeArray=[];
+	$scope.init();
+	$scope.$on('reloadAnime', function(event,args) {
+	 	//reload anime
+	 	animeDataManager.load(function(data) {
+	    	$scope.animeArray=data;
+	    	$scope.$apply();
+	    });
+	 	console.log("reloadAnime");
+	 });
 	if ($routeParams.id) {
-	$scope.detailId = $routeParams.id;
+		$scope.detailId = $routeParams.id;
     }
 	$scope.add =function (anime) {
 		anime.ep ++;
 		$scope.resetNewEpFields(anime);
+		animeDataManager.save($scope.animeArray);
 	}
 	$scope.minus =function (anime) {
 		anime.ep --;
 		$scope.resetNewEpFields(anime);
+		animeDataManager.save($scope.animeArray);
 	}
 	$scope.resetNewEpFields =function(anime){
 		anime["isNewEpAvialable"]=0;
@@ -34,6 +40,8 @@ app.controller('AnimeDataController', function($scope,$routeParams) {
 	$scope.delete =function (anime) {
 		var index= $scope.animeArray.indexOf(anime);
 		$scope.animeArray.splice(index,1);
+		animeDataManager.save($scope.animeArray);
+
 	}
 	//retrieves what should be displayed for the episode
 	$scope.Episode = function (anime) {
@@ -75,8 +83,8 @@ app.controller('AnimeDataController', function($scope,$routeParams) {
 		$scope.newAnimeName = "";	
 		$scope.newAnimeEpisode = "";
 		if(!$scope.mutlipleNewAnime)
-		$('#collapseOne').collapse('hide')
-
+			$('#collapseOne').collapse('hide')
+		animeDataManager.save($scope.animeArray);
 	}
 	$scope.basicNew = function(name, ep){
 	  var tempDict={};
