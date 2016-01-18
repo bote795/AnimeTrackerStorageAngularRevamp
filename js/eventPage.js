@@ -40,7 +40,7 @@ chrome.runtime.onMessage.addListener(
              ep: 0,
              isNewEpAvialable: 0,
              newEpUrl: "url",
-             homeurl: "home",
+             homeUrl: "home",
              totalEps: 0
             }
           ); // 

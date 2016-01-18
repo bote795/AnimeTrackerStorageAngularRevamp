@@ -23,7 +23,8 @@ Manager.prototype.load = function(callback){
         else if (!chrome.runtime.error)
         {
             //lets save the default values and key
-            callback(tempThis.save(tempThis.default()));
+            tempThis.save(tempThis.default())
+            callback(tempThis.default());
         }
         else if(chrome.runtime.error)
         {
