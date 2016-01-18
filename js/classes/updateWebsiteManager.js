@@ -40,7 +40,7 @@ updateWebsiteManager.prototype.default = function() {
   parse from localstorage and save to sync using 
   new format
 */
-Manager.prototype.upgrade = function () {
+updateWebsiteManager.prototype.upgrade = function () {
     var default_values = JSON.parse(localStorage[this.key]);
     var data = [];
     for (var i = 0; i < default_values.length; i++) {

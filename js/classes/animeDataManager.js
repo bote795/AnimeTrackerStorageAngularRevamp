@@ -7,7 +7,7 @@ inheritsFrom(animeDataManager, Manager);
   parse from localstorage and save to sync using 
   new format
 */
-Manager.prototype.upgrade = function () {
+animeDataManager.prototype.upgrade = function () {
     var animes= JSON.parse(localStorage[this.key]);
     var data=[];
     for (var i = 0; i < animes.length; i++) {

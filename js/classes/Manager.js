@@ -24,9 +24,10 @@ Manager.prototype.load = function(callback){
         {
             var data;
             //new user didn't have to upgrade
-            if (localStorage[this.key]=== undefined) 
+            if (localStorage[tempThis.key]=== undefined) 
             {
                 //lets save the default values and key
+                console.log("used default");
                 data=tempThis.default();
             }
             /*
@@ -37,6 +38,7 @@ Manager.prototype.load = function(callback){
             */
             else
             {
+                console.log("used old datalo")
                 data =tempThis.upgrade();
             }
             tempThis.save(data)
