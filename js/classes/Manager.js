@@ -5,6 +5,11 @@ var Manager = function() {
 Manager.prototype.default = function(){     
     return [];
 };
+/*
+    sends data back to callback
+    Need callback since it doesn't instantly send data
+    works kinda liek ajax call
+*/
 Manager.prototype.load = function(callback){
     var tempThis=this;
     chrome.storage.sync.get(this.key, function(obj) {
