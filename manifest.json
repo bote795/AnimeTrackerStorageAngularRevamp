@@ -10,9 +10,9 @@
   "background": {
     "scripts": ["js/lib/jquery-2.0.2.min.js",
                 "js/helperFunctions.js" ,
-                "js/Manager.js" ,
-                "js/animeDataManager.js" ,
-                "js/upateWebsiteManager.js" ,
+                "js/classes/Manager.js" ,
+                "js/classes/animeDataManager.js" ,
+                "js/classes/updateWebsiteManager.js" ,
                "js/eventPage.js" ],
     "persistent": false
   },

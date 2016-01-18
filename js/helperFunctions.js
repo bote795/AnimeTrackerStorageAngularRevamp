@@ -250,9 +250,11 @@ function NextEp(url, Name, ep)
       {
          url = url.substring(url.indexOf("episode")+ "episode".length, url.length);
         if((ep+1) == parseInt(url.match( numberPattern )[0]))
-          {
-            return true;
-          }
+		{
+		return true;
+		}
+        else
+          return false;
       }
       else if((ep+1) == parseInt(url.match( numberPattern )[0]))
           {
