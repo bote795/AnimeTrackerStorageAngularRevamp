@@ -308,7 +308,7 @@ function  updates(callback) {
           //so we can check the websites in order
           var j;
           for(j =0; j < data[j].length 
-            && animeUpdatesArray[i]["website"] == data["website"];j++);
+            && animeUpdatesArray[i]["website"] == data[j]["website"];j++);
           //for the website with that data
           //lets check that one first for any new eps
           var hrefs=data[j]["urls"];
