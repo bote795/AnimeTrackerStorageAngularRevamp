@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "AnimeTrackerStorage",
+  "name": "AnimeTrackerStorageBeta",
   "description": "Keep up to date with your Anime! Add the anime you're watching to the list it'll track what episode you are on and when its up!",
-  "version": "1.9",
+  "version": "1.92",
   "icons": { "16": "assets/icon.png",
            "48": "assets/icon48.png",
           "128": "assets/icon128.png" },
