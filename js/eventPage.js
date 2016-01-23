@@ -58,26 +58,13 @@ chrome.runtime.onMessage.addListener(
           check if its the next ep
             add 1 to ep and save
 
-      */    
-      animeDataManager.load(function (anime) {
-        var temp= request.sentUrl;
+      */  
+       var temp= request.sentUrl;
         temp =temp.toLowerCase();
-        
-        for (var i = 0; i < anime.length; i++) 
-        {
-          var name =anime[i]["name"];
-          if(NextEp(temp,name,anime[i]["ep"]))
-          {
-            anime[i]["ep"]++;
-            anime[i]["isNewEpAvialable"]=0;
-            anime[i]["newEpUrl"]="url";
-            break;
-          }
-        }
-        animeDataManager.save(anime);
-        console.log("check link for new ep activated");
-        sendResponse({status: 200});
-      });
+
+        LinkContainsNewEp(temp,function() {
+          sendResponse({status: 200});
+        });
     } // close if
 });
 
