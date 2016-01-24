@@ -1,5 +1,6 @@
 app.controller('anilistController', function($scope,$http) {
 	$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+	$http.defaults.headers.put["Content-Type"] = "application/x-www-form-urlencoded";
 	$scope.PinCode="";
 	$scope.client_id = "";
 	$scope.client_id = "bote795-nuwwf";
@@ -213,11 +214,10 @@ app.controller('anilistController', function($scope,$http) {
 		we need id 
 		make sure no objectKey in there
 	*/
-	$scope.editAnime = function () {
+	$scope.editAnime = function (item) {
 		var params = {
-            'id': id,
-            'list_status':  "watching",
-            'episodes_watched': ep
+            'episodes_watched': item.ep,
+            'id': item.id
 		};
 		$http({
 		  url: 'https://anilist.co/api/animelist',
@@ -256,5 +256,15 @@ app.controller('anilistController', function($scope,$http) {
 	       console.log( response);
 
 	    });
+	}
+	/*
+		functiont that adds one
+		sends it to anilist as well
+	*/
+	$scope.add = function(item) {
+		item.episodes_watched++;
+		$scope.editAnime({
+			id: item.anime.id ,
+			ep: item.episodes_watched });
 	}
 });

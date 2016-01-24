@@ -25,7 +25,8 @@
     <ul ng-init="RetrieveUserList()">
         <li ng-repeat="item in watching">
         	<img ng-src="{{item.anime.image_url_sml}}">
-        	{{item.anime.title_english}}
+        	{{item.anime.title_english}} {{item.episodes_watched}}
+        	<bt class="btn btn-default" ng-click="add(item)">+</bt>
         </li>
     </ul>
 	<br>
