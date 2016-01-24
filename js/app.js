@@ -1,4 +1,4 @@
-var app = angular.module('myApp', ['ngRoute','ui.sortable'])
+var app = angular.module('myApp', ['ngRoute','ui.sortable','ngMaterial'])
 .config( [
     '$compileProvider',
     function( $compileProvider )
