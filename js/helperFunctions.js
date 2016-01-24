@@ -283,11 +283,11 @@ function NextEp(url, Name, ep)
 function notificationClicked(ID) {
   var x = JSON.parse(ID);
   console.log("clicked:"+parseInt(x.id));
-  window.open(x.url);
   var temp= x.url;
   temp =temp.toLowerCase();
   LinkContainsNewEp(temp,function() {
     console.log("updated ep number");
+    window.open(x.url);
   });
 }
 
