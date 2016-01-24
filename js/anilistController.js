@@ -26,13 +26,6 @@ app.controller('anilistController', function($scope,$http) {
 		  method: 'POST',
 		  data: $.param(params) // Make sure to inject the service you choose to the controller
 		})
-		/*
-			response data contains:
-			    access_token: "NR3M3vXgHK0kmluOcJVlRXvbGOg4yLhAVyf5If"
-			    token_type: "bearer"
-			    expires: 1414234981
-			    expires_in: 3600    aka an hour
-		*/
 		.then(function(response) {
 			console.log(response.data);
 			$scope.access_token = response.data.access_token;
@@ -89,13 +82,6 @@ app.controller('anilistController', function($scope,$http) {
 		  method: 'POST',
 		  data: $.param(params) // Make sure to inject the service you choose to the controller
 		})
-		/*
-			response data contains:
-			    access_token: "NR3M3vXgHK0kmluOcJVlRXvbGOg4yLhAVyf5If"
-			    token_type: "bearer"
-			    expires: 1414234981
-			    expires_in: 3600    aka an hour
-		*/
 		.then(function(response) {
 			console.log(response.data);
 			$scope.access_token = response.data.access_token;
@@ -103,6 +89,125 @@ app.controller('anilistController', function($scope,$http) {
 			localStorage["token"] = JSON.stringify(response.data);
             console.log("response");
 	    }, 
+	    function(response) { // optional
+	       console.log("fail");
+	       console.log( response);
+
+	    });
+	}
+	/*
+		Retrieves current user Info
+		we need id or displayname
+	*/
+	$scope.RetrieveUser = function () {
+		$http({
+		  url: 'https://anilist.co/api/user',
+		  method: 'GET',
+		  headers: {
+		  	'Authorization' : 'Bearer '+$scope.access_token
+		  }
+		})
+		.then(function(response){
+	      return response.data;
+	    },
+	    function(response) { // optional
+	       console.log("fail");
+	       console.log( response);
+
+	    });
+	}
+	/*
+		Retrieves animelist
+		we need id or displayname
+	*/
+	$scope.RetrieveUserList = function () {
+		$http({
+		  url: 'https://anilist.co/api/user/'+$scope.id+'/animelist',
+		  method: 'GET',
+		  headers: {
+		  	'Authorization' : 'Bearer '+$scope.access_token
+		  }
+		})
+		.then(function(response){
+	      return response.data;
+	    },
+	    function(response) { // optional
+	       console.log("fail");
+	       console.log( response);
+
+	    });
+	}
+	/*
+		Create anime
+		we need id or displayname
+		make sure no objectKey in there
+	*/
+	$scope.CreateAnime = function () {
+		var params = {
+            'id': id,
+            'list_status':  "watching"
+		};
+		$http({
+		  url: 'https://anilist.co/api/animelist',
+		  method: 'POST',
+		  // Make sure to inject the service you choose to the controller
+		  data: $.param(params) ,
+		  headers: {
+		  	'Authorization' : 'Bearer '+$scope.access_token
+		  }
+		})
+		.then(function(response){
+	      return response.data;
+	    },
+	    function(response) { // optional
+	       console.log("fail");
+	       console.log( response);
+
+	    });
+	}
+	/*
+		Edit anime
+		we need id 
+		make sure no objectKey in there
+	*/
+	$scope.editAnime = function () {
+		var params = {
+            'id': id,
+            'list_status':  "watching",
+            'episodes_watched': ep
+		};
+		$http({
+		  url: 'https://anilist.co/api/animelist',
+		  method: 'PUT',
+		  // Make sure to inject the service you choose to the controller
+		  data: $.param(params) ,
+		  headers: {
+		  	'Authorization' : 'Bearer '+$scope.access_token
+		  }
+		})
+		.then(function(response){
+	      return response.data;
+	    },
+	    function(response) { // optional
+	       console.log("fail");
+	       console.log( response);
+
+	    });
+	}
+	/*
+		Deletes an anime from animelist
+	*/
+	$scope.DeleteAnime = function (id) {
+		$http({
+		  url: 'https://anilist.co/api/animelist'+id,
+		  method: 'DELETE',
+		  headers: {
+		  	'Authorization' : 'Bearer '+$scope.access_token
+		  }
+		})
+		.then(function(response){
+	      return response.data;
+	    },
 	    function(response) { // optional
 	       console.log("fail");
 	       console.log( response);
