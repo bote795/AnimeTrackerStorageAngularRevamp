@@ -23,7 +23,7 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
 			var expiresTime = new Date(JSON.parse(localStorage["token"])["expires"]);
 			header =  {'Authorization' : 'Bearer '+ access_token};
 
-			if (currentTime > expiresTime) 
+			if (currentTime > expiresTime && localStorage["refresh_token"] != "") 
 			{
 				refreshToken();
 			};
@@ -128,7 +128,8 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
 		response.data["expires"] = t.getTime();
 
 		localStorage["token"] = JSON.stringify(response.data);
-		localStorage["refresh_token"] = JSON.stringify(response.data["refresh_token"]);
+		if (typeof response.data["refresh_token"] !== 'undefined') 
+			localStorage["refresh_token"] = JSON.stringify(response.data["refresh_token"]);
         console.log("response");
 	}
 	factory.animeSearch= function(query) {
@@ -177,6 +178,9 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
 		add anime to personal list
 		we need id or displayname
 		make sure no objectKey in there
+		id
+		total_episodes
+		image_url_med
 	*/
 	factory.addAnime = function (item) {
 		var params = {
