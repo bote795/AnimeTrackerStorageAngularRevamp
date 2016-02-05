@@ -37,6 +37,7 @@ app.config(function ($routeProvider) {
 when ap first run check for updates
 */
 app.run(function($rootScope) {
+    ga('send', 'pageview', "/popup.html");
     var spintarget = document.getElementById('foo');
     var spinner = new Spinner().spin(spintarget);
     //check for updates then check for total eps
