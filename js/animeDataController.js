@@ -139,9 +139,9 @@ app.controller('AnimeDataController', function($scope,$routeParams) {
 				continue;
 			}
 
-			if (i == 3 && typeof $scope.edit[fields[i]] === 'number') 
+			if (i == 3 &&  !isNaN(Number($scope.edit[fields[i]])) && $scope.edit[fields[i]] != "" ) 
 			{
-				$scope.animeArray[$scope.detailId][fields[i]]="out of " + $scope.edit.totalEps;
+				$scope.animeArray[$scope.detailId][fields[i]]=" out of " + $scope.edit.totalEps;
 				continue;
 			}
 			else if (i == 3)
