@@ -35,7 +35,8 @@ app.controller('AnimeDataController', function($scope,$routeParams) {
 				}
 				else
 					$scope.edit.totalEps =$scope.animeArray[$scope.detailId]['totalEps'];
-	    	};
+				ga('send', 'pageview', "/editAnime.html");
+	    	}
 	    	$scope.$apply();
 	    });
 	};
@@ -50,15 +51,22 @@ app.controller('AnimeDataController', function($scope,$routeParams) {
 	 	console.log("reloadAnime");
 	 });
 
-	$scope.add =function (anime) {
+	$scope.add =function (anime,clickNew) {
+		var clickNew = typeof clickNew !== 'undefined' ? clickNew : false;
 		anime.ep ++;
 		$scope.resetNewEpFields(anime);
 		$scope.save();
+		ga('send', 'event', "button","add", "Add to an anime");
+		if (clickNew)
+		{
+			ga('send', 'event', "button","newEp badge", "clicked new ep badge to go to website to watch");
+		}
 	}
 	$scope.minus =function (anime) {
 		anime.ep --;
 		$scope.resetNewEpFields(anime);
 		$scope.save();
+		ga('send', 'event', "button","subtract", "Subtract to an anime");
 	}
 	$scope.resetNewEpFields =function(anime){
 		anime["isNewEpAvialable"]=0;
@@ -68,6 +76,7 @@ app.controller('AnimeDataController', function($scope,$routeParams) {
 		var index= $scope.animeArray.indexOf(anime);
 		$scope.animeArray.splice(index,1);
 		$scope.save();
+		ga('send', 'event', "button","delete", "Remove anime");
 
 	}
 	//retrieves what should be displayed for the episode
@@ -111,6 +120,8 @@ app.controller('AnimeDataController', function($scope,$routeParams) {
 		$scope.newAnimeEpisode = "";
 		if(!$scope.mutlipleNewAnime)
 			$('#collapseOne').collapse('hide')
+		ga('send', 'event', "button","add new anime", "Add new anime");
+		ga('send', 'event', "NewAnime",name, "anime being added");
 		$scope.save();
 	}
 	//edit form in editAnime
@@ -142,6 +153,7 @@ app.controller('AnimeDataController', function($scope,$routeParams) {
 			$scope.animeArray[$scope.detailId][fields[i]]=$scope.edit[fields[i]];
 		};
 		$scope.edit.sucess=true;
+		ga('send', 'event', "button","save edit", "did manual changes");
 		$scope.save();
 	}
 	$scope.save = function() {
