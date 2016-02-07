@@ -1,4 +1,4 @@
-app.controller('AnimeDataController', function($scope,$routeParams) {
+app.controller('AnimeDataController', function($scope,$routeParams,anilistFac) {
     //used to handle form on home for new anime
     $scope.newAnimeName = "";
     $scope.newAnimeEpisode = "";
@@ -51,14 +51,52 @@ app.controller('AnimeDataController', function($scope,$routeParams) {
 	 });
 
 	$scope.add =function (anime) {
-		anime.ep ++;
-		$scope.resetNewEpFields(anime);
-		$scope.save();
+		//if a list provider need to try to contact api
+		if(anime.provider ==true)
+		{
+			if (anime.anilist == true) {
+				anilistFac.editAnime({
+					id: anime.id ,
+					ep: anime.ep+1 })
+				.then(function(response) {
+						anime.ep ++;
+						$scope.resetNewEpFields(anime);
+						$scope.save();
+				});
+			};
+		}
+		//just update and save to sync
+		else
+		{
+			anime.ep ++;
+			$scope.resetNewEpFields(anime);
+			$scope.save();
+		}
+
+		
 	}
 	$scope.minus =function (anime) {
-		anime.ep --;
-		$scope.resetNewEpFields(anime);
-		$scope.save();
+		//if a list provider need to try to contact api
+		if(anime.provider ==true)
+		{
+			if (anime.anilist == true) {
+				anilistFac.editAnime({
+					id: anime.id ,
+					ep: anime.ep-1 })
+				.then(function(response) {
+						anime.ep --;
+						$scope.resetNewEpFields(anime);
+						$scope.save();
+				});
+			};
+		}
+		//just update and save to sync
+		else
+		{
+			anime.ep ++;
+			$scope.resetNewEpFields(anime);
+			$scope.save();
+		}
 	}
 	$scope.resetNewEpFields =function(anime){
 		anime["isNewEpAvialable"]=0;

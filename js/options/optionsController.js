@@ -142,7 +142,13 @@ app.controller('anilistController', function($scope,$http,anilistFac) {
 	  tempDict["isNewEpAvialable"] = 0;
 	  tempDict["newEpUrl"] = "url";
 	  tempDict["homeUrl"] = "home";
-	  tempDict["totalEps"] = 0;
+	  if (eps != 0 &&  eps != null) {
+			tempDict["totalEps"]=" out of "+ eps;
+	  }
+	  else
+	  {
+	  	tempDict["totalEps"] = 0;
+	  }
       tempDict["provider"] = true;
 	  tempDict["anilist"]  = true;
 	  tempDict["id"]  = listProviderAnime.anime.id;
@@ -165,7 +171,7 @@ app.controller('anilistController', function($scope,$http,anilistFac) {
 			target["image_url_sml"] = listProviderAnime.anime.image_url_sml;
 			var eps = listProviderAnime.anime.total_episodes;
 			if (eps != 0 &&  eps != null) {
-				target["totalEps"]=eps;
+				target["totalEps"]=" out of "+ eps;
 			};
 			console.log(target);
 			console.log(data);
