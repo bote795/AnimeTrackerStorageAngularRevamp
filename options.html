@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Anime Tracking</title>
+  <style>html {margin-top:.5cm; width: 600px;} </style>
+  <script src="js/lib/jquery-2.0.2.min.js"></script>
+  <script src="js/lib/angular.min.js"></script>
+  <script src="js/lib/angular-route.js"></script>
+  <script src="js/lib/angular-animate.js"></script>
+  <script src="js/lib/angular-aria.js"></script>
+  <script src="js/lib/angular-material.js"></script>
+  <script src="js/lib/sortable.js"></script>
+  <script src="js/private.js"></script>
+  <script src="js/options/app.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/lib/angular-material.css" media="screen" />
+  <link rel="stylesheet" type="text/css" href="css/lib/bootstrap.min.css" media="screen" />
+  <link href="css/lib/toggle-switch.css" rel="stylesheet" type="text/css" media="screen" />
+  <link href="css/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" media="screen" />
+  <link href="css/options.css" rel="stylesheet" type="text/css" media="screen" />
+</head>
+<body ng-app="myApp">
+  <div class="container"><!-- container -->
+    <div ng-controller="anilistController" class="container">
+      <div ng-hide="userSignIn">
+        <a href="https://anilist.co/api/auth/authorize?grant_type=authorization_pin&client_id=bote795-nuwwf&response_type=pin" target='_newtab'>Anilist</a>
+        <form ng-submit="saveCode()">
+          <div class="form-group">
+            <label for="pin">Paste Pin Code</label>
+            <input ng-model="PinCode"  type="text" class="form-control">
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+      <div class="row">
+        <div class="col-md-3">
+           <h4>Link Extension Anime</h4>
+          <ul ui-sortable="animeConfig" ng-init="currentUsersAnime()" ng-model="animeArray" class="anime">
+            <li ng-repeat="anime in animeArray track by $index">
+                {{anime["name"]}}
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-3">
+           <h4>List Provider Anime</h4>
+          <ul  ng-init="RetrieveUserList()" ng-hide="watching.length == 0" class="anilist" ui-sortable="anilistConfig" ng-model="watching">
+                    <li ng-repeat="item in watching track by $index">
+                      <img ng-src="{{item.anime.image_url_sml}}">
+                        {{item.anime.title_english}} {{item.episodes_watched}}
+                    </li>
+                </ul>
+          <div class="noFields" ng-show="watching.length == 0">No Animes available</div>
+        </div>
+        <div class="col-md-6">
+          <h4>Link Extension Anime with List Provider Anime</h4>
+          <p>one by one and submit link Anime</p>
+          <ul class="dropzoneFields" ui-sortable="dropzoneFieldsConfig" ng-model="dropzoneFields" style="height: 200px; border: 1px solid;">
+                    <li ng-repeat="item in dropzoneFields track by $index">
+                        <p ng-show="$index == 0">Extension Anime :</p>
+                        <p ng-show="$index == 1">Anilist Anime :</p>
+                        {{item["name"]||item["anime"]["title_english"]}}
+                    </li>
+                </ul>
+          <div class="noFields" ng-show="watching.length == 0">No Animes available</div>
+        </div>
+        <button ng-click="link()"type="submit" class="btn btn-primary link">Link Anime</button>
+      </div>
+
+
+    </div>      
+  </div><!-- end container -->
+
+<!-- classes -->
+<script src="js/classes/Manager.js"></script>
+<script src="js/classes/animeDataManager.js"></script>
+<script src="js/classes/updateWebsiteManager.js"></script>
+
+<!-- libraries -->
+<script src="js/lib/jquery-ui.js"></script>
+<script src="js/lib/bootstrap.min.js"></script> 
+<!-- services -->
+<script src="js/services/anilistService.js"></script>
+
+<!-- controllers -->
+<script src="js/animeDataController.js"></script>
+<script src="js/updateWebsitesController.js"></script>
+<script src="js/options/optionsController.js"></script>
+
+</body>
+</html>
+
+
+
+
+

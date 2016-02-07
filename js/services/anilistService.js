@@ -6,8 +6,8 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
 	$http.defaults.headers.put["Content-Type"] = "application/x-www-form-urlencoded";
 	
 	var factory = {};
-	var client_id = "bote795-nuwwf";
-	var client_secret = "zDQRctaEZByOo0ybExLyybj1O";
+	var client_id = Services.anilist.client_id;
+	var client_secret = Services.anilist.client_secret;
 	var access_token = "";
 	factory.user = {};
 	factory.user.id;
@@ -97,17 +97,19 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
             'code': pin,
 		};
 
-		$http({
+		return $http({
 		  url: 'https://anilist.co/api/auth/access_token',
 		  method: 'POST',
 		  data: $.param(params) // Make sure to inject the service you choose to the controller
 		})
 		.then(function(response) {
 			saveTokenData(response);
+			return (null);
 	    }, 
 	    function(response) { // optional
 	       console.log("fail");
 	       console.log( response);
+	       return (new Error("Fail"))
 
 	    });
 	}

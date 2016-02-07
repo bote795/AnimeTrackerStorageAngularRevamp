@@ -27,7 +27,10 @@
     "default_icon": "assets/icon.png",
     "default_popup": "popup.html"
   },
-
+"options_ui": {
+    "page": "options.html",
+    "chrome_style": true
+  },
   "permissions": [
           "storage",
           "http://*/",
