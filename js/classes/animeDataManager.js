@@ -23,3 +23,18 @@ animeDataManager.prototype.upgrade = function () {
     return data;
 }
 var animeDataManager = new animeDataManager(); 
+
+/*
+keys per Anime in array
+    tempDict["name"] = name;
+    tempDict["ep"] = ep;
+    tempDict["isNewEpAvialable"] = 0;
+    tempDict["newEpUrl"] = "url";
+    tempDict["homeUrl"] = "home";
+    tempDict["totalEps"] = 0;
+    tempDict["provider"] = true;
+    tempDict["anilist"]  = true;
+    tempDict["id"]  = ;
+    tempDict["image_url_med"] = ;
+    tempDict["image_url_sml"] = ;
+*/

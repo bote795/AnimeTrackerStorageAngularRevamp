@@ -9,6 +9,13 @@ app.controller('anilistController', function($scope,$http,anilistFac) {
 	$scope.mainWatching;
 	$scope.sucess=false;
 	$scope.error=false;
+	$scope.anilist=false;
+	$scope.message ="";
+	if (typeof localStorage["token"] != "undefined")
+	{
+		$scope.userSignIn=true;
+	}
+
 	/*
 		Saves the pin intered by user so we can keep using 
 		anilist api
@@ -17,17 +24,26 @@ app.controller('anilistController', function($scope,$http,anilistFac) {
 		anilistFac.requestAcessToken($scope.PinCode).then(function(err) {
 			if(err)
 			{
+				$scope.error=true;
 				console.log("error");
+				$scope.message = "UnSuccessful User Login";
 			}
 			else
 			{
 				$scope.userSignIn = true;	
+				$scope.error=false;
+				$scope.sucess=true;
+				$scope.message = "Successful User Login";
+				$scope.$emit('reload', null);
 			}
 			
 		});
 
 	}	
-
+	$scope.$on('reload', function(event,args) {
+		$scope.RetrieveUserList();
+		$scope.currentUsersAnime();
+	});
 	/*
 		Retrieves animelist
 	*/
@@ -72,12 +88,14 @@ app.controller('anilistController', function($scope,$http,anilistFac) {
 			//throw error need to check in each side
 			$scope.sucess=false;
 			$scope.error=true;
+			$scope.message = "Forgote a Extension anime to link with";
 			return;
 		}
 		if (typeof listProviderChecked == "undefined")
 		{
 			$scope.sucess=false;
 			$scope.error=true;
+			$scope.message = "Forgote a List Provider to link with";
 			return;
 		}
 		/*
@@ -127,6 +145,7 @@ app.controller('anilistController', function($scope,$http,anilistFac) {
 			animeDataManager.save(data);
 			$scope.sucess=true;
 			$scope.error=false;
+			$scope.message = "Imported anime from list provider successfully";
 		});
 	}
 	/*
@@ -178,6 +197,7 @@ app.controller('anilistController', function($scope,$http,anilistFac) {
 			animeDataManager.save(data);
 			$scope.sucess=true;
 			$scope.error=false;
+			$scope.message = "Successfully Linked Data";
 		});
 	}
 	function checkedBox (animeCheckboxs) {

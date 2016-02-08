@@ -55,3 +55,13 @@ updateWebsiteManager.prototype.upgrade = function () {
     return data;
 }
 var updateWebsiteManager = new updateWebsiteManager(); 
+
+/*
+website keys
+
+    tempDict["website"]=url;
+    tempDict["xpath"]="//@href";
+    tempDict["type"]=isHtml ? "rss" : "html";
+    tempDict["domainNeeded"]=false;
+    tempDict["domain"]="";
+*/

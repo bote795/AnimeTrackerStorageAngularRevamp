@@ -21,48 +21,52 @@
 <body ng-app="myApp">
   <div class="container"><!-- container -->
     <div ng-controller="anilistController" class="container">
-      <div ng-hide="userSignIn">
-        <a href="https://anilist.co/api/auth/authorize?grant_type=authorization_pin&client_id=bote795-nuwwf&response_type=pin" target='_newtab'>Anilist</a>
-        <form ng-submit="saveCode()">
-          <div class="form-group">
-            <label for="pin">Paste Pin Code</label>
-            <input ng-model="PinCode"  type="text" class="form-control">
-          </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-      </div>
       <div ng-show="sucess"class="alert alert-success">
-        <strong>Import Succseful!</strong>
+        <strong>{{message}}</strong>
       </div>
       <div ng-show="error"class="alert alert-danger">
-        <strong>Import error!</strong>
+        <strong>{{message}}</strong>
       </div>
-      <div class="row">
-        <div class="col-md-6">
-           <h4>Link Extension Anime</h4>
-          <div ng-init="currentUsersAnime()" ng-model="animeArray" class="anime" >
-            <label class="checkbox" ng-repeat="anime in animeArray track by $index"> 
-              <input type="checkbox" />
-                  {{anime["name"]}}
-              </br>
-            </label>
-          </div>
+      <input type='checkbox' ng-model="anilist"> AniList List Provider </input>
+      <div ng-show="anilist">
+        <div ng-hide="userSignIn">
+          <p>To be able to link Anilist. Please click on the link bellow and <b>Accept</b> permissons to edit, create or remove your AniList data. Then Copy and paste the  pin code into the "Pase Pin Code" input. </p>
+          <a href="https://anilist.co/api/auth/authorize?grant_type=authorization_pin&client_id=bote795-nuwwf&response_type=pin" target='_newtab'>Anilist</a>
+          <form ng-submit="saveCode()">
+            <div class="form-group">
+              <label for="pin">Paste Pin Code</label>
+              <input ng-model="PinCode"  type="text" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
         </div>
-        <div class="col-md-6">
-           <h4>List Provider Anime</h4>
-          <div ng-init="RetrieveUserList()" ng-hide="watching.length == 0" ng-model="watching" class="listProvider">
-            <label class="checkbox" ng-repeat="item in watching track by $index"> 
-              <input type="checkbox" />
-                  <img ng-src="{{item.anime.image_url_sml}}">
-                        {{item.anime.title_english}}
-              </br>
-            </label>
-          <div class="noFields" ng-show="watching.length == 0">No Animes available</div>
-        </div>
-        <button ng-click="link()"type="submit" class="btn btn-primary link">Link Anime</button>
-        <button ng-click="import()"type="submit" class="btn btn-primary link">Import Anime</button>
-      </div>
 
+        <div ng-show="userSignIn" class="row">
+          <div class="col-md-6">
+             <h4>Link Extension Anime</h4>
+            <div ng-init="currentUsersAnime()" ng-model="animeArray" class="anime" >
+              <label class="checkbox" ng-repeat="anime in animeArray track by $index"> 
+                <input type="checkbox" />
+                    {{anime["name"]}}
+                </br>
+              </label>
+            </div>
+          </div>
+          <div class="col-md-6">
+             <h4>List Provider Anime</h4>
+            <div ng-init="RetrieveUserList()" ng-hide="watching.length == 0" ng-model="watching" class="listProvider">
+              <label class="checkbox" ng-repeat="item in watching track by $index"> 
+                <input type="checkbox" />
+                    <img ng-src="{{item.anime.image_url_sml}}">
+                          {{item.anime.title_english}}
+                </br>
+              </label>
+            <div class="noFields" ng-show="watching.length == 0">No Animes available</div>
+          </div>
+          <button ng-click="link()"type="submit" class="btn btn-primary link">Link Anime</button>
+          <button ng-click="import()"type="submit" class="btn btn-primary link">Import Anime</button>
+        </div>
+      </div>
 
     </div>      
   </div><!-- end container -->

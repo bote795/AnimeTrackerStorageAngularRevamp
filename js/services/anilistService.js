@@ -13,6 +13,27 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
 	factory.user.id;
 
 	var header;
+			/*
+		Retrieves current user Info
+		we need id or displayname
+	*/
+	factory.RetrieveUser = function () {
+		$http({
+		  url: 'https://anilist.co/api/user',
+		  method: 'GET',
+		  headers: header
+		})
+		.then(function(response){
+			localStorage["user"] = JSON.stringify({ id: response.data["id"],
+			display_name: response.data["display_name"]});
+			factory.user.id = response.data["id"];
+	    },
+	    function(response) { // optional
+	       console.log("fail");
+	       console.log( response);
+
+	    });
+	}
 	/*
 		check if token dats is already stored or needs to be refreshed
 	*/
@@ -64,27 +85,6 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
 
 	    });
 	}
-		/*
-		Retrieves current user Info
-		we need id or displayname
-	*/
-	factory.RetrieveUser = function () {
-		$http({
-		  url: 'https://anilist.co/api/user',
-		  method: 'GET',
-		  headers: header
-		})
-		.then(function(response){
-			localStorage["user"] = JSON.stringify({ id: response.data["id"],
-			display_name: response.data["display_name"]});
-			factory.user.id = response.data["id"];
-	    },
-	    function(response) { // optional
-	       console.log("fail");
-	       console.log( response);
-
-	    });
-	}
 	/*
 		Request Access token
 		anilist api
@@ -97,18 +97,18 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
             'code': pin,
 		};
 
-		$http({
+		return $http({
 		  url: 'https://anilist.co/api/auth/access_token',
 		  method: 'POST',
 		  data: $.param(params) // Make sure to inject the service you choose to the controller
 		})
 		.then(function(response) {
-			saveTokenData(response);
+			 saveTokenData(response);
 	    }, 
 	    function(response) { // optional
 	       console.log("fail");
 	       console.log( response);
-
+	       return Error("failed request for access token")
 	    });
 	}
 	/*
@@ -117,7 +117,7 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
 	function saveTokenData (response) {
 		console.log(response.data);
 		factory.access_token = response.data.access_token;
-		header =  {'Authorization' : 'Bearer '+ access_token};
+		header =  {'Authorization' : 'Bearer '+ factory.access_token};
 		//remove fields we don't need
 		delete response.data["token_type"];
 		delete response.data["expires_in"];
