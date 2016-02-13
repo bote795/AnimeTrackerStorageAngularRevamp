@@ -2,7 +2,7 @@ var userManager =  function () {
     this.key = "user";
 }
 inheritsFrom(userManager, Manager);
-updateWebsiteManager.prototype.default = function() {
+userManager.prototype.default = function() {
   return {};
 };
 var userManager = new userManager(); 

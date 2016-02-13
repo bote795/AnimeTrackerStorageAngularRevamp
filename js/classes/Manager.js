@@ -57,6 +57,7 @@ Manager.prototype.upgrade = function () {
 Manager.prototype.save = function(array){
     var save={};
     save[this.key]=array;
+    console.log(save);
 	chrome.storage.sync.set(save, function() {
             if (chrome.runtime.error) {
                 console.log("Runtime error.");

@@ -11,10 +11,13 @@ app.controller('anilistController', function($scope,$http,anilistFac) {
 	$scope.error=false;
 	$scope.anilist=false;
 	$scope.message ="";
-	if (typeof localStorage["token"] != "undefined")
-	{
-		$scope.userSignIn=true;
-	}
+	userManager.load(function(data){
+		if (typeof data["token"] != "undefined")
+		{
+			$scope.userSignIn=true;
+		}
+	});
+
 
 	/*
 		Saves the pin intered by user so we can keep using 
@@ -34,7 +37,15 @@ app.controller('anilistController', function($scope,$http,anilistFac) {
 				$scope.error=false;
 				$scope.sucess=true;
 				$scope.message = "Successful User Login";
-				$scope.$emit('reload', null);
+				anilistFac.RetrieveUser().then(function(err){
+					if (err) {
+						$scope.error=true;
+						console.log("error");
+						$scope.message = "UnSuccessful User info retrieval";
+					};
+					$scope.$emit('reload', null);	
+				})
+				
 			}
 			
 		});

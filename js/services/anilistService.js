@@ -9,54 +9,63 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
 	var client_id = "bote795-nuwwf";
 	var client_secret = "zDQRctaEZByOo0ybExLyybj1O";
 	var access_token = "";
+	var refresh_token;
 	factory.user = {};
 	factory.user.id;
 
 	var header;
-			/*
+	/*
 		Retrieves current user Info
 		we need id or displayname
 	*/
 	factory.RetrieveUser = function () {
-		$http({
+		return $http({
 		  url: 'https://anilist.co/api/user',
 		  method: 'GET',
 		  headers: header
 		})
 		.then(function(response){
-			localStorage["user"] = JSON.stringify({ id: response.data["id"],
-			display_name: response.data["display_name"]});
+			userManager.load(function(data){
+				data["user"] = { 
+					id: response.data["id"],
+					display_name: response.data["display_name"]};
+				userManager.save(data);
+			});
+
 			factory.user.id = response.data["id"];
+			return;
 	    },
 	    function(response) { // optional
 	       console.log("fail");
 	       console.log( response);
-
+	       return Error("failed retriving user info");
 	    });
 	}
 	/*
 		check if token dats is already stored or needs to be refreshed
 	*/
 	factory.init = function () {
-		if (typeof localStorage["token"] !== "undefined") {
-			access_token = JSON.parse(localStorage["token"])["access_token"];
-			var currentTime= new Date();
-			var expiresTime = new Date(JSON.parse(localStorage["token"])["expires"]);
-			header =  {'Authorization' : 'Bearer '+ access_token};
-
-			if (currentTime > expiresTime && localStorage["refresh_token"] != "") 
+		userManager.load(function(data){
+			if (typeof data["token"] !== "undefined") {
+				access_token = data["token"]["access_token"];
+				var currentTime= new Date();
+				var expiresTime = new Date(data["token"]["expires"]);
+				header =  {'Authorization' : 'Bearer '+ access_token};
+				$scope.refresh_token = data["refresh_token"];
+				if (currentTime > expiresTime && data["refresh_token"] != "") 
+				{
+					refreshToken();
+				};
+			}
+			if (typeof data["user"] === "undefined") {
+					factory.RetrieveUser();
+			}
+			else
 			{
-				refreshToken();
-			};
-		}
-		if (typeof localStorage["user"] === "undefined") {
-				factory.RetrieveUser();
-		}
-		else
-		{
-			var id = JSON.parse(localStorage["user"])["id"];
-			factory.user.id = id;
-		}
+				var id = data["user"]["id"];
+				factory.user.id = id;
+			}
+		});
 	}
 	factory.init();
 	/*
@@ -68,7 +77,7 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
             'grant_type': 'refresh_token',
             'client_id':  client_id,
             'client_secret': client_secret,
-            'refresh_token': JSON.parse(localStorage["refresh_token"]),
+            'refresh_token': $scope.refresh_token,
 		};
 
 		$http({
@@ -103,7 +112,7 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
 		  data: $.param(params) // Make sure to inject the service you choose to the controller
 		})
 		.then(function(response) {
-			 saveTokenData(response);
+			 return saveTokenData(response);
 	    }, 
 	    function(response) { // optional
 	       console.log("fail");
@@ -126,10 +135,13 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
 		var t = new Date()
 		t.setHours(t.getHours()+ 1);
 		response.data["expires"] = t.getTime();
-
-		localStorage["token"] = JSON.stringify(response.data);
-		if (typeof response.data["refresh_token"] !== 'undefined') 
-			localStorage["refresh_token"] = JSON.stringify(response.data["refresh_token"]);
+		userManager.load(function(data) {
+			data["token"] = response.data;
+			if (typeof response.data["refresh_token"] !== 'undefined') 
+				data["refresh_token"] = response.data["refresh_token"];
+			userManager.save(data);
+			return;
+		});
         console.log("response");
 	}
 	factory.animeSearch= function(query) {
