@@ -51,7 +51,7 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
 				var currentTime= new Date();
 				var expiresTime = new Date(data["token"]["expires"]);
 				header =  {'Authorization' : 'Bearer '+ access_token};
-				$scope.refresh_token = data["refresh_token"];
+				refresh_token = data["refresh_token"];
 				if (currentTime > expiresTime && data["refresh_token"] != "") 
 				{
 					refreshToken();
@@ -77,7 +77,7 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
             'grant_type': 'refresh_token',
             'client_id':  client_id,
             'client_secret': client_secret,
-            'refresh_token': $scope.refresh_token,
+            'refresh_token': refresh_token,
 		};
 
 		$http({
@@ -136,6 +136,10 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
 		t.setHours(t.getHours()+ 1);
 		response.data["expires"] = t.getTime();
 		userManager.load(function(data) {
+			if (typeof data === 'undefined' || data.length === 0) {
+				data = {};
+			}
+
 			data["token"] = response.data;
 			if (typeof response.data["refresh_token"] !== 'undefined') 
 				data["refresh_token"] = response.data["refresh_token"];
