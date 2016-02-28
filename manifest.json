@@ -36,6 +36,11 @@
         ],
    "web_accessible_resources": [
    "js/lib/jquery-2.0.2.min.map"
-   ]
+   ],
+
+  "options_ui":{
+    "page": "options.html",
+    "chrome_style": true
+  }
   
 }
