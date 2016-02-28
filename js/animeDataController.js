@@ -1,4 +1,5 @@
-app.controller('AnimeDataController', function($scope,$routeParams) {
+app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routeParams', '$rootScope' ,
+ function(animeRetrieveSrv,$scope,$routeParams, $rootScope ) {
     //used to handle form on home for new anime
     $scope.newAnimeName = "";
     $scope.newAnimeEpisode = "";
@@ -17,9 +18,12 @@ app.controller('AnimeDataController', function($scope,$routeParams) {
 	if ($routeParams.id) {
 		$scope.detailId = $routeParams.id;
     }
+    $scope.animeArray=animeRetrieveSrv.get();
+    $rootScope.$on('event:data-change', function() {
+    	$scope.animeArray=animeRetrieveSrv.get();
+    	$scope.$apply();
+	});
     $scope.init = function () {
-	    animeDataManager.load(function(data) {
-	    	$scope.animeArray=data;
 	    	if ($routeParams.id) {
 				$scope.edit.name =$scope.animeArray[$scope.detailId]['name'];
 				$scope.edit.ep =$scope.animeArray[$scope.detailId]['ep'];
@@ -37,20 +41,9 @@ app.controller('AnimeDataController', function($scope,$routeParams) {
 					$scope.edit.totalEps =$scope.animeArray[$scope.detailId]['totalEps'];
 				ga('send', 'pageview', "/editAnime.html");
 	    	}
-	    	$scope.$apply();
-	    });
 	};
-	$scope.animeArray=[];
+	
 	$scope.init();
-	$scope.$on('reloadAnime', function(event,args) {
-	 	//reload anime
-	 	animeDataManager.load(function(data) {
-	    	$scope.animeArray=data;
-	    	$scope.$apply();
-	    });
-	 	console.log("reloadAnime");
-	 });
-
 	$scope.add =function (anime,clickNew) {
 		var clickNew = typeof clickNew !== 'undefined' ? clickNew : false;
 		anime.ep ++;
@@ -188,4 +181,4 @@ app.controller('AnimeDataController', function($scope,$routeParams) {
 		};
 		return false;
 	}
-});
+}]);

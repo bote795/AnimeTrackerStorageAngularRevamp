@@ -6,7 +6,6 @@ var app = angular.module('myApp', ['ngRoute','ui.sortable'])
         $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
     }
 ]);
- 
 app.config(function ($routeProvider) {
     $routeProvider.
     when('/home', {
@@ -38,13 +37,4 @@ when ap first run check for updates
 */
 app.run(function($rootScope) {
     ga('send', 'pageview', "/popup.html");
-    var spintarget = document.getElementById('foo');
-    var spinner = new Spinner().spin(spintarget);
-    //check for updates then check for total eps
-    updates(function() {
-        FindTotalEps(function() {
-             $rootScope.$broadcast('reloadAnime',{});
-            spinner.stop();            
-        });
-    });
 });
