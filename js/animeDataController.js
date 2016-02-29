@@ -49,54 +49,35 @@ app.controller('AnimeDataController', function($scope,$routeParams,anilistFac) {
 	    });
 	 	console.log("reloadAnime");
 	 });
-
-	$scope.add =function (anime) {
+	function anilistEditor(anime,ep){
 		//if a list provider need to try to contact api
 		if(anime.provider ==true)
 		{
 			if (anime.anilist == true) {
 				anilistFac.editAnime({
 					id: anime.id ,
-					ep: anime.ep+1 })
+					ep:  ep})
 				.then(function(response) {
-						anime.ep ++;
+						anime.ep =ep;
 						$scope.resetNewEpFields(anime);
 						$scope.save();
 				});
-			};
+			}
 		}
 		//just update and save to sync
 		else
 		{
-			anime.ep ++;
+			anime.ep =ep;
 			$scope.resetNewEpFields(anime);
 			$scope.save();
 		}
-
+	}
+	$scope.add =function (anime) {
+		anilistEditor(anime,anime.ep+1);
 		
 	}
 	$scope.minus =function (anime) {
-		//if a list provider need to try to contact api
-		if(anime.provider ==true)
-		{
-			if (anime.anilist == true) {
-				anilistFac.editAnime({
-					id: anime.id ,
-					ep: anime.ep-1 })
-				.then(function(response) {
-						anime.ep --;
-						$scope.resetNewEpFields(anime);
-						$scope.save();
-				});
-			};
-		}
-		//just update and save to sync
-		else
-		{
-			anime.ep ++;
-			$scope.resetNewEpFields(anime);
-			$scope.save();
-		}
+		anilistEditor(anime,anime.ep-1);
 	}
 	$scope.resetNewEpFields =function(anime){
 		anime["isNewEpAvialable"]=0;
