@@ -49,6 +49,12 @@ app.controller('AnimeDataController', function($scope,$routeParams,anilistFac) {
 	    });
 	 	console.log("reloadAnime");
 	 });
+	/**
+	 * [anilistEditor function to edit the animes episode]
+	 * @param  {[type]} anime [anime object]
+	 * @param  {[type]} ep    [epsiode number to change too]
+	 * @return {[type]}       [none]
+	 */
 	function anilistEditor(anime,ep){
 		//if a list provider need to try to contact api
 		if(anime.provider ==true)
