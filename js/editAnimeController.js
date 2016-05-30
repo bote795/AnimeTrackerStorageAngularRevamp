@@ -1,9 +1,7 @@
-app.controller('AnimeDataController', function($scope,$routeParams,anilistFac) {
+app.controller('editAnimeController', function($scope,$routeParams,anilistFac) {
     //used to handle form on home for new anime
     $scope.newAnimeName = "";
     $scope.newAnimeEpisode = "";
-    $scope.mutlipleNewAnime =false;
-    $scope.isCollapsed =false;
 
     $scope.key = "savedAnimes";
     
@@ -20,6 +18,22 @@ app.controller('AnimeDataController', function($scope,$routeParams,anilistFac) {
     $scope.init = function () {
 	    animeDataManager.load(function(data) {
 	    	$scope.animeArray=data;
+	    	if ($routeParams.id) {
+				$scope.edit.name =$scope.animeArray[$scope.detailId]['name'];
+				$scope.edit.ep =$scope.animeArray[$scope.detailId]['ep'];
+				if ($scope.animeArray[$scope.detailId]['homeUrl'] == 'home') 
+				{
+					$scope.edit.homeUrl="";
+				}
+				else
+					$scope.edit.homeUrl =$scope.animeArray[$scope.detailId]['homeUrl'];
+				if (typeof $scope.animeArray[$scope.detailId]['totalEps'] === 'number') 
+				{
+					$scope.edit.totalEps="";
+				}
+				else
+					$scope.edit.totalEps =$scope.animeArray[$scope.detailId]['totalEps'];
+	    	};
 	    	$scope.$apply();
 	    });
 	};
@@ -102,56 +116,47 @@ app.controller('AnimeDataController', function($scope,$routeParams,anilistFac) {
 		}
 		return string;
 	}
-	$scope.toggleMultiple = function () {
-		$scope.mutlipleNewAnime = !$scope.mutlipleNewAnime;
-	}
-	//adds a new anime to the dictionary
-	$scope.addNew = function()
-	{
-		var name = $scope.newAnimeName.trim();
-		var ep = $scope.newAnimeEpisode.trim();
-		if ($scope.duplicateAnime(name)) 
-		{
-			return;
-		}
-		var newAnime =$scope.basicNew(name,ep);
-		$scope.animeArray.push(newAnime);
-		$scope.newAnimeName = "";	
-		$scope.newAnimeEpisode = "";
-		if(!$scope.mutlipleNewAnime)
-			$('#collapseOne').collapse('hide')
-		$scope.save();
+	//edit form in editAnime
+	$scope.editForm = function () {
+		console.log("it went in");
+		var fields= ["name", "ep", "homeUrl", "totalEps"];
+		
+		for (var i = 0; i < fields.length; i++) {
+			if (i == 1) {
+				var ep =Number($scope.edit[fields[i]]);
+				if($scope.animeArray[$scope.detailId][fields[i]] !== ep)
+				{
+					anilistEditor($scope.animeArray[$scope.detailId],ep);
+					$scope.animeArray[$scope.detailId][fields[i]]=ep;
+				}
+			}
+				/*
+				fix some fields to let it keep working
+			*/
+			else if (i == 2 && $scope.edit[fields[i]] == "" ) 
+			{
+				$scope.animeArray[$scope.detailId][fields[i]]="home";
+				continue;
+			}
+
+			else if (i == 3 && typeof $scope.edit[fields[i]] === 'number') 
+			{
+				$scope.animeArray[$scope.detailId][fields[i]]="out of " + $scope.edit.totalEps;
+				continue;
+			}
+			else if (i == 3)
+			{
+				//give it back old number to later check for new ep
+				$scope.animeArray[$scope.detailId][fields[i]] = $scope.animeArray[$scope.detailId]["totalEps"];
+				continue;
+			}
+			else
+				$scope.animeArray[$scope.detailId][fields[i]]=$scope.edit[fields[i]];
+		};
+		$scope.edit.sucess=true;
+		//$scope.save();
 	}
 	$scope.save = function() {
 		animeDataManager.save($scope.animeArray);
-	}
-	$scope.basicNew = function(name, ep){
-	  var tempDict={};
-	  tempDict["name"] = name;
-	  tempDict["ep"] = ep;
-	  tempDict["isNewEpAvialable"] = 0;
-	  tempDict["newEpUrl"] = "url";
-	  tempDict["homeUrl"] = "home";
-	  tempDict["totalEps"] = 0;
-	  return tempDict;
-	}
-	$scope.duplicateAnime = function (name) {
-	  var arrayOfUrls =$scope.animeArray;
-     for (var i = 0; i < arrayOfUrls.length; i++) {
-       if(arrayOfUrls[i]["name"] == name)
-       {
-         return true;
-       }
-     }
-     return false;
-	}
-	$scope.anyNewEps = function () {
-		for (var i = 0; i < $scope.animeArray.length; i++) {
-			if($scope.animeArray[i]["isNewEpAvialable"] == 1)
-			{
-				return true;
-			}
-		};
-		return false;
 	}
 });
