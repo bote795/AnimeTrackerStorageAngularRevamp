@@ -40,11 +40,20 @@ app.config(function ($routeProvider) {
 /*
 when ap first run check for updates
 */
-app.run(function($rootScope) {
+app.run(function($rootScope, anilistFac) {
     var spintarget = document.getElementById('foo');
     var spinner = new Spinner().spin(spintarget);
+    userManager.load(function(user){\
+        if(user.providers.anilist){
+            anilistFac.registerObserverCallback(function(){
+
+                
+            });  
+        }
+      
+    });
     //check for updates then check for total eps
-    updates(function() {
+    var checkForUpdates = updates(function() {
         FindTotalEps(function() {
              $rootScope.$broadcast('reloadAnime',{});
             spinner.stop();            
