@@ -12,8 +12,23 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
 	var refresh_token;
 	factory.user = {};
 	factory.user.id;
-
 	var header;
+	var observerCallbacks = [];
+
+	//register an observer
+	factory.registerObserverCallback = function(callback){
+		observerCallbacks.push(callback);
+	};
+
+	//call this when you know 'var' has been changed
+	var notifyObservers = function(){
+		angular.forEach(observerCallbacks, function(callback){
+		  callback();
+		});
+		//remove all callbacks
+		observerCallbacks = [];
+	};
+
 	/*
 		Retrieves current user Info
 		we need id or displayname
@@ -33,6 +48,7 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
 			});
 
 			factory.user.id = response.data["id"];
+			notifyObservers();
 			return;
 	    },
 	    function(response) { // optional
@@ -64,6 +80,7 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
 			{
 				var id = data["user"]["id"];
 				factory.user.id = id;
+				notifyObservers();
 			}
 		});
 	}
