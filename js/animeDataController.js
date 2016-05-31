@@ -133,6 +133,8 @@ app.controller('AnimeDataController', function($scope,$routeParams,anilistFac) {
 	  tempDict["newEpUrl"] = "url";
 	  tempDict["homeUrl"] = "home";
 	  tempDict["totalEps"] = 0;
+	  tempDict["provider"] = false;
+      tempDict["anilist"]  = false;
 	  return tempDict;
 	}
 	$scope.duplicateAnime = function (name) {
