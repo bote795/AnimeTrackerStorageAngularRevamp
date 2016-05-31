@@ -43,7 +43,8 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
 			userManager.load(function(data){
 				data["user"] = { 
 					id: response.data["id"],
-					display_name: response.data["display_name"]};
+					display_name: response.data["display_name"]
+				};
 				userManager.save(data);
 			});
 
