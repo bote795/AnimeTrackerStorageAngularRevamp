@@ -20,6 +20,10 @@ app.config(function ($routeProvider) {
         templateUrl: 'settings.html',
         controller: 'updateWebsitesController'
     }).
+    when('/feedback', {
+        templateUrl: 'feedback.html',
+        controller: 'feedbackController'
+    }).
     when('/edit/Website/:id', {
         templateUrl: 'editWebsite.html',
         controller :'updateWebsitesController'
