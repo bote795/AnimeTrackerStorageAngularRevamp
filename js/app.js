@@ -30,7 +30,7 @@ app.config(function ($routeProvider) {
     }).
     when('/edit/Anime/:id', {
         templateUrl: 'editAnime.html',
-        controller :'AnimeDataController'
+        controller :'editAnimeController'
     }).
    otherwise({
         redirectTo: '/home'
