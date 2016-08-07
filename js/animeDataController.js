@@ -1,4 +1,6 @@
-app.controller('AnimeDataController', function($scope,$routeParams,anilistFac) {
+
+app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routeParams', '$rootScope' ,
+ function(animeRetrieveSrv,$scope,$routeParams, $rootScope,anilistFac ) {
     //used to handle form on home for new anime
     $scope.newAnimeName = "";
     $scope.newAnimeEpisode = "";
@@ -6,25 +8,15 @@ app.controller('AnimeDataController', function($scope,$routeParams,anilistFac) {
     $scope.isCollapsed =false;
 
     $scope.key = "savedAnimes";
-    
-    //used for edit form on eidtAnime
-    $scope.edit={};
-    $scope.edit.name;
-    $scope.edit.ep;
-    $scope.edit.homeUrl;
-    $scope.edit.totalEps;
-    $scope.edit.sucess=false;
-	if ($routeParams.id) {
-		$scope.detailId = $routeParams.id;
-    }
-    $scope.init = function () {
-	    animeDataManager.load(function(data) {
-	    	$scope.animeArray=data;
-	    	$scope.$apply();
-	    });
-	};
-	$scope.animeArray=[];
-	$scope.init();
+    animeDataManager.load(function(data) {
+    	$scope.animeArray=data;
+    	$scope.$apply();
+    });
+	$scope.animeArray=animeRetrieveSrv.get();
+    $rootScope.$on('event:data-change', function() {
+    	$scope.animeArray=animeRetrieveSrv.get();
+    	$scope.$apply();
+	});
 	$scope.$on('reloadAnime', function(event,args) {
 	 	//reload anime
 	 	animeDataManager.load(function(data) {
@@ -62,12 +54,18 @@ app.controller('AnimeDataController', function($scope,$routeParams,anilistFac) {
 			$scope.save();
 		}
 	}
-	$scope.add =function (anime) {
+	$scope.add =function (anime,clickNew) {
+		var clickNew = typeof clickNew !== 'undefined' ? clickNew : false;
 		anilistEditor(anime,anime.ep+1);
-		
+		ga('send', 'event', "button","add", "Add to an anime");
+		if (clickNew)
+		{
+			ga('send', 'event', "button","newEp badge", "clicked new ep badge to go to website to watch");
+		}
 	}
 	$scope.minus =function (anime) {
 		anilistEditor(anime,anime.ep-1);
+		ga('send', 'event', "button","subtract", "Subtract to an anime");
 	}
 	$scope.resetNewEpFields =function(anime){
 		anime["isNewEpAvialable"]=0;
@@ -77,6 +75,7 @@ app.controller('AnimeDataController', function($scope,$routeParams,anilistFac) {
 		var index= $scope.animeArray.indexOf(anime);
 		$scope.animeArray.splice(index,1);
 		$scope.save();
+		ga('send', 'event', "button","delete", "Remove anime");
 
 	}
 	//retrieves what should be displayed for the episode
@@ -120,6 +119,9 @@ app.controller('AnimeDataController', function($scope,$routeParams,anilistFac) {
 		$scope.newAnimeEpisode = "";
 		if(!$scope.mutlipleNewAnime)
 			$('#collapseOne').collapse('hide')
+
+		ga('send', 'event', "button","add new anime", "Add new anime");
+		ga('send', 'event', "NewAnime",name, "anime being added");
 		$scope.save();
 	}
 	$scope.save = function() {
@@ -156,4 +158,4 @@ app.controller('AnimeDataController', function($scope,$routeParams,anilistFac) {
 		};
 		return false;
 	}
-});
+}]);

@@ -1,10 +1,7 @@
-app.controller('editAnimeController', function($scope,$routeParams,anilistFac) {
-    //used to handle form on home for new anime
-    $scope.newAnimeName = "";
-    $scope.newAnimeEpisode = "";
 
+app.controller('editAnimeController', ['animeRetrieveSrv', '$scope', '$routeParams', '$rootScope' ,"anilistFac",
+ function(animeRetrieveSrv,$scope,$routeParams, $rootScope,anilistFac ) {
     $scope.key = "savedAnimes";
-    
     //used for edit form on eidtAnime
     $scope.edit={};
     $scope.edit.name;
@@ -14,31 +11,23 @@ app.controller('editAnimeController', function($scope,$routeParams,anilistFac) {
     $scope.edit.sucess=false;
 	if ($routeParams.id) {
 		$scope.detailId = $routeParams.id;
+		$scope.edit.name =$scope.animeArray[$scope.detailId]['name'];
+		$scope.edit.ep =$scope.animeArray[$scope.detailId]['ep'];
+		if ($scope.animeArray[$scope.detailId]['homeUrl'] == 'home') 
+		{
+			$scope.edit.homeUrl="";
+		}
+		else
+			$scope.edit.homeUrl =$scope.animeArray[$scope.detailId]['homeUrl'];
+		if (typeof $scope.animeArray[$scope.detailId]['totalEps'] === 'number') 
+		{
+			$scope.edit.totalEps="";
+		}
+		else
+			$scope.edit.totalEps =$scope.animeArray[$scope.detailId]['totalEps'];
+		ga('send', 'pageview', "/editAnime.html");
     }
-    $scope.init = function () {
-	    animeDataManager.load(function(data) {
-	    	$scope.animeArray=data;
-	    	if ($routeParams.id) {
-				$scope.edit.name =$scope.animeArray[$scope.detailId]['name'];
-				$scope.edit.ep =$scope.animeArray[$scope.detailId]['ep'];
-				if ($scope.animeArray[$scope.detailId]['homeUrl'] == 'home') 
-				{
-					$scope.edit.homeUrl="";
-				}
-				else
-					$scope.edit.homeUrl =$scope.animeArray[$scope.detailId]['homeUrl'];
-				if (typeof $scope.animeArray[$scope.detailId]['totalEps'] === 'number') 
-				{
-					$scope.edit.totalEps="";
-				}
-				else
-					$scope.edit.totalEps =$scope.animeArray[$scope.detailId]['totalEps'];
-	    	};
-	    	$scope.$apply();
-	    });
-	};
 	$scope.animeArray=[];
-	$scope.init();
 	$scope.$on('reloadAnime', function(event,args) {
 	 	//reload anime
 	 	animeDataManager.load(function(data) {
@@ -47,6 +36,12 @@ app.controller('editAnimeController', function($scope,$routeParams,anilistFac) {
 	    });
 	 	console.log("reloadAnime");
 	 });
+
+	$scope.animeArray=animeRetrieveSrv.get();
+    $rootScope.$on('event:data-change', function() {
+    	$scope.animeArray=animeRetrieveSrv.get();
+    	$scope.$apply();
+	});
 	/**
 	 * [anilistEditor function to edit the animes episode]
 	 * @param  {[type]} anime [anime object]
@@ -76,46 +71,6 @@ app.controller('editAnimeController', function($scope,$routeParams,anilistFac) {
 			$scope.save();
 		}
 	}
-	$scope.add =function (anime) {
-		anilistEditor(anime,anime.ep+1);
-		
-	}
-	$scope.minus =function (anime) {
-		anilistEditor(anime,anime.ep-1);
-	}
-	$scope.resetNewEpFields =function(anime){
-		anime["isNewEpAvialable"]=0;
-		anime["newEpUrl"]="url";
-	}
-	$scope.delete =function (anime) {
-		var index= $scope.animeArray.indexOf(anime);
-		$scope.animeArray.splice(index,1);
-		$scope.save();
-
-	}
-	//retrieves what should be displayed for the episode
-	$scope.Episode = function (anime) {
-		var string="";
-		var text="-1";
-		//does total eps have 'out of 'X
-		if (typeof  anime["totalEps"] === "string")
-		  text=anime["totalEps"].substring(8,anime["totalEps"].length)
-		//is it a new anime
-		if(anime["ep"] == 0)
-		string+= "New";
-		//is the anime done
-		else if(anime["ep"] == parseInt(text))
-		string+= "done";
-		//else just deplay the ep of the anime
-		else
-		string+=anime["ep"];
-        if (typeof  anime["totalEps"] === "string" && anime["ep"] != parseInt(text)) 
-		{
-			//ep out of X
-			string += anime["totalEps"];
-		}
-		return string;
-	}
 	//edit form in editAnime
 	$scope.editForm = function () {
 		console.log("it went in");
@@ -139,9 +94,9 @@ app.controller('editAnimeController', function($scope,$routeParams,anilistFac) {
 				continue;
 			}
 
-			else if (i == 3 && typeof $scope.edit[fields[i]] === 'number') 
+			if (i == 3 &&  !isNaN(Number($scope.edit[fields[i]])) && $scope.edit[fields[i]] != "" ) 
 			{
-				$scope.animeArray[$scope.detailId][fields[i]]="out of " + $scope.edit.totalEps;
+				$scope.animeArray[$scope.detailId][fields[i]]=" out of " + $scope.edit.totalEps;
 				continue;
 			}
 			else if (i == 3)
@@ -153,10 +108,12 @@ app.controller('editAnimeController', function($scope,$routeParams,anilistFac) {
 			else
 				$scope.animeArray[$scope.detailId][fields[i]]=$scope.edit[fields[i]];
 		};
+
 		$scope.edit.sucess=true;
-		//$scope.save();
+		ga('send', 'event', "button","save edit", "did manual changes");
+		$scope.save();
 	}
 	$scope.save = function() {
 		animeDataManager.save($scope.animeArray);
 	}
-});
+}]);

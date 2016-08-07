@@ -1,16 +1,12 @@
-app.controller('updateWebsitesController', function($scope, $http, $routeParams) {
+app.controller('updateWebsitesController', function($scope, $http) {
 	$scope.isHtml=false; //is it html
 	$scope.customHtml="";
 	$scope.isCustomXpath =false;
 	$scope.customXpath="";
 	$scope.formUrl="";
 	$scope.edit = {};
-	$scope.edit.website;
-	$scope.edit.domain;
 	$scope.edit.sucess=false;
-	if ($routeParams.id) {
-		$scope.detailId = $routeParams.id;
-    }
+
     $scope.edit.reOrderSucess=false;
 	//default urls to get updates from
 	$scope.defaultUpdateWebsites = function(){
@@ -49,28 +45,24 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
 	$scope.addNew = function () {
 		var temp = $scope.defaultValues($scope.formUrl, $scope.isHtml);
 		$scope.testLink(temp);
+		ga('send', 'event', "button","add updates Url button", "Attempting to add a website for checking updates from");
 	}
 
 	$scope.animeUpdatesArray= [];
 	$scope.init = function () {
 	    updateWebsiteManager.load(function(data) {
 	    	$scope.animeUpdatesArray=data;
-    		if ($routeParams.id) {
-				$scope.edit.website=$scope.animeUpdatesArray[$scope.detailId]["website"];
-				$scope.edit.domain=$scope.animeUpdatesArray[$scope.detailId]["domain"];
-		    }
-	    	$scope.$apply();
+		    $scope.$apply();
 	    });
 	};
 	$scope.init();
 	$scope.resetUpdateWebsites = function(){
 		$scope.animeUpdatesArray= $scope.defaultUpdateWebsites();
+		ga('send', 'event', "button","reset update url website", "reset updates websites");
 	}
-
 	$scope.sortableOptions = {
 	    activate: function () {
 	    	$scope.edit.reOrderSucess=false;
-	    	console.log(":basdjf")
 	    	$scope.$apply();
 	    },
 	 	stop: function(e, ui) {
@@ -78,6 +70,7 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
       		//localStorage or set sync
       		$scope.edit.reOrderSucess=true;
       		$scope.save();
+      		ga('send', 'event', "reOrder","ReOrder", "changing the order of the websites to check for updates");
 	    }, 
 	    axis: 'y'
 	 };
@@ -86,14 +79,8 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
 		var index= $scope.animeUpdatesArray.indexOf(website);
 		$scope.animeUpdatesArray.splice(index,1);
 		$scope.save();
-	}
-	$scope.editForm = function() {
-		var fields = ["website", "domain"];
-		for (var i = 0; i < fields.length; i++) {
-			$scope.animeUpdatesArray[$scope.detailId][fields[i]]=$scope.edit[fields[i]];
-		};
-		$scope.edit.sucess = true;
-		$scope.save();
+		ga('send', 'event', "button","delete update url website", "deleted updates website");
+
 	}
 	$scope.defaultValues = function(url, isHtml)
 	{
@@ -142,6 +129,7 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
 			  $target.html("");
 			  $target.append("Error");
 			  $target.addClass('alert alert-dismissable alert-danger');  
+			  ga('send', 'event', "website",animePageInfo["website"], "website failed");
 			}
 			//data seems to be good is it html or rss
 			else if (animePageInfo["type"] == "html")
@@ -153,6 +141,7 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
 	                  $target.append("Error");
 	                  test = true;
 	                  $target.addClass('alert alert-dismissable alert-danger');
+	                  ga('send', 'event', "website",animePageInfo["website"], "website failed");
 	                  return false;
 	                }
 	                else
@@ -197,7 +186,7 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
 		            $target.append("Error");
 		            test = true;
 		             $target.addClass('alert alert-dismissable alert-danger');
-
+     			  	ga('send', 'event', "website",animePageInfo["website"], "website failed");
 		            return false;
 		          }
 		          else
@@ -333,9 +322,11 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
 			}
 			else if(temp["type"]=="html")
 			 {
+			 	ga('send', 'event', "website",temp["website"], "website failed");
 			    $.each(r.data.query.results.a, function(){ 
 			 if(typeof this.href === 'undefined')
 			  {
+			  	ga('send', 'event', "website",temp["website"], "website failed");
 			    $target.addClass('alert alert-dismissable alert-danger');
 			    callback({bool: false, url: ""}, temp);
 			  }
@@ -380,6 +371,8 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
        console.log(temp);
        $scope.animeUpdatesArray.push(temp);
        $scope.save();
+       ga('send', 'event', "button","successfully submited updates website", "successfully submited website to check for updates for anime eps");
+       ga('send', 'event', "website",temp["website"], "website submited");
        alert("successfully submitted");
        $scope.resetAddUpdatesUrl();
 	}

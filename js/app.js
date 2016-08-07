@@ -6,7 +6,6 @@ var app = angular.module('myApp', ['ngRoute','ui.sortable','ngMaterial'])
         $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
     }
 ]);
- 
 app.config(function ($routeProvider) {
     $routeProvider.
     when('/home', {
@@ -25,13 +24,17 @@ app.config(function ($routeProvider) {
         templateUrl: 'anilist.html',
         controller: 'anilistController'
     }).
+    when('/feedback', {
+        templateUrl: 'feedback.html',
+        controller: 'feedbackController'
+    }).
     when('/edit/Website/:id', {
         templateUrl: 'editWebsite.html',
-        controller :'updateWebsitesController'
+        controller :'editWebsitesController'
     }).
     when('/edit/Anime/:id', {
         templateUrl: 'editAnime.html',
-        controller :'AnimeDataController'
+        controller :'editAnimeController'
     }).
    otherwise({
         redirectTo: '/home'
@@ -97,6 +100,5 @@ app.run(function($rootScope, anilistFac) {
         }
       
     });
-
-    
+    ga('send', 'pageview', "/popup.html");
 });

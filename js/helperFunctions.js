@@ -283,15 +283,13 @@ function NextEp(url, Name, ep)
 function notificationClicked(ID) {
   var x = JSON.parse(ID);
   console.log("clicked:"+parseInt(x.id));
-  window.open(x.url);
-  chrome.runtime.sendMessage({method: "EpUpdate",
-                                  sentUrl: x.url,
-                                  title: "x" },
-        function (response) {
-          if (response.status === 200) {
-           // $(e.target).css("color", "green");
-          }
-        });
+  ga('send', 'event', "notification","notification", "clicked on notification for anime new ep");
+  var temp= x.url;
+  temp =temp.toLowerCase();
+  LinkContainsNewEp(temp,function() {
+    console.log("updated ep number");
+    window.open(x.url);
+  });
 }
 
 /*
@@ -307,8 +305,11 @@ function  updates(callback) {
           //find from data retrieve the website in order
           //so we can check the websites in order
           var j;
-          for(j =0; j < data[j].length 
-            && animeUpdatesArray[i]["website"] == data["website"];j++);
+          for(j =0; j < data.length;j++)
+          {
+            if(animeUpdatesArray[i]["website"] == data[j]["website"])
+              break;
+          }
           //for the website with that data
           //lets check that one first for any new eps
           var hrefs=data[j]["urls"];
@@ -352,5 +353,29 @@ function  updates(callback) {
         }
       });
     });
+  });
+}
+
+/*
+Function to check if link is for watching a new episode
+*/
+function  LinkContainsNewEp(temp, cb) {
+    animeDataManager.load(function (anime) {
+   
+    
+    for (var i = 0; i < anime.length; i++) 
+    {
+      var name =anime[i]["name"];
+      if(NextEp(temp,name,anime[i]["ep"]))
+      {
+        anime[i]["ep"]++;
+        anime[i]["isNewEpAvialable"]=0;
+        anime[i]["newEpUrl"]="url";
+        break;
+      }
+    }
+    animeDataManager.save(anime);
+    console.log("check link for new ep activated");
+    cb();
   });
 }

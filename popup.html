@@ -3,6 +3,8 @@
 <head>
   <title>Anime Tracking</title>
   <style>html {margin-top:.5cm; width: 600px;} </style>
+  <script src="js/private.js"></script>
+  <script src="js/ga.js"></script>
   <script src="js/lib/jquery-2.0.2.min.js"></script>
   <script src="js/lib/angular.min.js"></script>
   <script src="js/lib/angular-route.js"></script>
@@ -11,7 +13,9 @@
   <script src="js/lib/angular-material.js"></script>
   <script src="js/lib/sortable.js"></script>
   <script src="js/app.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/lib/angular-material.css" media="screen" />
+  <link rel="stylesheet" type="text/css" href="css/lib/angular-material.css" media="screen" />
+  <!-- services -->
+  <script src="js/animeRetrieveSrv.js"></script>
   <link rel="stylesheet" type="text/css" href="css/lib/bootstrap.min.css" media="screen" />
   <link href="css/lib/toggle-switch.css" rel="stylesheet" type="text/css" media="screen" />
   <link href="css/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" media="screen" />
@@ -23,6 +27,7 @@
       <li><a href="#messages" data-toggle="tab">Add Updates Url</a></li>
       <li><a href="#settings" data-toggle="tab">Settings</a></li>
       <li><a href="#anilist" data-toggle="tab">AniList</a></li>
+      <li><a href="#feedback" data-toggle="tab">Feedback</a></li>
     </ul>
     <div id="foo"></div>  
     <div ng-view></div>
@@ -48,7 +53,9 @@
 <script src="js/animeDataController.js"></script>
 <script src="js/updateWebsitesController.js"></script>
 <script src="js/anilistController.js"></script>
+<script src="js/feedbackController.js"></script>
 <script src="js/editAnimeController.js"></script>
+<script src="js/editWebsitesController.js"></script>
 
 </body>
 </html>

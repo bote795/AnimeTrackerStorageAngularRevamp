@@ -1,8 +1,9 @@
 {
   "manifest_version": 2,
-  "name": "AnimeTrackerStorage",
+  "name": "AnimeTrackerStorageBeta",
+  "short_name": "ATS",
   "description": "Keep up to date with your Anime! Add the anime you're watching to the list it'll track what episode you are on and when its up!",
-  "version": "1.9",
+  "version": "1.99",
   "icons": { "16": "assets/icon.png",
            "48": "assets/icon48.png",
           "128": "assets/icon128.png" },
@@ -13,9 +14,12 @@
       "js/injectedScripts/background.js"]
     }
   ],    
-  "content_security_policy": "script-src 'self' https://query.yahooapis.com/; object-src 'self' " ,
+  "content_security_policy": "script-src 'self' https://query.yahooapis.com/ https://www.google-analytics.com; object-src 'self' " ,
+
   "background": {
-    "scripts": ["js/lib/jquery-2.0.2.min.js",
+    "scripts": ["js/private.js",
+                "js/ga.js" ,
+                "js/lib/jquery-2.0.2.min.js" ,
                 "js/helperFunctions.js" ,
                 "js/classes/Manager.js" ,
                 "js/classes/animeDataManager.js" ,

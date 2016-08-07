@@ -15,7 +15,7 @@
         <div id="collapseOne" class="panel-collapse collapse">
           <div class="panel-body">
             <!--form-->
-            <form ng-submit="addNew()" id="addAnime"class="form-horizontal">
+            <form ng-submit="addNew()" id="addAnime" class="form-horizontal">
               <fieldset><!-- fieldset -->
                 <div class="form-group"><!-- AnimeNameField -->
                   <label for="inputAnimeName" class="col-lg-2 control-label">Anime Name</label>
@@ -53,25 +53,25 @@
       </thead><!--end thead -->
       <tbody><!-- tbody -->
         <tr ng-repeat="anime in animeArray | orderBy: 'name' | filter:{isNewEpAvialable:1}" >
-            <td> {{ ($index + 1)  +"." }}
-              <!-- show the homeurl if it contains it -->
-              <a ng-show="anime['homeUrl'] != 'home'" href="{{anime['homeUrl']}}" target="_newtab">{{anime["name"]}}</a>
-              <span ng-hide="anime['homeUrl'] != 'home'">{{anime["name"]}}</span>
-            </td>
-            <td>
-                <div class="btn-toolbar">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-default"  ng-click="minus(anime)">-</button>
-                        <button type="button" class="btn btn-default disabled"  >
-                          {{Episode(anime)}}
-                        </button>
-                        <button type="button" class="btn btn-default" ng-click="add(anime)">+</button>
-                        <button type="button" class="btn btn-default"><a href="#/edit/Anime/{{animeArray.indexOf(anime)}}" ><i class="fa fa-pencil-square-o fa-lg"></i></a></button>
-                        <button type="button" class="btn btn-default" ng-click="delete(anime)">X</button>
-                    </div>
-                    <a ng-show='anime["isNewEpAvialable"] && anime["newEpUrl"] != "url"'ng-href="{{anime['newEpUrl']}}" ng-click="add(anime)" target='_newtab'><span class='badge'>New</span></a>
-                </div>
-            </td>
+          <td> {{ ($index + 1)  +"." }}
+            <!-- show the homeurl if it contains it -->
+            <a ng-show="anime['homeUrl'] != 'home'" ng-href="{{anime['homeUrl']}}" target="_newtab">{{anime["name"]}}</a>
+            <span ng-hide="anime['homeUrl'] != 'home'">{{anime["name"]}}</span>
+          </td>
+          <td>
+              <div class="btn-toolbar">
+                  <div class="btn-group">
+                      <button type="button" class="btn btn-default"  ng-click="minus(anime)">-</button>
+                      <button type="button" class="btn btn-default disabled"  >
+                        {{Episode(anime)}}
+                      </button>
+                      <button type="button" class="btn btn-default" ng-click="add(anime)">+</button>
+                      <button type="button" class="btn btn-default"><a ng-href="#/edit/Anime/{{animeArray.indexOf(anime)}}" ><i class="fa fa-pencil-square-o fa-lg"></i></a></button>
+                      <button type="button" class="btn btn-default" ng-click="delete(anime)">X</button>
+                  </div>
+                  <a ng-show='anime["isNewEpAvialable"] && anime["newEpUrl"] != "url"'ng-href="{{anime['newEpUrl']}}" ng-click="add(anime,true)" target='_newtab'><span class='badge'>New</span></a>
+              </div>
+          </td>
         </tr>
       </tbody><!--end tbody -->
     </table><!-- end table -->  
@@ -86,27 +86,27 @@
           <th>Options</th>
         </tr>
       </thead><!--end thead -->
-      <tbody><!-- tbody -->
+      <tbody ><!-- tbody -->
         <tr ng-repeat="anime in animeArray | orderBy: 'name' | filter:{isNewEpAvialable:0}" >
-            <td> {{ ($index + 1)  +"." }}
-              <!-- show the homeurl if it contains it -->
-              <a ng-show="anime['homeUrl'] != 'home'" href="{{anime['homeUrl']}}" target="_newtab">{{anime["name"]}}</a>
-              <span ng-hide="anime['homeUrl'] != 'home'">{{anime["name"]}}</span>
-            </td>
-            <td>
-                <div class="btn-toolbar">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-default"  ng-click="minus(anime)">-</button>
-                        <button type="button" class="btn btn-default disabled"  >
-                          {{Episode(anime)}}
-                        </button>
-                        <button type="button" class="btn btn-default" ng-click="add(anime)">+</button>
-                        <button type="button" class="btn btn-default"><a href="#/edit/Anime/{{animeArray.indexOf(anime)}}" ><i class="fa fa-pencil-square-o fa-lg"></i></a></button>
-                        <button type="button" class="btn btn-default" ng-click="delete(anime)">X</button>
-                    </div>
-                    <a ng-show='anime["isNewEpAvialable"] && anime["newEpUrl"] != "url"'ng-href="{{anime['newEpUrl']}}" ng-click="add(anime)"target='_newtab'><span class='badge'>New</span></a>
+          <td> {{ ($index + 1)  +"." }}
+          <!-- show the homeurl if it contains it -->
+          <a ng-show="anime['homeUrl'] != 'home'" ng-href="{{anime['homeUrl']}}" target="_newtab">{{anime["name"]}}</a>
+          <span ng-hide="anime['homeUrl'] != 'home'">{{anime["name"]}}</span>
+        </td>
+        <td>
+            <div class="btn-toolbar">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default"  ng-click="minus(anime)">-</button>
+                    <button type="button" class="btn btn-default disabled"  >
+                      {{Episode(anime)}}
+                    </button>
+                    <button type="button" class="btn btn-default" ng-click="add(anime)">+</button>
+                    <button type="button" class="btn btn-default"><a ng-href="#/edit/Anime/{{animeArray.indexOf(anime)}}" ><i class="fa fa-pencil-square-o fa-lg"></i></a></button>
+                    <button type="button" class="btn btn-default" ng-click="delete(anime)">X</button>
                 </div>
-            </td>
+                <a ng-show='anime["isNewEpAvialable"] && anime["newEpUrl"] != "url"'ng-href="{{anime['newEpUrl']}}" ng-click="add(anime,true)" target='_newtab'><span class='badge'>New</span></a>
+            </div>
+        </td>
         </tr>
       </tbody><!--end tbody -->
     </table><!-- end table --> 
