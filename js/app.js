@@ -1,11 +1,11 @@
 var app = angular.module('myApp', ['ngRoute','ui.sortable','ngMaterial'])
 .config( [
-    '$compileProvider',
-    function( $compileProvider )
+    '$compileProvider', "$httpProvider",
+    function( $compileProvider, $httpProvider )
     {   
         $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
-    }
-]);
+        $httpProvider.interceptors.push('APIInterceptor');
+    }]);
 app.config(function ($routeProvider) {
     $routeProvider.
     when('/home', {

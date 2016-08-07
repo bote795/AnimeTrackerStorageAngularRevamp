@@ -1,4 +1,4 @@
-app.factory('anilistFac', ['$http', function ($http, $q) {
+app.factory('anilistFac', ['$http','$q', function ($http, $q) {
 	/*
 		anilist takes in information with this content type
 	*/
@@ -6,28 +6,14 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
 	$http.defaults.headers.put["Content-Type"] = "application/x-www-form-urlencoded";
 	
 	var factory = {};
-	var client_id = "bote795-nuwwf";
-	var client_secret = "zDQRctaEZByOo0ybExLyybj1O";
+	var client_id = Services.anilist.client_id;
+	var client_secret = Services.anilist.client_secret;
 	var access_token = "";
 	var refresh_token;
 	factory.user = {};
 	factory.user.id;
 	var header;
-	var observerCallbacks = [];
-
-	//register an observer
-	factory.registerObserverCallback = function(callback){
-		observerCallbacks.push(callback);
-	};
-
-	//call this when you know 'var' has been changed
-	var notifyObservers = function(){
-		angular.forEach(observerCallbacks, function(callback){
-		  callback();
-		});
-		//remove all callbacks
-		observerCallbacks = [];
-	};
+	var queue = [];
 
 	/*
 		Retrieves current user Info
@@ -49,7 +35,6 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
 			});
 
 			factory.user.id = response.data["id"];
-			notifyObservers();
 			return;
 	    },
 	    function(response) { // optional
@@ -81,7 +66,6 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
 			{
 				var id = data["user"]["id"];
 				factory.user.id = id;
-				notifyObservers();
 			}
 		});
 	}
@@ -194,19 +178,29 @@ app.factory('anilistFac', ['$http', function ($http, $q) {
 				.title_english
 	*/
 	factory.RetrieveUserList = function () {
-		return $http({
-		  url: 'https://anilist.co/api/user/'+factory.user.id+'/animelist',
-		  method: 'GET',
-		  headers: header
-		})
-		.then(function(response){
-	       return response.data.lists.watching;
-	    },
-	    function(response) { // optional
-	       console.log("fail");
-	       console.log( response);
-
-	    });
+		var deferred = $q.defer();
+		userManager.load(function(data){
+			if (typeof factory.user.id === "undefined") {
+				if (typeof data["user"]["id"] === "undefined")
+					$q.reject();
+				var id = data["user"]["id"];
+				factory.user.id = id;
+			}
+			$http({
+			  url: 'https://anilist.co/api/user/'+factory.user.id+'/animelist',
+			  method: 'GET',
+			  headers: header
+			})
+			.then(function(response){
+		       deferred.resolve(response.data.lists.watching);
+		    },
+		    function(response) { // optional
+		       console.log("fail");
+		       console.log( response);
+		       $q.reject(response);
+		    });
+		});
+	    return deferred.promise;
 	}
 	/*
 		add anime to personal list

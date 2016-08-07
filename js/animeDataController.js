@@ -1,5 +1,5 @@
 
-app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routeParams', '$rootScope' ,
+app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routeParams', '$rootScope' , 'anilistFac',
  function(animeRetrieveSrv,$scope,$routeParams, $rootScope,anilistFac ) {
     //used to handle form on home for new anime
     $scope.newAnimeName = "";

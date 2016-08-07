@@ -60,12 +60,13 @@ Manager.prototype.save = function(array){
         to remove $$haskey added when using ng-repeat
         otherwise will cause duplicate issues sometimes
     */
-    array = array.map(function(item,index) {
-         if (item["$$hashKey"] != undefined) {
-           delete item["$$hashKey"];
-         }
-         return item;
-    });
+   if (Array.isArray(array))
+        array = array.map(function(item,index) {
+             if (item["$$hashKey"] != undefined) {
+               delete item["$$hashKey"];
+             }
+             return item;
+        });
     save[this.key]=array;
     console.log(save);
 	chrome.storage.sync.set(save, function() {
