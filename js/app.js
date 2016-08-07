@@ -26,11 +26,11 @@ app.config(function ($routeProvider) {
     }).
     when('/edit/Website/:id', {
         templateUrl: 'editWebsite.html',
-        controller :'updateWebsitesController'
+        controller :'editWebsitesController'
     }).
     when('/edit/Anime/:id', {
         templateUrl: 'editAnime.html',
-        controller :'AnimeDataController'
+        controller :'editAnimeController'
     }).
    otherwise({
         redirectTo: '/home'
