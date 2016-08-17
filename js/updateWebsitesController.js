@@ -1,16 +1,12 @@
-app.controller('updateWebsitesController', function($scope, $http, $routeParams) {
+app.controller('updateWebsitesController', function($scope, $http) {
 	$scope.isHtml=false; //is it html
 	$scope.customHtml="";
 	$scope.isCustomXpath =false;
 	$scope.customXpath="";
 	$scope.formUrl="";
 	$scope.edit = {};
-	$scope.edit.website;
-	$scope.edit.domain;
 	$scope.edit.sucess=false;
-	if ($routeParams.id) {
-		$scope.detailId = $routeParams.id;
-    }
+
     $scope.edit.reOrderSucess=false;
 	//default urls to get updates from
 	$scope.defaultUpdateWebsites = function(){
@@ -56,10 +52,6 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
 	$scope.init = function () {
 	    updateWebsiteManager.load(function(data) {
 	    	$scope.animeUpdatesArray=data;
-    		if ($routeParams.id) {
-				$scope.edit.website=$scope.animeUpdatesArray[$scope.detailId]["website"];
-				$scope.edit.domain=$scope.animeUpdatesArray[$scope.detailId]["domain"];
-		    }
 		    $scope.$apply();
 	    });
 	};
@@ -67,9 +59,6 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
 	$scope.resetUpdateWebsites = function(){
 		$scope.animeUpdatesArray= $scope.defaultUpdateWebsites();
 		ga('send', 'event', "button","reset update url website", "reset updates websites");
-	}
-	$scope.gaStartEdit = function () {
-		ga('send', 'pageview', "/editWebsite.html");
 	}
 	$scope.sortableOptions = {
 	    activate: function () {
@@ -92,15 +81,6 @@ app.controller('updateWebsitesController', function($scope, $http, $routeParams)
 		$scope.save();
 		ga('send', 'event', "button","delete update url website", "deleted updates website");
 
-	}
-	$scope.editForm = function() {
-		var fields = ["website", "domain"];
-		for (var i = 0; i < fields.length; i++) {
-			$scope.animeUpdatesArray[$scope.detailId][fields[i]]=$scope.edit[fields[i]];
-		};
-		ga('send', 'event', "button","edit form for update urls", "edit information for updates website");
-		$scope.edit.sucess = true;
-		$scope.save();
 	}
 	$scope.defaultValues = function(url, isHtml)
 	{
