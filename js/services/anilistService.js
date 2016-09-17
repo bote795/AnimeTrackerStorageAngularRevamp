@@ -197,7 +197,7 @@ app.factory('anilistFac', ['$http','$q', function ($http, $q) {
 		    function(response) { // optional
 		       console.log("fail");
 		       console.log( response);
-		       $q.reject(response);
+		       deferred.reject(response);
 		    });
 		});
 	    return deferred.promise;

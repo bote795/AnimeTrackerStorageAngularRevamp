@@ -57,7 +57,11 @@ app.service('APIInterceptor', [ "$q",'$injector',
         	refreshToken().then(deferred.resolve, deferred.reject);
             // When the session recovered, make the same backend call again and chain the request
             return deferred.promise.then(function() {
-                return $http(response.config);
+            	//need to change the header authorization bearer token
+            	userManager.load(function(data) {
+            		response.config.headers.Authorization= 'Bearer '+ data.token.access_token;
+                	return $http(response.config);
+            	});
             });
     	}
 	    return response;
