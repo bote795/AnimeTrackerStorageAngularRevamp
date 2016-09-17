@@ -52,7 +52,7 @@ app.run(function($rootScope, anilistFac) {
     var spinner = new Spinner().spin(spintarget);
     //check for updates then check for total eps
     var checkForUpdates = updates(function() {
-        FindTotalEps(function() {
+        FindTotalEps().then(function() {
              $rootScope.$broadcast('reloadAnime',{});
             spinner.stop();            
         });

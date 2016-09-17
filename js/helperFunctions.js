@@ -39,6 +39,7 @@ for each website added to check for updates
     ["domainNeeded"]
     ["domain"]
 returns 
+  promise
 	urls: an array of urls from website with hopefully anime names inside the urls and ep numbers
  	[might be complete url or just partial url, "sub", completed website where new ep should be at]
 	website: website send to check
@@ -120,11 +121,13 @@ function requestAnimeSite(animePageInfo)
 /*
 	Function does a request to wiki and sends
 	anime names to check for the totoal number of eps for that anime
-	takes in an callback
-	calback will return nothing 
+	returns promise
+	promise will return nothing 
 	
 */
-function FindTotalEps (callback) {
+function FindTotalEps () {
+  var promise = new Promise( function (resolve, reject) 
+  {
     animeDataManager.load().then(function (animeArray) {
       var promises=[];
       for (var i = 0; i < animeArray.length; i++) {
@@ -161,9 +164,11 @@ function FindTotalEps (callback) {
         {
           animeDataManager.save(animeArray);
         }
-        callback();          
-      })
+        resolve();          
+      });
     });
+  });
+  return promise;
 }
 //Fuction sends a request to yql api to check 
 //for total number of eps for that anime

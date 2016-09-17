@@ -10,7 +10,7 @@ app.service('animeRetrieveSrv', function($rootScope){
 	}).then(function(){
 		//check for updates then check for total eps
 		updates(function() {
-	        FindTotalEps(function() {
+	        FindTotalEps().then(function() {
 		       animeDataManager.load().then(function(data) {
 					self.set(data);
 				});
