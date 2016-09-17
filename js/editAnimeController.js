@@ -9,6 +9,10 @@ app.controller('editAnimeController', ['animeRetrieveSrv', '$scope', '$routePara
     $scope.edit.homeUrl;
     $scope.edit.totalEps;
     $scope.edit.sucess=false;
+
+    $scope.animeArray=[];
+	$scope.animeArray=animeRetrieveSrv.get();
+
 	if ($routeParams.id) {
 		$scope.detailId = $routeParams.id;
 		$scope.edit.name =$scope.animeArray[$scope.detailId]['name'];
@@ -27,21 +31,6 @@ app.controller('editAnimeController', ['animeRetrieveSrv', '$scope', '$routePara
 			$scope.edit.totalEps =$scope.animeArray[$scope.detailId]['totalEps'];
 		ga('send', 'pageview', "/editAnime.html");
     }
-	$scope.animeArray=[];
-	$scope.$on('reloadAnime', function(event,args) {
-	 	//reload anime
-	 	animeDataManager.load().then(function(data) {
-	    	$scope.animeArray=data;
-	    	$scope.$apply();
-	    });
-	 	console.log("reloadAnime");
-	 });
-
-	$scope.animeArray=animeRetrieveSrv.get();
-    $rootScope.$on('event:data-change', function() {
-    	$scope.animeArray=animeRetrieveSrv.get();
-    	$scope.$apply();
-	});
 	/**
 	 * [anilistEditor function to edit the animes episode]
 	 * @param  {[type]} anime [anime object]
@@ -115,5 +104,9 @@ app.controller('editAnimeController', ['animeRetrieveSrv', '$scope', '$routePara
 	}
 	$scope.save = function() {
 		animeDataManager.save($scope.animeArray);
+	}
+	$scope.resetNewEpFields =function(anime){
+		anime["isNewEpAvialable"]=0;
+		anime["newEpUrl"]="url";
 	}
 }]);

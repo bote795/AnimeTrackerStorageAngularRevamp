@@ -8,23 +8,7 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
     $scope.isCollapsed =false;
 
     $scope.key = "savedAnimes";
-    animeDataManager.load().then(function(data) {
-    	$scope.animeArray=data;
-    	$scope.$apply();
-    });
 	$scope.animeArray=animeRetrieveSrv.get();
-    $rootScope.$on('event:data-change', function() {
-    	$scope.animeArray=animeRetrieveSrv.get();
-    	$scope.$apply();
-	});
-	$scope.$on('reloadAnime', function(event,args) {
-	 	//reload anime
-	 	animeDataManager.load().then(function(data) {
-	    	$scope.animeArray=data;
-	    	$scope.$apply();
-	    });
-	 	console.log("reloadAnime");
-	 });
 	/**
 	 * [anilistEditor function to edit the animes episode]
 	 * @param  {[type]} anime [anime object]

@@ -25,14 +25,32 @@ app.service('animeRetrieveSrv', function($rootScope){
     		self.set(data);	
     	});
 	});
-
-
+	$rootScope.$on('reloadAnime', function(event,args) {
+	 	//reload anime
+	 	animeDataManager.load().then(function(data) {
+	    	self.set(data);
+	    });
+	 	console.log("reloadAnime");
+	 });
+	/**
+	 * edit saves edit for anime
+	 * @param  {object} anime    [anime object before edit]
+	 * @param  {object} newAnime [anime object edited]
+	 */
+	this.edit = function(anime,newAnime)
+	{
+		var key = self.animeArray.indexOf(anime);
+		if( key > -1)
+		{
+			self.animeArray[key] = newAnime;
+		}
+	}
 	
 	this.get = function(){
 		return self.animeArray;
 	}
 	this.set = function(data_) {
-    	self.animeArray = data_;
-    	$rootScope.$broadcast('event:data-change');
+    	 angular.copy(data_,self.animeArray);
   	}
+
 });
