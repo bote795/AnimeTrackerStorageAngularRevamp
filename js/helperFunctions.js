@@ -1,5 +1,5 @@
 /*
-	checks for New Eps for the animes
+	checks for New Eps for the animes returns promise
 	params:
 	@param animeUpdatesArray, array with each index with folling fieldS:
 	["website"]
@@ -7,8 +7,7 @@
     ["type"]
     ["domainNeeded"]
     ["domain"]
-    @param callback function
-    callback will contain
+    promise will contain
     array of objects containg:
     website: name 
     urls: array of arrays
@@ -16,15 +15,19 @@
      "sub",
       completed website where new ep should be at]
 */
-function checkForNewEps (animeUpdatesArray,callback) {
-  var promises=[];
-  for (var i = 0; i < animeUpdatesArray.length; i++) {
-    promises.push(requestAnimeSite(animeUpdatesArray[i]));
-  };
-  $.when.apply($, promises).then(function() {
-    var temp=arguments; // The array of resolved objects as a pseudo-array
-    callback(temp);
+function checkForNewEps (animeUpdatesArray) {
+  var promise = new Promise( function (resolve, reject) 
+  {
+    var promises=[];
+    for (var i = 0; i < animeUpdatesArray.length; i++) {
+      promises.push(requestAnimeSite(animeUpdatesArray[i]));
+    };
+    $.when.apply($, promises).then(function() {
+      var temp=arguments; // The array of resolved objects as a pseudo-array
+      resolve(temp);
+    });
   });
+  return promise;
 }
 /*
 sends requests to yql api 
@@ -300,7 +303,7 @@ function notificationClicked(ID) {
 function  updates(callback) {
   animeDataManager.load().then(function (anime) {
     updateWebsiteManager.load().then(function(animeUpdatesArray) {
-      checkForNewEps(animeUpdatesArray, function (data) {
+      checkForNewEps(animeUpdatesArray).then(function (data) {
         for (var i = 0; i < animeUpdatesArray.length; i++) {
           //find from data retrieve the website in order
           //so we can check the websites in order
