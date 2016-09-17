@@ -57,8 +57,10 @@ app.run(function($rootScope, anilistFac) {
             spinner.stop();            
         });
     });
+    userManager.load().then(function(user){
         if(user.providers.anilist){
             //retrieve anime List from chrome extension
+            animeDataManager.load().then(function(animelist){
                 //retrieve user list from anilist 
                 anilistFac.RetrieveUserList().then(function(list){
                     //go through chrome extension anime
