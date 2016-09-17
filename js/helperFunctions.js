@@ -305,63 +305,69 @@ function notificationClicked(ID) {
   check if theres a new ep for any of the animes 
   in list and update info accordingly
 */
-function  updates(callback) {
-  animeDataManager.load().then(function (anime) {
-    updateWebsiteManager.load().then(function(animeUpdatesArray) {
-      checkForNewEps(animeUpdatesArray).then(function (data) {
-        for (var i = 0; i < animeUpdatesArray.length; i++) {
-          //find from data retrieve the website in order
-          //so we can check the websites in order
-          var j;
-          for(j =0; j < data.length;j++)
-          {
-            if(animeUpdatesArray[i]["website"] == data[j]["website"])
-              break;
-          }
-          //for the website with that data
-          //lets check that one first for any new eps
-          var hrefs=data[j]["urls"];
-          for (var a_i = 0; a_i < anime.length; a_i++) {
-            for (var x = 0; x < hrefs.length; x++) {
-              if( anime[a_i]["isNewEpAvialable"] !=1
-                  && NextEp(hrefs[x][0],anime[a_i]["name"],anime[a_i]["ep"]))
-              {
-                 var temp="New Episode is up for ";
-                 var Messagex ="";
-                 anime[a_i]["isNewEpAvialable"]=1;
-                 anime[a_i]["newEpUrl"]=hrefs[x][2];
-                 Messagex=Messagex.concat(temp,anime[a_i]["name"]);             
-                   var opt = {
-                    type: "basic",
-                    title: "New Episode",
-                    message: Messagex,
-                     iconUrl: "assets/icon.png"
-                  }
-                  chrome.notifications.create( JSON.stringify({id: a_i ,url: hrefs[x][2] }), opt,
-                   function() {
-                      console.log("Succesfully created " + a_i + " notification");
-                  });
-                  chrome.notifications.onClicked.addListener(notificationClicked);
-                  break;
-              }
-             else if(typeof NextEp(hrefs[x][0],anime[a_i]["name"],anime[a_i]["ep"]) === 'undefined')
-              {        
-                    console.log("NextEp: undefined returned")    
-                    console.log(hrefs[x][0] +" : "+ anime[a_i]["name"]+" : "+anime[a_i]["ep"] )
-              
-              }
-            };// close href loop
-          };//close anime loop
-        };//end up main for loop
-        //save new anime data
-        animeDataManager.save(anime);
-        if (typeof callback === 'function')
+function updates() {
+  var promise = new Promise( function (resolve, reject) 
+  {
+    var promiseChain =updateWebsiteManager.load().then(checkForNewEps);
+    Promise.all([animeDataManager.load(),updateWebsiteManager.load(),promiseChain]).then(function(valueArray)
+    {
+      //valueArray
+      //first array anime
+      var anime = valueArray[0];
+      //second anime updatesArray
+      var animeUpdatesArray = valueArray[1];
+      //third is data
+      var data = valueArray[2];
+      for (var i = 0; i < animeUpdatesArray.length; i++) {
+        //find from data retrieve the website in order
+        //so we can check the websites in order
+        var j;
+        for(j =0; j < data.length;j++)
         {
-          callback();
+          if(animeUpdatesArray[i]["website"] == data[j]["website"])
+            break;
         }
-      });
-    });
+        //for the website with that data
+        //lets check that one first for any new eps
+        var hrefs=data[j]["urls"];
+        for (var a_i = 0; a_i < anime.length; a_i++) {
+          for (var x = 0; x < hrefs.length; x++) {
+            if( anime[a_i]["isNewEpAvialable"] !=1
+                && NextEp(hrefs[x][0],anime[a_i]["name"],anime[a_i]["ep"]))
+            {
+               var temp="New Episode is up for ";
+               var Messagex ="";
+               anime[a_i]["isNewEpAvialable"]=1;
+               anime[a_i]["newEpUrl"]=hrefs[x][2];
+               Messagex=Messagex.concat(temp,anime[a_i]["name"]);             
+                 var opt = {
+                  type: "basic",
+                  title: "New Episode",
+                  message: Messagex,
+                   iconUrl: "assets/icon.png"
+                }
+                chrome.notifications.create( JSON.stringify({id: a_i ,url: hrefs[x][2] }), opt,
+                 function() {
+                    console.log("Succesfully created " + a_i + " notification");
+                });
+                chrome.notifications.onClicked.addListener(notificationClicked);
+                break;
+            }
+           else if(typeof NextEp(hrefs[x][0],anime[a_i]["name"],anime[a_i]["ep"]) === 'undefined')
+            {        
+                  console.log("NextEp: undefined returned")    
+                  console.log(hrefs[x][0] +" : "+ anime[a_i]["name"]+" : "+anime[a_i]["ep"] )
+            
+            }
+          };// close href loop
+        };//close anime loop
+      };//end up main for loop
+      //save new anime data
+      animeDataManager.save(anime);
+      return resolve();      
+    })
   });
+  return promise;
 }
 
 /*

@@ -2,21 +2,28 @@ app.service('animeRetrieveSrv', function($rootScope){
 	var self = this;
 	this.animeArray =[];
     var spintarget = document.getElementById('foo');
-    var spinner = new Spinner().spin(spintarget);
+    self.spinner = new Spinner().spin(spintarget);
     
     animeDataManager.load().then(function(data) {
 				self.set(data);
 				return data;
 	}).then(function(){
 		//check for updates then check for total eps
-		updates(function() {
-	        FindTotalEps().then(function() {
-		       animeDataManager.load().then(function(data) {
-					self.set(data);
-				});
-	            spinner.stop();            
-	        });
-	    });
+	    updates()
+	    .then(FindTotalEps())
+	    .then(function()
+	    {
+	    	self.spinner.stop();     
+	    	return {};
+	    })
+	    .then(function()
+	    {
+	    	return animeDataManager.load()
+	    })
+	    .then(function(data)
+    	{
+    		self.set(data);	
+    	});
 	});
 
 

@@ -51,12 +51,14 @@ app.run(function($rootScope, anilistFac) {
     var spintarget = document.getElementById('foo');
     var spinner = new Spinner().spin(spintarget);
     //check for updates then check for total eps
-    var checkForUpdates = updates(function() {
-        FindTotalEps().then(function() {
-             $rootScope.$broadcast('reloadAnime',{});
-            spinner.stop();            
-        });
+    var checkForUpdates = updates().then(FindTotalEps())
+    .then(function()
+    {
+        $rootScope.$broadcast('reloadAnime',{});
+        spinner.stop();    
+        return {};        
     });
+
     userManager.load().then(function(user){
         if(user.providers.anilist){
             //retrieve anime List from chrome extension

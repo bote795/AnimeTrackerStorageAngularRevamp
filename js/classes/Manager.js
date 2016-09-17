@@ -17,7 +17,7 @@ Manager.prototype.load = function(){
             //return data
             if (!chrome.runtime.error && obj[tempThis.key] != undefined) 
             {
-                resolve(obj[tempThis.key]);
+                return resolve(obj[tempThis.key]);
             }
             //if key is undefined
             else if (!chrome.runtime.error)
@@ -42,7 +42,7 @@ Manager.prototype.load = function(){
                     data =tempThis.upgrade();
                 }
                 tempThis.save(data)
-                resolve(data);
+                return resolve(data);
             }
             else if(chrome.runtime.error)
             {
