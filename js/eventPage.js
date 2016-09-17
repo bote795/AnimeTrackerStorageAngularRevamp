@@ -8,7 +8,7 @@ chrome.runtime.onMessage.addListener(
       /*
         added it and trim text comining in
       */
-      animeDataManager.load(function (anime) {
+      animeDataManager.load().then(function (anime) {
         // filtiring string so it will just be title of anime
         var temp= request.title.trim();
         temp =temp.toLowerCase();

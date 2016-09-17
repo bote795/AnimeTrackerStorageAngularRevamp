@@ -14,7 +14,7 @@ app.controller('editWebsitesController', function($scope, $http, $routeParams) {
 
 	$scope.animeUpdatesArray= [];
 	
-    updateWebsiteManager.load(function(data) {
+    updateWebsiteManager.load().then(function(data) {
 		$scope.animeUpdatesArray=data;
 		$scope.edit.website=$scope.animeUpdatesArray[$scope.detailId]["website"];
 		$scope.edit.domain=$scope.animeUpdatesArray[$scope.detailId]["domain"];

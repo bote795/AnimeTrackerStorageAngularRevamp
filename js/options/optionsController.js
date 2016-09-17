@@ -11,7 +11,7 @@ app.controller('anilistController', function($scope,$http,anilistFac) {
 	$scope.error=false;
 	$scope.anilist=false;
 	$scope.message ="";
-	userManager.load(function(data){
+	userManager.load().then(function(data){
 		if (typeof data["token"] != "undefined")
 		{
 			$scope.userSignIn=true;
@@ -68,7 +68,7 @@ app.controller('anilistController', function($scope,$http,anilistFac) {
 		Retrieves current anime watching in extension
 	*/
 	$scope.currentUsersAnime = function () {
-		animeDataManager.load(function(data) {
+		animeDataManager.load().then(function(data) {
 			$scope.animeArray=data;
 			$scope.animeArray = data.filter(function (item) {
 				if (item["provider"] != true) 
@@ -136,7 +136,7 @@ app.controller('anilistController', function($scope,$http,anilistFac) {
 	$scope.import =function() {
 		var animeList = $scope.watching;
 		var tempAnimeArray=[];
-		animeDataManager.load(function(data) {
+		animeDataManager.load().then(function(data) {
 			console.log(data);
 			animeList = animeList.filter(function(item){
 				for (var i = 0; i < data.length; i++) {
@@ -189,7 +189,7 @@ app.controller('anilistController', function($scope,$http,anilistFac) {
 	}
 	//save data for linking with link anime button
 	function saveData(name, listProviderAnime){
-		animeDataManager.load(function(data) {
+		animeDataManager.load().then(function(data) {
 			var animeNames =data.map(function(obj){
 				return obj["name"];
 			});

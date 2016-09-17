@@ -50,7 +50,7 @@ app.controller('updateWebsitesController', function($scope, $http) {
 
 	$scope.animeUpdatesArray= [];
 	$scope.init = function () {
-	    updateWebsiteManager.load(function(data) {
+	    updateWebsiteManager.load().then(function(data) {
 	    	$scope.animeUpdatesArray=data;
 		    $scope.$apply();
 	    });

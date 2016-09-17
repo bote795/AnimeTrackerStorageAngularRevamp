@@ -4,12 +4,14 @@ app.service('animeRetrieveSrv', function($rootScope){
     var spintarget = document.getElementById('foo');
     var spinner = new Spinner().spin(spintarget);
     
-    animeDataManager.load(function(data) {
+    animeDataManager.load().then(function(data) {
 				self.set(data);
-		    //check for updates then check for total eps
-	    updates(function() {
+				return data;
+	}).then(function(){
+		//check for updates then check for total eps
+		updates(function() {
 	        FindTotalEps(function() {
-		       animeDataManager.load(function(data) {
+		       animeDataManager.load().then(function(data) {
 					self.set(data);
 				});
 	            spinner.stop();            

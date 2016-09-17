@@ -122,7 +122,7 @@ function requestAnimeSite(animePageInfo)
 	
 */
 function FindTotalEps (callback) {
-    animeDataManager.load(function (animeArray) {
+    animeDataManager.load().then(function (animeArray) {
       var promises=[];
       for (var i = 0; i < animeArray.length; i++) {
         promises.push(checkForTotalEps(animeArray[i]));
@@ -298,8 +298,8 @@ function notificationClicked(ID) {
   in list and update info accordingly
 */
 function  updates(callback) {
-  animeDataManager.load(function (anime) {
-    updateWebsiteManager.load(function(animeUpdatesArray) {
+  animeDataManager.load().then(function (anime) {
+    updateWebsiteManager.load().then(function(animeUpdatesArray) {
       checkForNewEps(animeUpdatesArray, function (data) {
         for (var i = 0; i < animeUpdatesArray.length; i++) {
           //find from data retrieve the website in order
@@ -360,7 +360,7 @@ function  updates(callback) {
 Function to check if link is for watching a new episode
 */
 function  LinkContainsNewEp(temp, cb) {
-    animeDataManager.load(function (anime) {
+    animeDataManager.load().then(function (anime) {
    
     
     for (var i = 0; i < anime.length; i++) 

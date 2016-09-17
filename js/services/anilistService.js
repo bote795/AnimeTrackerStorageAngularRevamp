@@ -26,7 +26,7 @@ app.factory('anilistFac', ['$http','$q', function ($http, $q) {
 		  headers: header
 		})
 		.then(function(response){
-			userManager.load(function(data){
+			userManager.load().then(function(data){
 				data["user"] = { 
 					id: response.data["id"],
 					display_name: response.data["display_name"]
@@ -47,7 +47,7 @@ app.factory('anilistFac', ['$http','$q', function ($http, $q) {
 		check if token dats is already stored or needs to be refreshed
 	*/
 	factory.init = function () {
-		userManager.load(function(data){
+		userManager.load().then(function(data){
 			if (typeof data["token"] !== "undefined") {
 				access_token = data["token"]["access_token"];
 				var currentTime= new Date();
@@ -137,7 +137,7 @@ app.factory('anilistFac', ['$http','$q', function ($http, $q) {
 		var t = new Date()
 		t.setHours(t.getHours()+ 1);
 		response.data["expires"] = t.getTime();
-		userManager.load(function(data) {
+		userManager.load().then(function(data) {
 			if (typeof data === 'undefined' || data.length === 0) {
 				data = {};
 			}
@@ -179,7 +179,7 @@ app.factory('anilistFac', ['$http','$q', function ($http, $q) {
 	*/
 	factory.RetrieveUserList = function () {
 		var deferred = $q.defer();
-		userManager.load(function(data){
+		userManager.load().then(function(data){
 			if (typeof factory.user.id === "undefined") {
 				if (typeof data["user"]["id"] === "undefined")
 					$q.reject();

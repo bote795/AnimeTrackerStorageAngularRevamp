@@ -6,50 +6,53 @@ Manager.prototype.default = function(){
     return [];
 };
 /*
-    sends data back to callback
-    Need callback since it doesn't instantly send data
+    sends data back to promise
     works kinda liek ajax call
 */
-Manager.prototype.load = function(callback){
+Manager.prototype.load = function(){
     var tempThis=this;
-    chrome.storage.sync.get(this.key, function(obj) {
-        //no error and the key is defined 
-        //return data
-        if (!chrome.runtime.error && obj[tempThis.key] != undefined) 
-        {
-            callback(obj[tempThis.key]);
-        }
-        //if key is undefined
-        else if (!chrome.runtime.error)
-        {
-            var data;
-            //new user didn't have to upgrade
-            if (localStorage[tempThis.key]=== undefined) 
+    var promise = new Promise( function (resolve, reject) {
+        chrome.storage.sync.get(this.key, function(obj) {
+            //no error and the key is defined 
+            //return data
+            if (!chrome.runtime.error && obj[tempThis.key] != undefined) 
             {
-                //lets save the default values and key
-                console.log("used default");
-                data=tempThis.default();
+                resolve(obj[tempThis.key]);
             }
-            /*
-                upgrade from localStorage to sync
-                retrieve data from localstorage and
-                fix format to new format 
-                save to sync
-            */
-            else
+            //if key is undefined
+            else if (!chrome.runtime.error)
             {
-                console.log("used old datalo")
-                data =tempThis.upgrade();
+                var data;
+                //new user didn't have to upgrade
+                if (localStorage[tempThis.key]=== undefined) 
+                {
+                    //lets save the default values and key
+                    console.log("used default");
+                    data=tempThis.default();
+                }
+                /*
+                    upgrade from localStorage to sync
+                    retrieve data from localstorage and
+                    fix format to new format 
+                    save to sync
+                */
+                else
+                {
+                    console.log("used old datalo")
+                    data =tempThis.upgrade();
+                }
+                tempThis.save(data)
+                resolve(data);
             }
-            tempThis.save(data)
-            callback(data);
-        }
-        else if(chrome.runtime.error)
-        {
-            console.log("error");
-            console.log(chrome.runtime.error);
-        }
-    }); 
+            else if(chrome.runtime.error)
+            {
+                console.log("error");
+                console.log(chrome.runtime.error);
+                reject(chrome.runtime.error);
+            }
+        }); 
+    });
+    return promise;
 };
 Manager.prototype.upgrade = function () {
   return [];

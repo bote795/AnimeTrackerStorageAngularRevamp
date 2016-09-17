@@ -11,7 +11,7 @@ app.service('APIInterceptor', [ "$q",'$injector',
 	function refreshToken() {
 		var $http = $injector.get('$http');
 		var deferred = $q.defer();
-		 userManager.load(function(data){
+		 userManager.load().then(function(data){
 			if (typeof data["token"] !== "undefined") 
 			{
 				var refresh_token = data["refresh_token"];
@@ -33,7 +33,7 @@ app.service('APIInterceptor', [ "$q",'$injector',
 					var t = new Date()
 					t.setHours(t.getHours()+ 1);
 					resp.data["expires"] = t.getTime();
-					userManager.load(function(data) {
+					userManager.load().then(function(data) {
 						if (typeof data === 'undefined' || data.length === 0) {
 							data = {};
 						}
@@ -58,7 +58,7 @@ app.service('APIInterceptor', [ "$q",'$injector',
             // When the session recovered, make the same backend call again and chain the request
             return deferred.promise.then(function() {
             	//need to change the header authorization bearer token
-            	userManager.load(function(data) {
+            	userManager.load().then(function(data) {
             		response.config.headers.Authorization= 'Bearer '+ data.token.access_token;
                 	return $http(response.config);
             	});

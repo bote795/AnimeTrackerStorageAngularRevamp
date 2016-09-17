@@ -30,7 +30,7 @@ app.controller('editAnimeController', ['animeRetrieveSrv', '$scope', '$routePara
 	$scope.animeArray=[];
 	$scope.$on('reloadAnime', function(event,args) {
 	 	//reload anime
-	 	animeDataManager.load(function(data) {
+	 	animeDataManager.load().then(function(data) {
 	    	$scope.animeArray=data;
 	    	$scope.$apply();
 	    });

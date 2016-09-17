@@ -4,7 +4,7 @@ var app = angular.module('myApp', ['ngRoute','ui.sortable','ngMaterial'])
     function( $compileProvider, $httpProvider )
     {   
         $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
-        $httpProvider.interceptors.push('APIInterceptor');
+        //$httpProvider.interceptors.push('APIInterceptor');
     }]);
 app.config(function ($routeProvider) {
     $routeProvider.
@@ -57,10 +57,8 @@ app.run(function($rootScope, anilistFac) {
             spinner.stop();            
         });
     });
-    userManager.load(function(user){
         if(user.providers.anilist){
             //retrieve anime List from chrome extension
-            animeDataManager.load(function(animelist){
                 //retrieve user list from anilist 
                 anilistFac.RetrieveUserList().then(function(list){
                     //go through chrome extension anime
