@@ -1,11 +1,13 @@
-var userManager =  function () {
+var userManager = function()
+{
     this.key = "user";
 }
 inheritsFrom(userManager, Manager);
-userManager.prototype.default = function() {
-  return {};
+userManager.prototype.default = function()
+{
+    return {};
 };
-var userManager = new userManager(); 
+var userManager = new userManager();
 
 
 /*
