@@ -75,7 +75,7 @@ app.controller('editAnimeController', ['animeRetrieveSrv', '$scope', '$routePara
 
             $scope.edit.sucess = true;
             ga('send', 'event', "button", "save edit", "did manual changes");
-            $scope.save();
+            animeRetrieveSrv.save();
         }
     }
 ]);

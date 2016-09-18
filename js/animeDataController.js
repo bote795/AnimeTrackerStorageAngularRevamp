@@ -28,7 +28,7 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
             {
                 var index = $scope.animeArray.indexOf(anime);
                 $scope.animeArray.splice(index, 1);
-                $scope.save();
+                animeRetrieveSrv.save();
                 ga('send', 'event', "button", "delete", "Remove anime");
 
             }
@@ -79,7 +79,7 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
 
             ga('send', 'event', "button", "add new anime", "Add new anime");
             ga('send', 'event', "NewAnime", name, "anime being added");
-            $scope.save();
+            animeRetrieveSrv.save();
         }
         $scope.basicNew = function(name, ep)
         {
