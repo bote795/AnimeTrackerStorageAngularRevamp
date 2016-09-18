@@ -435,3 +435,52 @@ function LinkContainsNewEp(temp, cb)
         cb();
     });
 }
+
+///////////////////////////////
+// Functions for controllers //
+///////////////////////////////
+
+//reset fields to see if there is a new ep
+function resetNewEpFields(anime)
+{
+    anime["isNewEpAvialable"] = 0;
+    anime["newEpUrl"] = "url";
+}
+//update anime episode and default values
+function updateLocalValues(anime, ep)
+{
+    anime.ep = ep;
+    resetNewEpFields(anime);
+}
+/**
+ * [anilistEditor function to edit the animes episode]
+ * @param  {[type]} anime [anime object]
+ * @param  {[type]} ep    [epsiode number to change too]
+ * @return {[type]}       [none]
+ */
+function anilistEditor(anime, ep, animeRetrieveSrv, anilistFac)
+{
+    //if a list provider need to try to contact api
+    if (anime.provider == true)
+    {
+        if (anime.anilist == true)
+        {
+            anilistFac.editAnime(
+                {
+                    id: anime.id,
+                    ep: ep
+                })
+                .then(function(response)
+                {
+                    updateLocalValues(anime, ep);
+                    animeRetrieveSrv.save();
+                });
+        }
+    }
+    //just update and save to sync
+    else
+    {
+        updateLocalValues(anime, ep);
+        animeRetrieveSrv.save();
+    }
+}

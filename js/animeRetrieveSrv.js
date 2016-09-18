@@ -59,5 +59,8 @@ app.service('animeRetrieveSrv', function($rootScope)
     {
         angular.copy(data_, self.animeArray);
     }
-
+    this.save = function()
+    {
+        animeDataManager.save(self.animeArray);
+    }
 });

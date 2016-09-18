@@ -9,44 +9,10 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
 
         $scope.key = "savedAnimes";
         $scope.animeArray = animeRetrieveSrv.get();
-        /**
-         * [anilistEditor function to edit the animes episode]
-         * @param  {[type]} anime [anime object]
-         * @param  {[type]} ep    [epsiode number to change too]
-         * @return {[type]}       [none]
-         */
-        function anilistEditor(anime, ep)
-        {
-            //if a list provider need to try to contact api
-            if (anime.provider == true)
-            {
-                if (anime.anilist == true)
-                {
-                    anilistFac.editAnime(
-                        {
-                            id: anime.id,
-                            ep: ep
-                        })
-                        .then(function(response)
-                        {
-                            anime.ep = ep;
-                            $scope.resetNewEpFields(anime);
-                            $scope.save();
-                        });
-                }
-            }
-            //just update and save to sync
-            else
-            {
-                anime.ep = ep;
-                $scope.resetNewEpFields(anime);
-                $scope.save();
-            }
-        }
         $scope.add = function(anime, clickNew)
         {
             var clickNew = typeof clickNew !== 'undefined' ? clickNew : false;
-            anilistEditor(anime, anime.ep + 1);
+            anilistEditor(anime, anime.ep + 1, animeRetrieveSrv, anilistFac);
             ga('send', 'event', "button", "add", "Add to an anime");
             if (clickNew)
             {
@@ -55,13 +21,8 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
         }
         $scope.minus = function(anime)
         {
-            anilistEditor(anime, anime.ep - 1);
+            anilistEditor(anime, anime.ep - 1, animeRetrieveSrv, anilistFac);
             ga('send', 'event', "button", "subtract", "Subtract to an anime");
-        }
-        $scope.resetNewEpFields = function(anime)
-        {
-            anime["isNewEpAvialable"] = 0;
-            anime["newEpUrl"] = "url";
         }
         $scope.delete = function(anime)
             {
@@ -96,10 +57,11 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
             return string;
         }
         $scope.toggleMultiple = function()
-            {
-                $scope.mutlipleNewAnime = !$scope.mutlipleNewAnime;
-            }
-            //adds a new anime to the dictionary
+        {
+            $scope.mutlipleNewAnime = !$scope.mutlipleNewAnime;
+        }
+
+        //adds a new anime to the dictionary
         $scope.addNew = function()
         {
             var name = $scope.newAnimeName.trim();
@@ -118,10 +80,6 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
             ga('send', 'event', "button", "add new anime", "Add new anime");
             ga('send', 'event', "NewAnime", name, "anime being added");
             $scope.save();
-        }
-        $scope.save = function()
-        {
-            animeDataManager.save($scope.animeArray);
         }
         $scope.basicNew = function(name, ep)
         {
