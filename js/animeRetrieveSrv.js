@@ -2,9 +2,18 @@ app.service('animeRetrieveSrv', function($rootScope)
 {
     var self = this;
     this.animeArray = [];
-    var spintarget = document.getElementById('foo');
-    self.spinner = new Spinner().spin(spintarget);
+    try
+    {
+        if (typeof Spinner() !== "undefined")
+        {
+            var spintarget = document.getElementById('foo');
+            self.spinner = new Spinner().spin(spintarget);
+        }
+    }
+    catch (e)
+    {
 
+    }
     animeDataManager.load().then(function(data)
     {
         self.set(data);
@@ -12,21 +21,24 @@ app.service('animeRetrieveSrv', function($rootScope)
     }).then(function()
     {
         //check for updates then check for total eps
-        updates()
-            .then(FindTotalEps())
-            .then(function()
-            {
-                self.spinner.stop();
-                return {};
-            })
-            .then(function()
-            {
-                return animeDataManager.load()
-            })
-            .then(function(data)
-            {
-                self.set(data);
-            });
+        if (typeof self.spinner !== "undefined")
+        {
+            updates()
+                .then(FindTotalEps())
+                .then(function()
+                {
+                    self.spinner.stop();
+                    return {};
+                })
+                .then(function()
+                {
+                    return animeDataManager.load()
+                })
+                .then(function(data)
+                {
+                    self.set(data);
+                });
+        }
     });
     $rootScope.$on('reloadAnime', function(event, args)
     {

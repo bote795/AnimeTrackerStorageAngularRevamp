@@ -1,4 +1,4 @@
-app.controller('anilistController', function($scope, $http, anilistFac)
+app.controller('anilistController', function($scope, $http, userSrv, animeRetrieveSrv, anilistFac)
 {
     $scope.PinCode = "";
     $scope.anime = "";
@@ -12,18 +12,14 @@ app.controller('anilistController', function($scope, $http, anilistFac)
     $scope.error = false;
     $scope.anilist = false;
     $scope.message = "";
-    userManager.load().then(function(data)
-    {
-        if (typeof data["token"] != "undefined")
-        {
-            $scope.userSignIn = true;
-        }
-    });
+    $scope.userSignIn = userSrv.getSignedIn();
+    $scope.animeArray = animeRetrieveSrv.get();
+    $scope.remoteAnimeArray = [];
 
 
     /*
-    	Saves the pin intered by user so we can keep using 
-    	anilist api
+        Saves the pin intered by user so we can keep using 
+        anilist api
     */
     $scope.saveCode = function()
     {
@@ -57,14 +53,15 @@ app.controller('anilistController', function($scope, $http, anilistFac)
         });
 
     }
-    $scope.$on('reload', function(event, args)
-    {
-        $scope.RetrieveUserList();
-        $scope.currentUsersAnime();
-    });
-    /*
-    	Retrieves animelist
-    */
+
+    $scope.start = function()
+        {
+            $scope.RetrieveUserList();
+            $scope.currentUsersAnime();
+        }
+        /*
+            Retrieves animelist
+        */
     $scope.RetrieveUserList = function()
     {
         anilistFac.RetrieveUserList().then(function(response)
@@ -74,24 +71,20 @@ app.controller('anilistController', function($scope, $http, anilistFac)
     }
 
     /*
-    	Retrieves current anime watching in extension
+        Retrieves current anime watching in extension
     */
     $scope.currentUsersAnime = function()
         {
-            animeDataManager.load().then(function(data)
+            $scope.remoteAnimeArray = $scope.animeArray.filter(function(item)
             {
-                $scope.animeArray = data;
-                $scope.animeArray = data.filter(function(item)
+                if (item["provider"] != true)
                 {
-                    if (item["provider"] != true)
-                    {
-                        return item;
-                    }
-                })
+                    return item;
+                }
             });
         }
         /*
-        	link 2 animes
+            link 2 animes
         */
     $scope.link = function()
         {
@@ -105,7 +98,7 @@ app.controller('anilistController', function($scope, $http, anilistFac)
             //find check box for list provider
             var listProviderChecked = checkedBox(listProviderCheckboxes);
             /*
-            	if no two checkboxes from two sides are checked return
+                if no two checkboxes from two sides are checked return
             */
             if (typeof animeChecked == "undefined")
             {
@@ -123,7 +116,7 @@ app.controller('anilistController', function($scope, $http, anilistFac)
                 return;
             }
             /*
-            	map all names to an array to easily find index
+                map all names to an array to easily find index
             */
             var animeNames = $scope.animeArray.map(function(obj)
             {
@@ -146,41 +139,38 @@ app.controller('anilistController', function($scope, $http, anilistFac)
             $('input').attr('checked', false)
         }
         /*
-        	imports all remaning anime to extension
+            imports all remaning anime to extension
         */
     $scope.import = function()
         {
             var animeList = $scope.watching;
             var tempAnimeArray = [];
-            animeDataManager.load().then(function(data)
+            console.log($scope.animeArray);
+            animeList = animeList.filter(function(item)
             {
-                console.log(data);
-                animeList = animeList.filter(function(item)
+                for (var i = 0; i < $scope.animeArray.length; i++)
                 {
-                    for (var i = 0; i < data.length; i++)
-                    {
-                        if (item.anime.id == data[i].id)
-                            return;
-                    };
-                    return item;
-                })
-                console.log(animeList);
-                for (var i = 0; i < animeList.length; i++)
-                {
-                    var temp = $scope.basicNew(animeList[i].anime.title_romaji,
-                        animeList[i].episodes_watched, animeList[i]);
-                    tempAnimeArray.push(temp);
+                    if (item.anime.id == $scope.animeArray[i].id)
+                        return;
                 };
-                data.push.apply(data, tempAnimeArray);
-                console.log(data);
-                animeDataManager.save(data);
-                $scope.sucess = true;
-                $scope.error = false;
-                $scope.message = "Imported anime from list provider successfully";
-            });
+                return item;
+            })
+            console.log(animeList);
+            for (var i = 0; i < animeList.length; i++)
+            {
+                var temp = $scope.basicNew(animeList[i].anime.title_romaji,
+                    animeList[i].episodes_watched, animeList[i]);
+                tempAnimeArray.push(temp);
+            };
+            $scope.animeArray.push.apply($scope.animeArray, tempAnimeArray);
+            console.log($scope.animeArray);
+            animeRetrieveSrv.save();
+            $scope.sucess = true;
+            $scope.error = false;
+            $scope.message = "Imported anime from list provider successfully";
         }
         /*
-        	baisc new anime with anilist provider
+            baisc new anime with anilist provider
         */
     $scope.basicNew = function(name, ep, listProviderAnime)
         {
@@ -212,31 +202,28 @@ app.controller('anilistController', function($scope, $http, anilistFac)
         //save data for linking with link anime button
     function saveData(name, listProviderAnime)
     {
-        animeDataManager.load().then(function(data)
+        var animeNames = $scope.animeArray.map(function(obj)
         {
-            var animeNames = data.map(function(obj)
-            {
-                return obj["name"];
-            });
-            var animeindex = animeNames.indexOf(name);
-            var target = data[animeindex];
-            target["provider"] = true;
-            target["anilist"] = true;
-            target["id"] = listProviderAnime.anime.id;
-            target["image_url_med"] = listProviderAnime.anime.image_url_med;
-            target["image_url_sml"] = listProviderAnime.anime.image_url_sml;
-            var eps = listProviderAnime.anime.total_episodes;
-            if (eps != 0 && eps != null)
-            {
-                target["totalEps"] = " out of " + eps;
-            };
-            console.log(target);
-            console.log(data);
-            animeDataManager.save(data);
-            $scope.sucess = true;
-            $scope.error = false;
-            $scope.message = "Successfully Linked Data";
+            return obj["name"];
         });
+        var animeindex = animeNames.indexOf(name);
+        var target = $scope.animeArray[animeindex];
+        target["provider"] = true;
+        target["anilist"] = true;
+        target["id"] = listProviderAnime.anime.id;
+        target["image_url_med"] = listProviderAnime.anime.image_url_med;
+        target["image_url_sml"] = listProviderAnime.anime.image_url_sml;
+        var eps = listProviderAnime.anime.total_episodes;
+        if (eps != 0 && eps != null)
+        {
+            target["totalEps"] = " out of " + eps;
+        };
+        console.log(target);
+        console.log($scope.animeArray);
+        animeRetrieveSrv.save();
+        $scope.sucess = true;
+        $scope.error = false;
+        $scope.message = "Successfully Linked Data";
     }
 
     function checkedBox(animeCheckboxs)

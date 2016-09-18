@@ -1,98 +1,100 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>Anime Tracking</title>
-  <style>html {margin-top:.5cm; width: 600px;} </style>
-  <script src="js/lib/jquery-2.0.2.min.js"></script>
-  <script src="js/lib/angular.min.js"></script>
-  <script src="js/lib/angular-route.js"></script>
-  <script src="js/lib/angular-animate.js"></script>
-  <script src="js/lib/angular-aria.js"></script>
-  <script src="js/lib/angular-material.js"></script>
-  <script src="js/lib/sortable.js"></script>
-  <script src="js/private.js"></script>
-  <script src="js/options/app.js"></script>
+    <title>Anime Tracking</title>
+    <style>
+    html {
+        margin-top: .5cm;
+        width: 600px;
+    }
+    </style>
+    <script src="js/lib/jquery-2.0.2.min.js"></script>
+    <script src="js/lib/angular.min.js"></script>
+    <script src="js/lib/angular-route.js"></script>
+    <script src="js/lib/angular-animate.js"></script>
+    <script src="js/lib/angular-aria.js"></script>
+    <script src="js/lib/angular-material.js"></script>
+    <script src="js/lib/sortable.js"></script>
+    <script src="js/private.js"></script>
+    <script src="js/options/app.js"></script>
     <link rel="stylesheet" type="text/css" href="css/lib/angular-material.css" media="screen" />
-  <link rel="stylesheet" type="text/css" href="css/lib/bootstrap.min.css" media="screen" />
-  <link href="css/lib/toggle-switch.css" rel="stylesheet" type="text/css" media="screen" />
-  <link href="css/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" media="screen" />
-  <link href="css/options.css" rel="stylesheet" type="text/css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/lib/bootstrap.min.css" media="screen" />
+    <link href="css/lib/toggle-switch.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="css/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="css/options.css" rel="stylesheet" type="text/css" media="screen" />
 </head>
+
 <body ng-app="myApp">
-  <div class="container"><!-- container -->
-    <div ng-controller="anilistController" class="container">
-      <div ng-show="sucess" class="alert alert-success">
-        <strong>{{message}}</strong>
-      </div>
-      <div ng-show="error" class="alert alert-danger">
-        <strong>{{message}}</strong>
-      </div>
-      <input type='checkbox' ng-model="anilist"> AniList List Provider </input>
-      <div ng-show="anilist">
-        <div ng-hide="userSignIn">
-          <p>To be able to link Anilist. Please click on the link bellow and <b>Accept</b> permissons to edit, create or remove your AniList data. Then Copy and paste the  pin code into the "Pase Pin Code" input. </p>
-          <a href="https://anilist.co/api/auth/authorize?grant_type=authorization_pin&client_id=bote795-nuwwf&response_type=pin" target='_newtab'>Anilist</a>
-          <form ng-submit="saveCode()">
-            <div class="form-group">
-              <label for="pin">Paste Pin Code</label>
-              <input ng-model="PinCode"  type="text" class="form-control">
+    <div class="container">
+        <!-- container -->
+        <div ng-controller="anilistController" class="container">
+            <div ng-show="sucess" class="alert alert-success">
+                <strong>{{message}}</strong>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </form>
-        </div>
-
-        <div ng-show="userSignIn" class="row">
-          <div class="col-md-6">
-             <h4>Link Extension Anime</h4>
-            <div ng-init="currentUsersAnime()" ng-model="animeArray" class="anime" >
-              <label class="checkbox" ng-repeat="anime in animeArray track by $index"> 
-                <input type="checkbox" />
-                    {{anime["name"]}}
-                </br>
-              </label>
+            <div ng-show="error" class="alert alert-danger">
+                <strong>{{message}}</strong>
             </div>
-          </div>
-          <div class="col-md-6">
-             <h4>List Provider Anime</h4>
-            <div ng-init="RetrieveUserList()" ng-hide="watching.length == 0" ng-model="watching" class="listProvider">
-              <label class="checkbox" ng-repeat="item in watching track by $index"> 
-                <input type="checkbox" />
-                    <img ng-src="{{item.anime.image_url_sml}}">
-                          {{item.anime.title_english}}
-                </br>
-              </label>
-            <div class="noFields" ng-show="watching.length == 0">No Animes available</div>
-          </div>
-          <button ng-click="link()"type="submit" class="btn btn-primary link">Link Anime</button>
-          <button ng-click="import()"type="submit" class="btn btn-primary link">Import Anime</button>
+            <input type='checkbox' ng-model="anilist"> AniList List Provider </input>
+            <div ng-show="anilist">
+                <div ng-hide="userSignIn">
+                    <p>To be able to link Anilist. Please click on the link bellow and <b>Accept</b> permissons to edit, create or remove your AniList data. Then Copy and paste the pin code into the "Pase Pin Code" input. </p>
+                    <a href="https://anilist.co/api/auth/authorize?grant_type=authorization_pin&client_id=bote795-nuwwf&response_type=pin" target='_newtab'>Anilist</a>
+                    <form ng-submit="saveCode()">
+                        <div class="form-group">
+                            <label for="pin">Paste Pin Code</label>
+                            <input ng-model="PinCode" type="text" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+                <div ng-show="userSignIn" class="row">
+                    <div class="col-lg-12">
+                        <button ng-click="start()" type="submit" class="btn btn-primary link">Load Anime</button>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Link Extension Anime</h4>
+                        <div ng-init="" ng-model="remoteAnimeArray" class="anime">
+                            <label class="checkbox" ng-repeat="anime in remoteAnimeArray track by $index">
+                                <input type="checkbox" /> {{anime["name"]}}
+                                </br>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>List Provider Anime</h4>
+                        <div ng-init="" ng-hide="watching.length == 0" ng-model="watching" class="listProvider">
+                            <label class="checkbox" ng-repeat="item in watching track by $index">
+                                <input type="checkbox" />
+                                <img ng-src="{{item.anime.image_url_sml}}"> {{item.anime.title_english}}
+                                </br>
+                            </label>
+                            <div class="noFields" ng-show="watching.length == 0">No Animes available</div>
+                        </div>
+                        <button ng-click="link()" type="submit" class="btn btn-primary link">Link Anime</button>
+                        <button ng-click="import()" type="submit" class="btn btn-primary link">Import Anime</button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-
-    </div>      
-  </div><!-- end container -->
-
-<!-- classes -->
-<script src="js/classes/Manager.js"></script>
-<script src="js/classes/animeDataManager.js"></script>
-<script src="js/classes/updateWebsiteManager.js"></script>
-<script src="js/classes/userManager.js"></script>
-
-<!-- libraries -->
-<script src="js/lib/jquery-ui.js"></script>
-<script src="js/lib/bootstrap.min.js"></script> 
-<!-- services -->
-<script src="js/services/anilistService.js"></script>
-<script src="js/services/apiInterceptorService.js"></script>
-
-<!-- controllers -->
-<script src="js/animeDataController.js"></script>
-<script src="js/updateWebsitesController.js"></script>
-<script src="js/options/optionsController.js"></script>
-
+        <!-- end container -->
+        <!-- classes -->
+        <script src="js/classes/Manager.js"></script>
+        <script src="js/classes/animeDataManager.js"></script>
+        <script src="js/classes/updateWebsiteManager.js"></script>
+        <script src="js/classes/userManager.js"></script>
+        <!-- libraries -->
+        <script src="js/lib/jquery-ui.js"></script>
+        <script src="js/lib/bootstrap.min.js"></script>
+        <!-- services -->
+        <script src="js/services/anilistService.js"></script>
+        <script src="js/services/userService.js"></script>
+        <script src="js/services/apiInterceptorService.js"></script>
+        <!-- controllers -->
+        <script src="js/animeDataController.js"></script>
+        <script src="js/updateWebsitesController.js"></script>
+        <script src="js/animeRetrieveSrv.js"></script>
+        <script src="js/options/optionsController.js"></script>
 </body>
+
 </html>
-
-
-
-
-
