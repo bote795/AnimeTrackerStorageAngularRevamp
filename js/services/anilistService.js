@@ -1,7 +1,7 @@
-app.factory('anilistFac', ['$http', '$q', function($http, $q)
+app.factory('anilistFac', ['$http', '$q', 'userSrv', function($http, $q, userSrv)
 {
     /*
-    	anilist takes in information with this content type
+        anilist takes in information with this content type
     */
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
     $http.defaults.headers.put["Content-Type"] = "application/x-www-form-urlencoded";
@@ -12,34 +12,27 @@ app.factory('anilistFac', ['$http', '$q', function($http, $q)
     var access_token = "";
     var refresh_token;
     factory.user = {};
+    factory.user = userSrv.get();
     factory.user.id;
-    var header;
-    var queue = [];
-
+    factory.header;
     /*
-    	Retrieves current user Info
-    	we need id or displayname
+        Retrieves current user Info
+        we need id or displayname
     */
     factory.RetrieveUser = function()
         {
+            console.log(factory.header);
             return $http(
                 {
                     url: 'https://anilist.co/api/user',
                     method: 'GET',
-                    headers: header
+                    headers: factory.header
                 })
                 .then(function(response)
                     {
-                        userManager.load().then(function(data)
-                        {
-                            data["user"] = {
-                                id: response.data["id"],
-                                display_name: response.data["display_name"]
-                            };
-                            userManager.save(data);
-                        });
-
                         factory.user.id = response.data["id"];
+                        factory.user.display_name = response.data["display_name"];
+                        userSrv.save();
                         return;
                     },
                     function(response)
@@ -50,42 +43,41 @@ app.factory('anilistFac', ['$http', '$q', function($http, $q)
                     });
         }
         /*
-        	check if token dats is already stored or needs to be refreshed
+            check if token dats is already stored or needs to be refreshed
         */
     factory.init = function()
-    {
-        userManager.load().then(function(data)
         {
-            if (typeof data["token"] !== "undefined")
+            if (typeof factory.user["token"] !== "undefined")
             {
-                access_token = data["token"]["access_token"];
+                access_token = factory.user["token"]["access_token"];
                 var currentTime = new Date();
-                var expiresTime = new Date(data["token"]["expires"]);
-                header = {
+                var expiresTime = new Date(factory.user["token"]["expires"]);
+                factory.header = {
                     'Authorization': 'Bearer ' + access_token
                 };
-                refresh_token = data["refresh_token"];
-                if (currentTime > expiresTime && data["refresh_token"] != "")
+                refresh_token = factory.user["refresh_token"];
+                if (currentTime > expiresTime && factory.user["refresh_token"] != "")
                 {
                     refreshToken();
                 };
             }
-            if (typeof data["user"] === "undefined")
+            if (typeof factory.user["user"] === "undefined")
             {
+                factory.header = {
+                    'Authorization': 'Bearer ' + factory.user["token"]["access_token"]
+                };
                 factory.RetrieveUser();
             }
             else
             {
-                var id = data["user"]["id"];
+                var id = factory.user["user"]["id"];
                 factory.user.id = id;
             }
-        });
-    }
-    factory.init();
-    /*
-    	will refresh the access_token
-    	to be able to keep doing requests in behalf of user
-    */
+        }
+        /*
+            will refresh the access_token
+            to be able to keep doing requests in behalf of user
+        */
     function refreshToken()
     {
         var params = {
@@ -113,8 +105,8 @@ app.factory('anilistFac', ['$http', '$q', function($http, $q)
                 });
     }
     /*
-    	Request Access token
-    	anilist api
+        Request Access token
+        anilist api
     */
     factory.requestAcessToken = function(pin)
         {
@@ -143,7 +135,7 @@ app.factory('anilistFac', ['$http', '$q', function($http, $q)
                     });
         }
         /*
-        	helper function for handling token
+            helper function for handling token
         */
     function saveTokenData(response)
     {
@@ -160,19 +152,16 @@ app.factory('anilistFac', ['$http', '$q', function($http, $q)
         var t = new Date()
         t.setHours(t.getHours() + 1);
         response.data["expires"] = t.getTime();
-        userManager.load().then(function(data)
+        if (typeof factory.user === 'undefined' || factory.user.length === 0)
         {
-            if (typeof data === 'undefined' || data.length === 0)
-            {
-                data = {};
-            }
+            factory.user = {};
+        }
 
-            data["token"] = response.data;
-            if (typeof response.data["refresh_token"] !== 'undefined')
-                data["refresh_token"] = response.data["refresh_token"];
-            userManager.save(data);
-            return;
-        });
+        factory.user["token"] = response.data;
+        if (typeof response.data["refresh_token"] !== 'undefined')
+            factory.user["refresh_token"] = response.data["refresh_token"];
+        userSrv.save()
+        return;
         console.log("response");
     }
     factory.animeSearch = function(query)
@@ -181,7 +170,7 @@ app.factory('anilistFac', ['$http', '$q', function($http, $q)
                 {
                     url: 'https://anilist.co/api/anime/search/' + query,
                     method: 'GET',
-                    headers: header
+                    headers: factory.header
                 })
                 .then(function(response)
                     {
@@ -195,55 +184,51 @@ app.factory('anilistFac', ['$http', '$q', function($http, $q)
                     });
         }
         /*
-        	Retrieves animelist
-        	we need id or displayname
-        	lists.watching
-        		.episodes_watched
-        		.anime
-        			.total_episodes <null or number>
-        			.image_url_sml
-        			.image_url_med
-        			.id
-        			.title_english
+            Retrieves animelist
+            we need id or displayname
+            lists.watching
+                .episodes_watched
+                .anime
+                    .total_episodes <null or number>
+                    .image_url_sml
+                    .image_url_med
+                    .id
+                    .title_english
         */
     factory.RetrieveUserList = function()
         {
             var deferred = $q.defer();
-            userManager.load().then(function(data)
+            if (typeof factory.user.id === "undefined")
             {
-                if (typeof factory.user.id === "undefined")
+                if (typeof factory.user["user"]["id"] === "undefined")
+                    $q.reject();
+                var id = factory.user["user"]["id"];
+                factory.user.id = id;
+            }
+            return $http(
                 {
-                    if (typeof data["user"]["id"] === "undefined")
-                        $q.reject();
-                    var id = data["user"]["id"];
-                    factory.user.id = id;
-                }
-                $http(
+                    url: 'https://anilist.co/api/user/' + factory.user.id + '/animelist',
+                    method: 'GET',
+                    headers: factory.header
+                })
+                .then(function(response)
                     {
-                        url: 'https://anilist.co/api/user/' + factory.user.id + '/animelist',
-                        method: 'GET',
-                        headers: header
-                    })
-                    .then(function(response)
-                        {
-                            deferred.resolve(response.data.lists.watching);
-                        },
-                        function(response)
-                        { // optional
-                            console.log("fail");
-                            console.log(response);
-                            deferred.reject(response);
-                        });
-            });
-            return deferred.promise;
+                        return response.data.lists.watching;
+                    },
+                    function(response)
+                    { // optional
+                        console.log("fail");
+                        console.log(response);
+                        return response;
+                    });
         }
         /*
-        	add anime to personal list
-        	we need id or displayname
-        	make sure no objectKey in there
-        	id
-        	total_episodes
-        	image_url_med
+            add anime to personal list
+            we need id or displayname
+            make sure no objectKey in there
+            id
+            total_episodes
+            image_url_med
         */
     factory.addAnime = function(item)
     {
@@ -258,7 +243,7 @@ app.factory('anilistFac', ['$http', '$q', function($http, $q)
                 method: 'POST',
                 // Make sure to inject the service you choose to the controller
                 data: $.param(params),
-                headers: header
+                headers: factory.header
             })
             .then(function(response)
                 {
@@ -268,12 +253,13 @@ app.factory('anilistFac', ['$http', '$q', function($http, $q)
                 { // optional
                     console.log("fail");
                     console.log(response);
+                    return response;
 
                 });
     }
 
     /*
-    	Deletes an anime from animelist
+        Deletes an anime from animelist
     */
     factory.DeleteAnime = function(id)
         {
@@ -281,7 +267,7 @@ app.factory('anilistFac', ['$http', '$q', function($http, $q)
                 {
                     url: 'https://anilist.co/api/animelist' + id,
                     method: 'DELETE',
-                    headers: header
+                    headers: factory.header
                 })
                 .then(function(response)
                     {
@@ -291,13 +277,14 @@ app.factory('anilistFac', ['$http', '$q', function($http, $q)
                     { // optional
                         console.log("fail");
                         console.log(response);
+                        return response;
 
                     });
         }
         /*
-        	Edit anime
-        	we need id 
-        	make sure no objectKey in there
+            Edit anime
+            we need id 
+            make sure no objectKey in there
         */
     factory.editAnime = function(item)
     {
@@ -311,7 +298,7 @@ app.factory('anilistFac', ['$http', '$q', function($http, $q)
                 method: 'PUT',
                 // Make sure to inject the service you choose to the controller
                 data: $.param(params),
-                headers: header
+                headers: factory.header
             })
             .then(function(response)
                 {
@@ -321,6 +308,7 @@ app.factory('anilistFac', ['$http', '$q', function($http, $q)
                 { // optional
                     console.log("fail");
                     console.log(response);
+                    return response;
 
                 });
     }

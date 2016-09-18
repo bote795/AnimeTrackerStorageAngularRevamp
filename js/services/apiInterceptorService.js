@@ -1,14 +1,16 @@
-app.service('APIInterceptor', ["$q", '$injector',
-    function($q, $injector)
+app.service('APIInterceptor', ["$q", '$injector', 'userSrv',
+
+    function($q, $injector, userSrv)
     {
         var service = this;
+
         service.request = function(config)
         {
             return config;
         };
         /*
-        	will refresh the access_token
-        	to be able to keep doing requests in behalf of user
+            will refresh the access_token
+            to be able to keep doing requests in behalf of user
         */
         function refreshToken()
         {
@@ -69,6 +71,7 @@ app.service('APIInterceptor', ["$q", '$injector',
                     //need to change the header authorization bearer token
                     userManager.load().then(function(data)
                     {
+
                         response.config.headers.Authorization = 'Bearer ' + data.token.access_token;
                         return $http(response.config);
                     });

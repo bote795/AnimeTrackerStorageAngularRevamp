@@ -54,7 +54,7 @@ app.config(function($routeProvider)
 /*
 when ap first run check for updates
 */
-app.run(function($rootScope, anilistFac, animeRetrieveSrv)
+app.run(function($rootScope, userSrv, animeRetrieveSrv, anilistFac)
 {
     var spintarget = document.getElementById('foo');
     var spinner = new Spinner().spin(spintarget);
@@ -68,10 +68,12 @@ app.run(function($rootScope, anilistFac, animeRetrieveSrv)
             return {};
         });
 
-    userManager.load().then(function(user)
+    userSrv.load().then(function()
     {
+        user = userSrv.get();
         if (user.providers.anilist)
         {
+            anilistFac.init();
             //retrieve anime List from chrome extension
             var animelist = animeRetrieveSrv.get();
             //retrieve user list from anilist 
@@ -99,6 +101,7 @@ app.run(function($rootScope, anilistFac, animeRetrieveSrv)
                                 if (filterList[0].episodes_watched > anime.ep)
                                 {
                                     animelist[index].ep = filterList[0].episodes_watched;
+                                    console.log(animelist[index].name + " replace ep with" + animelist[index].ep);
                                     resetNewEpFields(animelist[index]);
                                 }
                                 //local number is bigger must save that in anilist
