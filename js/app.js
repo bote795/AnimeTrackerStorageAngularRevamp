@@ -51,15 +51,10 @@ app.config(function($routeProvider)
     });
 });
 
-function resetNewEpFields(anime)
-{
-    anime["isNewEpAvialable"] = 0;
-    anime["newEpUrl"] = "url";
-}
 /*
 when ap first run check for updates
 */
-app.run(function($rootScope, anilistFac)
+app.run(function($rootScope, anilistFac, animeRetrieveSrv)
 {
     var spintarget = document.getElementById('foo');
     var spinner = new Spinner().spin(spintarget);
@@ -78,56 +73,55 @@ app.run(function($rootScope, anilistFac)
         if (user.providers.anilist)
         {
             //retrieve anime List from chrome extension
-            animeDataManager.load().then(function(animelist)
+            var animelist = animeRetrieveSrv.get();
+            //retrieve user list from anilist 
+            anilistFac.RetrieveUserList().then(function(list)
             {
-                //retrieve user list from anilist 
-                anilistFac.RetrieveUserList().then(function(list)
+                //go through chrome extension anime
+                animelist.forEach(function(anime, index)
                 {
-                    //go through chrome extension anime
-                    animelist.forEach(function(anime, index)
+                    //if anime is from anilist 
+                    if ('provider' in anime && anime.provider && anime.anilist)
                     {
-                        //if anime is from anilist 
-                        if ('provider' in anime && anime.provider && anime.anilist)
-                        {
-                            //find anime from list that the user is watching
-                            var filterList = list.filter(function(val)
-                                {
-                                    return val.anime.id == anime.id;
-                                })
-                                //make sure that we only got one
-                            if (filterList.length == 1)
+                        //find anime from list that the user is watching
+                        var filterList = list.filter(function(val)
                             {
-                                //make sure that anime is not equal to same episode
-                                if (filterList[0].episodes_watched != anime.ep)
+                                return val.anime.id == anime.id;
+                            })
+                            //make sure that we only got one
+                        if (filterList.length == 1)
+                        {
+                            //make sure that anime is not equal to same episode
+                            if (filterList[0].episodes_watched != anime.ep)
+                            {
+                                //console.log(anime.name,animelist[index],filterList[0].episodes_watched);
+                                //server number is bigger 
+                                if (filterList[0].episodes_watched > anime.ep)
                                 {
-                                    //console.log(anime.name,animelist[index],filterList[0].episodes_watched);
-                                    //server number is bigger 
-                                    if (filterList[0].episodes_watched > anime.ep)
+                                    animelist[index].ep = filterList[0].episodes_watched;
+                                    resetNewEpFields(animelist[index]);
+                                }
+                                //local number is bigger must save that in anilist
+                                else
+                                {
+                                    anilistFac.editAnime(
                                     {
-                                        animelist[index].ep = filterList[0].episodes_watched;
-                                        resetNewEpFields(animelist[index]);
-                                    }
-                                    //local number is bigger must save that in anilist
-                                    else
+                                        ep: anime.ep,
+                                        id: anime.id
+                                    }).then(function(response)
                                     {
-                                        anilistFac.editAnime(
-                                        {
-                                            ep: anime.ep,
-                                            id: anime.id
-                                        }).then(function(response)
-                                        {
-                                            console.log("sucessfully updated", response)
-                                        });
-                                    }
+                                        console.log("sucessfully updated", response)
+                                    });
                                 }
                             }
                         }
-                    });
-                    //save anime list
-                    animeDataManager.save(animelist);
-                    checkForUpdates;
+                    }
                 });
+                //save anime list
+                animeRetrieveSrv.save();
+                checkForUpdates;
             });
+
         }
 
     });
