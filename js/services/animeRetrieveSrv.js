@@ -73,6 +73,6 @@ app.service('animeRetrieveSrv', function($rootScope)
     }
     this.save = function()
     {
-        animeDataManager.save(self.animeArray);
+        return animeDataManager.save(self.animeArray);
     }
 });
