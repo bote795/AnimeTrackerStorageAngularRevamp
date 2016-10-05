@@ -121,8 +121,8 @@ app.run(function($rootScope, userSrv, animeRetrieveSrv, anilistFac)
                     }
                 });
                 //save anime list
-                animeRetrieveSrv.save();
-                checkForUpdates;
+                animeRetrieveSrv.save()
+                    .then(checkForUpdates);
             });
 
         }

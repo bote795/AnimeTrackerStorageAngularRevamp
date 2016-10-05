@@ -60,35 +60,43 @@ Manager.prototype.load = function()
     return promise;
 };
 Manager.prototype.upgrade = function()
-{
-    return [];
-}
+    {
+        return [];
+    }
+    //saves data
+    //returns a promise when completed
 Manager.prototype.save = function(array)
 {
-    var save = {};
-    /*
-        to remove $$haskey added when using ng-repeat
-        otherwise will cause duplicate issues sometimes
-    */
-    if (Array.isArray(array))
-        array = array.map(function(item, index)
-        {
-            if (item["$$hashKey"] != undefined)
-            {
-                delete item["$$hashKey"];
-            }
-            return item;
-        });
-    save[this.key] = array;
-    console.log(save);
-    chrome.storage.sync.set(save, function()
+    var promise = new Promise(function(resolve, reject)
     {
-        if (chrome.runtime.error)
+        var save = {};
+        /*
+            to remove $$haskey added when using ng-repeat
+            otherwise will cause duplicate issues sometimes
+        */
+        if (Array.isArray(array))
+            array = array.map(function(item, index)
+            {
+                if (item["$$hashKey"] != undefined)
+                {
+                    delete item["$$hashKey"];
+                }
+                return item;
+            });
+        save[this.key] = array;
+        console.log(save);
+        chrome.storage.sync.set(save, function()
         {
-            console.log("Runtime error.");
-        }
-        console.log("saved data successfuly")
+            if (chrome.runtime.error)
+            {
+                console.log("Runtime error.");
+                return reject();
+            }
+            console.log("saved data successfuly")
+            return resolve();
+        });
     });
+    return promise;
 };
 var inheritsFrom = function(child, parent)
 {
