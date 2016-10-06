@@ -67,6 +67,7 @@ Manager.prototype.upgrade = function()
     //returns a promise when completed
 Manager.prototype.save = function(array)
 {
+    var self = this;
     var promise = new Promise(function(resolve, reject)
     {
         var save = {};
@@ -83,7 +84,7 @@ Manager.prototype.save = function(array)
                 }
                 return item;
             });
-        save[this.key] = array;
+        save[self.key] = array;
         console.log(save);
         chrome.storage.sync.set(save, function()
         {
