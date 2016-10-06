@@ -26,10 +26,18 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
         }
         $scope.delete = function(anime)
             {
-                var index = $scope.animeArray.indexOf(anime);
-                $scope.animeArray.splice(index, 1);
-                animeRetrieveSrv.save();
-                ga('send', 'event', "button", "delete", "Remove anime");
+                //create array with names and use name to find it
+                //since we cant just use anime since angular adds the haskey
+                var index = $scope.animeArray.map(function(item)
+                {
+                    return item.name;
+                }).indexOf(anime.name);
+                if (index > 0)
+                {
+                    $scope.animeArray.splice(index, 1);
+                    animeRetrieveSrv.save();
+                    ga('send', 'event', "button", "delete", "Remove anime");
+                }
 
             }
             //retrieves what should be displayed for the episode
