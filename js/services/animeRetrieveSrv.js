@@ -63,7 +63,7 @@ app.service('animeRetrieveSrv', function($rootScope)
         {
             return item.name;
         }).indexOf(anime.name);
-        if (key > -1)
+        if (key > 0)
         {
             self.animeArray[key][field.key] = field.value;
         }
