@@ -52,14 +52,20 @@ app.service('animeRetrieveSrv', function($rootScope)
     /**
      * edit saves edit for anime
      * @param  {object} anime    [anime object before edit]
-     * @param  {object} newAnime [anime object edited]
+     * field to update is the key, value is the value to update the field with
+     * @param  {object} {key: , value:} [object with key, value dictionary]
      */
-    this.edit = function(anime, newAnime)
+    this.edit = function(anime, field)
     {
-        var key = self.animeArray.indexOf(anime);
+        //create array with names and use name to find it
+        //since we cant just use anime since angular adds the haskey
+        var key = self.animeArray.map(function(item)
+        {
+            return item.name;
+        }).indexOf(anime.name);
         if (key > -1)
         {
-            self.animeArray[key] = newAnime;
+            self.animeArray[key][field.key] = field.value;
         }
     }
 

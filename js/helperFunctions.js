@@ -473,6 +473,11 @@ function anilistEditor(anime, ep, animeRetrieveSrv, anilistFac)
                 .then(function(response)
                 {
                     updateLocalValues(anime, ep);
+                    animeRetrieveSrv.edit(anime,
+                    {
+                        key: "ep",
+                        value: ep
+                    });
                     animeRetrieveSrv.save();
                 });
         }
@@ -481,6 +486,11 @@ function anilistEditor(anime, ep, animeRetrieveSrv, anilistFac)
     else
     {
         updateLocalValues(anime, ep);
+        animeRetrieveSrv.edit(anime,
+        {
+            key: "ep",
+            value: ep
+        });
         animeRetrieveSrv.save();
     }
 }
