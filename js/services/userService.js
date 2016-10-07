@@ -15,8 +15,19 @@ app.service('userSrv', function($rootScope)
         });
     }
     this.get = function()
+        {
+            return self.user;
+        }
+        //dict is a key value pair object
+    this.edit = function(dict)
     {
-        return self.user;
+        //go through dictionary gey keys
+        var array = Object.keys(dict);
+        //for each key save the new value
+        array.forEach(function(item)
+        {
+            self.user[item] = dict[item];
+        });
     }
     this.save = function()
     {
@@ -33,5 +44,9 @@ app.service('userSrv', function($rootScope)
     this.getSignedIn = function()
     {
         return self.userSignedIn;
+    }
+    this.getCurrentAPI = function()
+    {
+        return "anilist";
     }
 });
