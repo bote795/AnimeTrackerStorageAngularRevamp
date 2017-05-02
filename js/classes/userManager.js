@@ -15,19 +15,22 @@ keys
 TODO: 
 "providers":
 	{
-		anilist: bool
+		anilist: bool,
+		myanimelist: bool
 	}
 }
 anilist{
-	["token"]
-		["access_token"] token used to make calls
-		["expires"]	
-	["refresh_token"] token used to refresh
-	["user"]
-		["id"]
-		["display_name"]	
+	id
+	username
+	refresh_token
+			access_token
+			expires
+			refresh_token
 }
-
+myanimelist{
+	username (encoded)
+	pass (encoded)
+}
 
 currently: only
 ["token"]

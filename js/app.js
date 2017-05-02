@@ -4,7 +4,6 @@ var app = angular.module('myApp', ['ngRoute', 'ui.sortable', 'ngMaterial'])
         function($compileProvider, $httpProvider)
         {
             $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
-            $httpProvider.interceptors.push('APIInterceptor');
         }
     ]);
 app.config(function($routeProvider)
@@ -57,76 +56,78 @@ when ap first run check for updates
 app.run(function($rootScope, userSrv, animeRetrieveSrv, anilistFac)
 {
     var spintarget = document.getElementById('foo');
-    var spinner = new Spinner().spin(spintarget);
-    //check for updates then check for total eps
-    var checkForUpdates = updates().then(FindTotalEps())
-        .then(function()
-        {
-            $rootScope.$broadcast('reloadAnime',
-            {});
-            spinner.stop();
-            return {};
-        });
+    userSrv.load();
 
-    userSrv.load().then(function()
-    {
-        user = userSrv.get();
-        if (user.providers.anilist)
-        {
-            anilistFac.init();
-            //retrieve anime List from chrome extension
-            var animelist = animeRetrieveSrv.get();
-            //retrieve user list from anilist 
-            anilistFac.RetrieveUserList().then(function(list)
+    //    var spinner = new Spinner().spin(spintarget);
+    //check for updates then check for total eps
+    /*    var checkForUpdates = updates().then(FindTotalEps())
+            .then(function()
             {
-                //go through chrome extension anime
-                animelist.forEach(function(anime, index)
+                $rootScope.$broadcast('reloadAnime',
+                {});
+                spinner.stop();
+                return {};
+            });
+
+        userSrv.load().then(function()
+        {
+            user = userSrv.get();
+            if (user.providers.anilist)
+            {
+                anilistFac.init();
+                //retrieve anime List from chrome extension
+                var animelist = animeRetrieveSrv.get();
+                //retrieve user list from anilist 
+                anilistFac.RetrieveUserList().then(function(list)
                 {
-                    //if anime is from anilist 
-                    if ('provider' in anime && anime.provider && anime.anilist)
+                    //go through chrome extension anime
+                    animelist.forEach(function(anime, index)
                     {
-                        //find anime from list that the user is watching
-                        var filterList = list.filter(function(val)
-                            {
-                                return val.anime.id == anime.id;
-                            })
-                            //make sure that we only got one
-                        if (filterList.length == 1)
+                        //if anime is from anilist 
+                        if ('provider' in anime && anime.provider && anime.anilist)
                         {
-                            //make sure that anime is not equal to same episode
-                            if (filterList[0].episodes_watched != anime.ep)
+                            //find anime from list that the user is watching
+                            var filterList = list.filter(function(val)
+                                {
+                                    return val.anime.id == anime.id;
+                                })
+                                //make sure that we only got one
+                            if (filterList.length == 1)
                             {
-                                //console.log(anime.name,animelist[index],filterList[0].episodes_watched);
-                                //server number is bigger 
-                                if (filterList[0].episodes_watched > anime.ep)
+                                //make sure that anime is not equal to same episode
+                                if (filterList[0].episodes_watched != anime.ep)
                                 {
-                                    animelist[index].ep = filterList[0].episodes_watched;
-                                    console.log(animelist[index].name + " replace ep with" + animelist[index].ep);
-                                    resetNewEpFields(animelist[index]);
-                                }
-                                //local number is bigger must save that in anilist
-                                else
-                                {
-                                    anilistFac.editAnime(
+                                    //console.log(anime.name,animelist[index],filterList[0].episodes_watched);
+                                    //server number is bigger 
+                                    if (filterList[0].episodes_watched > anime.ep)
                                     {
-                                        ep: anime.ep,
-                                        id: anime.id
-                                    }).then(function(response)
+                                        animelist[index].ep = filterList[0].episodes_watched;
+                                        console.log(animelist[index].name + " replace ep with" + animelist[index].ep);
+                                        resetNewEpFields(animelist[index]);
+                                    }
+                                    //local number is bigger must save that in anilist
+                                    else
                                     {
-                                        console.log("sucessfully updated", response)
-                                    });
+                                        anilistFac.editAnime(
+                                        {
+                                            ep: anime.ep,
+                                            id: anime.id
+                                        }).then(function(response)
+                                        {
+                                            console.log("sucessfully updated", response)
+                                        });
+                                    }
                                 }
                             }
                         }
-                    }
+                    });
+                    //save anime list
+                    animeRetrieveSrv.save()
+                        .then(checkForUpdates);
                 });
-                //save anime list
-                animeRetrieveSrv.save()
-                    .then(checkForUpdates);
-            });
 
-        }
+            }
 
-    });
+        });*/
     ga('send', 'pageview', "/popup.html");
 });

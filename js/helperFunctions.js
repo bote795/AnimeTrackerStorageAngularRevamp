@@ -494,3 +494,34 @@ function anilistEditor(anime, ep, animeRetrieveSrv, anilistFac)
         animeRetrieveSrv.save();
     }
 }
+/**
+ * saveAnilist saves the items returned by anilogin 
+ * @param  {object} keys [keys access_token,expires, refresh_token]
+ */
+function saveAnilist(keys)
+{
+    var temp = {};
+    temp.refresh_token = keys;
+    keys.providers = {
+        anilist: false,
+        myanimelist: true
+    };
+    userManager.load()
+        .then(function(user)
+        {
+            keys.username = user.username;
+            userManager.save(keys);
+        });
+}
+/**
+ * savemyanimelist saves the my animelist object on user
+ * @param  {object} keys username, password
+ */
+function savemyanimelist(keys)
+{
+    keys.providers = {
+        anilist: false,
+        myanimelist: true
+    };
+    userManager.save(keys);
+}
