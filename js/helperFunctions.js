@@ -466,7 +466,7 @@ function anilistEditor(anime, ep, animeRetrieveSrv, anilistFac)
         if (anime.anilist)
         {
             anilistFac.updateAnime(
-                    id: anime.id,
+                    anime.id,
                     {
                         episodes_watched: ep
                     }
