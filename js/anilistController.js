@@ -46,11 +46,12 @@ app.controller('anilistController', ['$scope', '$http', 'anilistFac', 'userSrv',
         */
     $scope.selected = function(item)
     {
-        anilistFac.addAnime(
-        {
-            id: item.id,
-            ep: 0
-        }).then(function(response)
+        $scope.animeProvider.addAnime(
+            item.id,
+            {
+                episodes_watched: 0
+            }
+        ).then(function(response)
         {
             console.log("sucessly added anime");
         });
@@ -83,14 +84,20 @@ app.controller('anilistController', ['$scope', '$http', 'anilistFac', 'userSrv',
     */
     $scope.add = function(item)
     {
-        anilistFac.editAnime(
-            {
-                id: item.anime.id,
-                ep: item.episodes_watched
-            })
+        item.episodes_watched++;
+        $scope.animeProvider.updateAnime(
+                item.anime.id,
+                {
+                    episodes_watched: item.episodes_watched
+                }
+            )
             .then(function(response)
             {
-                item.episodes_watched++;
+                item.episodes_watched;
+            })
+            .catch(function(err)
+            {
+                item.episodes_watched--;
             });
     }
 }]);

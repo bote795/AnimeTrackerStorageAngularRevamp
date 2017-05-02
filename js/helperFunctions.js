@@ -461,15 +461,16 @@ function updateLocalValues(anime, ep)
 function anilistEditor(anime, ep, animeRetrieveSrv, anilistFac)
 {
     //if a list provider need to try to contact api
-    if (anime.provider == true)
+    if (anime.provider)
     {
-        if (anime.anilist == true)
+        if (anime.anilist)
         {
-            anilistFac.editAnime(
-                {
+            anilistFac.updateAnime(
                     id: anime.id,
-                    ep: ep
-                })
+                    {
+                        episodes_watched: ep
+                    }
+                )
                 .then(function(response)
                 {
                     updateLocalValues(anime, ep);
@@ -502,15 +503,15 @@ function saveAnilist(keys)
 {
     var temp = {};
     temp.refresh_token = keys;
-    keys.providers = {
-        anilist: false,
-        myanimelist: true
+    temp.providers = {
+        anilist: true,
+        myanimelist: false
     };
     userManager.load()
         .then(function(user)
         {
-            keys.username = user.username;
-            userManager.save(keys);
+            temp.username = user.username;
+            userManager.save(temp);
         });
 }
 /**

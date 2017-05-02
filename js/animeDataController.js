@@ -6,9 +6,9 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
         $scope.newAnimeEpisode = "";
         $scope.mutlipleNewAnime = false;
         $scope.isCollapsed = false;
-
         $scope.key = "savedAnimes";
         $scope.animeArray = animeRetrieveSrv.get();
+
         $scope.add = function(anime, clickNew)
         {
             var clickNew = typeof clickNew !== 'undefined' ? clickNew : false;
