@@ -56,10 +56,11 @@ app.controller('anilistController', ['anilistFac', '$scope', '$http', 'userSrv',
             */
         $scope.RetrieveUserList = function()
         {
-            anilistFac.animeProvider.getAnimeList().then(function(response)
-            {
-                $scope.watching = response.lists.watching;
-            });
+            anilistFac.animeProvider.getAnimeList()
+                .then(function(response)
+                {
+                    $scope.watching = response.lists.watching;
+                });
         }
 
         /*
