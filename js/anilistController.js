@@ -3,23 +3,13 @@ app.controller('anilistController', ['$scope', '$http', 'anilistFac', 'userSrv',
     $scope.PinCode = "";
     $scope.anime = "";
     $scope.watching;
-    $scope.animeProvider;
-    user = userSrv.get();
-    if (user.providers && user.providers.anilist)
-    {
-        var secrets = Services.anilist;
-        var user_info = user;
-        $scope.animeProvider = window.AniLogin("anilist", secrets, user_info, saveAnilist);
-        $scope.animeProvider.provder = "anilist";
-        //create anilogin 
-    }
     /*
         Saves the pin intered by user so we can keep using 
         anilist api
     */
     $scope.saveCode = function()
         {
-            var secrets = Services.anilist;
+
             var user_info = {
                 username: $scope.username,
                 code: $scope.PinCode
@@ -28,9 +18,7 @@ app.controller('anilistController', ['$scope', '$http', 'anilistFac', 'userSrv',
             {
                 username: username
             });
-            $scope.animeProvider = window.AniLogin("anilist", secrets, user_info, saveAnilist);
-            $scope.animeProvider.provder = "anilist";
-            $scope.animeProvider.authenticate()
+            anilistFac.pin(user_info)
                 .then(function(result)
                 {
                     console.log(result);
@@ -46,7 +34,7 @@ app.controller('anilistController', ['$scope', '$http', 'anilistFac', 'userSrv',
         */
     $scope.selected = function(item)
     {
-        $scope.animeProvider.addAnime(
+        anilistFac.animeProvider.addAnime(
             item.id,
             {
                 episodes_watched: 0
@@ -62,7 +50,7 @@ app.controller('anilistController', ['$scope', '$http', 'anilistFac', 'userSrv',
     */
     $scope.querySearch = function(query)
     {
-        return $scope.animeProvider.searchAnimes(query);
+        return anilistFac.animeProvider.searchAnimes(query);
     }
 
     /*
@@ -70,9 +58,9 @@ app.controller('anilistController', ['$scope', '$http', 'anilistFac', 'userSrv',
     */
     $scope.RetrieveUserList = function()
     {
-        if ($scope.animeProvider)
+        if (anilistFac.animeProvider)
         {
-            $scope.animeProvider.getAnimeList().then(function(response)
+            anilistFac.animeProvider.getAnimeList().then(function(response)
             {
                 $scope.watching = response.lists.watching;
             });
@@ -85,7 +73,7 @@ app.controller('anilistController', ['$scope', '$http', 'anilistFac', 'userSrv',
     $scope.add = function(item)
     {
         item.episodes_watched++;
-        $scope.animeProvider.updateAnime(
+        anilistFac.animeProvider.updateAnime(
                 item.anime.id,
                 {
                     episodes_watched: item.episodes_watched

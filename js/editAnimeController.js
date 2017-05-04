@@ -45,7 +45,7 @@ app.controller('editAnimeController', ['animeRetrieveSrv', '$scope', '$routePara
                     var ep = Number($scope.edit[fields[i]]);
                     if ($scope.animeArray[$scope.detailId][fields[i]] !== ep)
                     {
-                        anilistEditor($scope.animeArray[$scope.detailId], ep, animeRetrieveSrv, anilistFac);
+                        anilistEditor($scope.animeArray[$scope.detailId], ep, animeRetrieveSrv, anilistFac.animeProvider);
                         $scope.animeArray[$scope.detailId][fields[i]] = ep;
                     }
                 }

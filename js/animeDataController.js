@@ -9,10 +9,91 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
         $scope.key = "savedAnimes";
         $scope.animeArray = animeRetrieveSrv.get();
 
+        function updateFromRemoteServices()
+        {
+            var promise;
+            if (user.providers && user.providers.anilist)
+            {
+                promise = updateFromAnilist();
+            }
+            else
+            {
+                promise = Promise.resolve(
+                {});
+            }
+            return promise;
+        }
+
+        function updateFromAnilist()
+        {
+            var localAnimelist;
+            return anilistFac.animeProvider.getAnimeList()
+                .then(function(resp)
+                {
+                    return resp.lists.watching;
+                })
+                .then(function(watchingList)
+                {
+                    localAnimelist = $scope.animeArray;
+                    //go through chrome extension anime
+                    localAnimelist.forEach(function(anime, index)
+                    {
+                        //if anime is from anilist 
+                        if ('provider' in anime && anime.provider && anime.anilist)
+                        {
+                            //find anime from list that the user is watching
+                            var filterList = watchingList.filter(function(val)
+                            {
+                                return val.anime.id === anime.id;
+                            });
+                            var remoteAnime;
+                            //make sure that we only got one
+                            if (filterList.length === 1)
+                            {
+                                remoteAnime = filterList[0];
+                            }
+                            else
+                            {
+                                return;
+                            }
+
+                            //make sure that anime is not equal to same episode
+                            if (remoteAnime.episodes_watched !== anime.ep)
+                            {
+                                //console.log(anime.name,localAnimelist[index],remoteAnime.episodes_watched);
+                                //server number is bigger 
+                                if (remoteAnime.episodes_watched > anime.ep)
+                                {
+                                    localAnimelist[index].ep = remoteAnime.episodes_watched;
+                                    console.log(localAnimelist[index].name + " replace ep with" + localAnimelist[index].ep);
+                                    resetNewEpFields(localAnimelist[index]);
+                                }
+                                //local number is bigger must save that in anilist
+                                else
+                                {
+                                    anilistEditor(anime, anime.ep, animeRetrieveSrv, anilistFac.animeProvider);
+                                }
+                            }
+
+                        }
+                    });
+                    return watchingList;
+                })
+                //possible add all new animes to list automatically
+                .then(function()
+                {
+                    return animeRetrieveSrv.save();
+                })
+                .catch(function(err)
+                {
+                    Promse.reject("Error: " + err);
+                });
+        }
+
         $scope.add = function(anime, clickNew)
         {
             var clickNew = typeof clickNew !== 'undefined' ? clickNew : false;
-            anilistEditor(anime, anime.ep + 1, animeRetrieveSrv, anilistFac);
+            anilistEditor(anime, anime.ep + 1, animeRetrieveSrv, anilistFac.animeProvider);
             ga('send', 'event', "button", "add", "Add to an anime");
             if (clickNew)
             {
@@ -21,7 +102,7 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
         }
         $scope.minus = function(anime)
         {
-            anilistEditor(anime, anime.ep - 1, animeRetrieveSrv, anilistFac);
+            anilistEditor(anime, anime.ep - 1, animeRetrieveSrv, anilistFac.animeProvider);
             ga('send', 'event', "button", "subtract", "Subtract to an anime");
         }
         $scope.delete = function(anime)
@@ -125,5 +206,10 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
             };
             return false;
         }
+        $scope.init = function() {
+
+        }
+
+
     }
 ]);

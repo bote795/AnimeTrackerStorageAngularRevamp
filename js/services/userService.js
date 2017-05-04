@@ -35,7 +35,7 @@ app.service('userSrv', function($rootScope)
     }
     this.userSignedIn = function()
     {
-        if (typeof self.user["token"] != "undefined")
+        if (self.user["username"])
         {
             return true;
         }
