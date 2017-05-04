@@ -24,34 +24,25 @@ app.controller('anilistController', ['anilistFac', '$scope', '$http', 'userSrv',
         */
         $scope.saveCode = function()
         {
-            anilistFac.animeProvider.requestAcessToken($scope.PinCode).then(function(err)
+            var user_info = {
+                username: $scope.username,
+                code: $scope.PinCode
+            };
+            userManager.save(
             {
-                if (err)
+                username: username
+            });
+            anilistFac.pin(user_info)
+                .then(function(err)
+                {
+                    $scope.$emit('reload', null);
+                })
+                .catch(function(err)
                 {
                     $scope.error = true;
                     console.log("error");
                     $scope.message = "UnSuccessful User Login";
-                }
-                else
-                {
-                    $scope.userSignIn = true;
-                    $scope.error = false;
-                    $scope.sucess = true;
-                    $scope.message = "Successful User Login";
-                    anilistFac.animeProvider.RetrieveUser().then(function(err)
-                    {
-                        if (err)
-                        {
-                            $scope.error = true;
-                            console.log("error");
-                            $scope.message = "UnSuccessful User info retrieval";
-                        };
-                        $scope.$emit('reload', null);
-                    })
-
-                }
-
-            });
+                });
 
         }
 
