@@ -209,7 +209,14 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
         $scope.init = function() {
 
         }
-
-
+        $scope.nameToShow = function(name)
+        {
+            if (name.length > 40)
+            {
+                return name.substr(0, 34) + "...";
+            }
+            else
+                return name;
+        }
     }
 ]);

@@ -1,9 +1,9 @@
 <div class="tab-content">
-  <div ng-controller="AnimeDataController" class="tab-pane active" id="home">
-    <div class="panel-group" id="accordion">
-      <div class="panel panel-default">
-        <div class="panel-heading" id="foo">
-          <h4 class="panel-title">
+    <div ng-controller="AnimeDataController" class="tab-pane active" id="home">
+        <div class="panel-group" id="accordion">
+            <div class="panel panel-default">
+                <div class="panel-heading" id="foo">
+                    <h4 class="panel-title">
             <a  data-target="#collapseOne" data-toggle="collapse" data-parent="#accordion">
               Add Anime
             </a>
@@ -11,73 +11,86 @@
               <input ng-click="toggleMultiple()" type="checkbox" id="mutliple">Multiple additions
             </div>
           </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <!--form-->
+                        <form ng-submit="addNew()" id="addAnime" class="form-horizontal">
+                            <fieldset>
+                                <!-- fieldset -->
+                                <div class="form-group">
+                                    <!-- AnimeNameField -->
+                                    <label for="inputAnimeName" class="col-lg-2 control-label">Anime Name</label>
+                                    <div class="col-lg-10">
+                                        <input ng-model="newAnimeName" type="text" class="form-control" name="inputName" placeholder="Anime Name ... bleach,Naruto, etc.">
+                                    </div>
+                                </div>
+                                <!-- end AnimeNameField -->
+                                <div class="form-group">
+                                    <!-- EpField -->
+                                    <label for="inputEpisode" class="col-lg-2 control-label">Episode Number</label>
+                                    <div class="col-lg-10">
+                                        <input ng-model="newAnimeEpisode" type="text" class="form-control" name="inputEpisode" placeholder="Epsiode Number ex: 1">
+                                    </div>
+                                </div>
+                                <!--end EpField -->
+                                <div class="form-group">
+                                    <!-- form group Submit -->
+                                    <div class="col-lg-10 col-lg-offset-2">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+                                </div>
+                                <!--end form group Submit -->
+                            </fieldset>
+                            <!--end fieldset -->
+                        </form>
+                    </div>
+                    <!--form end-->
+                </div>
+            </div>
         </div>
-        <div id="collapseOne" class="panel-collapse collapse">
-          <div class="panel-body">
-            <!--form-->
-            <form ng-submit="addNew()" id="addAnime" class="form-horizontal">
-              <fieldset><!-- fieldset -->
-                <div class="form-group"><!-- AnimeNameField -->
-                  <label for="inputAnimeName" class="col-lg-2 control-label">Anime Name</label>
-                  <div class="col-lg-10">
-                    <input ng-model="newAnimeName" type="text" class="form-control" name="inputName" placeholder="Anime Name ... bleach,Naruto, etc.">
-                  </div>
-                </div><!-- end AnimeNameField -->
-                <div class="form-group"><!-- EpField -->
-                  <label for="inputEpisode" class="col-lg-2 control-label">Episode Number</label>
-                  <div class="col-lg-10">
-                    <input ng-model="newAnimeEpisode" type="text" class="form-control" name="inputEpisode" placeholder="Epsiode Number ex: 1">
-                  </div>
-                </div><!--end EpField -->
-                <div class="form-group"><!-- form group Submit -->
-                  <div class="col-lg-10 col-lg-offset-2">
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                  </div>
-                </div><!--end form group Submit -->
-              </fieldset><!--end fieldset -->
-            </form>
-          </div>
-          <!--form end-->
+        <div id="Title" ng-show="anyNewEps()">
+            <h4>New Episode is available!</h4>
         </div>
-      </div>
-    </div>
-    <div id="Title" ng-show="anyNewEps()">
-      <h4>New Episode is available!</h4>
-    </div>
-    <table id="NewTable" class="table table-striped table-hover" ng-show="anyNewEps()"><!-- table style="display:none;" -->
-      <thead><!-- thead -->
-        <tr>
-          <th>Anime Name</th>
-          <th>Options</th>
-        </tr>
-      </thead><!--end thead -->
-      <tbody><!-- tbody -->
-        <tr ng-repeat="anime in animeArray | orderBy: 'name' | filter:{isNewEpAvialable:1}" >
-          <td> {{ ($index + 1)  +"." }}
-            <!-- show the homeurl if it contains it -->
-            <a ng-show="anime['homeUrl'] != 'home'" ng-href="{{anime['homeUrl']}}" target="_newtab">{{anime["name"]}}</a>
-            <span ng-hide="anime['homeUrl'] != 'home'">{{anime["name"]}}</span>
-          </td>
-          <td>
-              <div class="btn-toolbar">
-                  <div class="btn-group">
-                      <button type="button" class="btn btn-default"  ng-click="minus(anime)">-</button>
-                      <button type="button" class="btn btn-default disabled"  >
-                        {{Episode(anime)}}
-                      </button>
-                      <button type="button" class="btn btn-default" ng-click="add(anime)">+</button>
-                      <button type="button" class="btn btn-default"><a ng-href="#/edit/Anime/{{animeArray.indexOf(anime)}}" ><i class="fa fa-pencil-square-o fa-lg"></i></a></button>
-                      <button type="button" class="btn btn-default" ng-click="delete(anime)">X</button>
-                  </div>
-                  <a ng-show='anime["isNewEpAvialable"] && anime["newEpUrl"] != "url"'ng-href="{{anime['newEpUrl']}}" ng-click="add(anime,true)" target='_newtab'><span class='badge'>New</span></a>
-              </div>
-          </td>
-        </tr>
-      </tbody><!--end tbody -->
-    </table><!-- end table -->  
-
-    <div id="CurrentTable" ng-show="anyNewEps()">
-      <h4>Current Anime!<h4>
+        <table id="NewTable" class="table table-striped table-hover" ng-show="anyNewEps()">
+            <!-- table style="display:none;" -->
+            <thead>
+                <!-- thead -->
+                <tr>
+                    <th>Anime Name</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <!--end thead -->
+            <tbody>
+                <!-- tbody -->
+                <tr ng-repeat="anime in animeArray | orderBy: 'name' | filter:{isNewEpAvialable:1}">
+                    <td> {{ ($index + 1) +"." }}
+                        <!-- show the homeurl if it contains it -->
+                        <a ng-show="anime['homeUrl'] != 'home'" ng-href="{{anime['homeUrl']}}" target="_newtab">{{nameToShow(anime["name"])}}</a>
+                        <span ng-hide="anime['homeUrl'] != 'home'">{{nameToShow(anime["name"])}}</span>
+                    </td>
+                    <td>
+                        <div class="btn-toolbar">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default" ng-click="minus(anime)">-</button>
+                                <button type="button" class="btn btn-default disabled">
+                                    {{Episode(anime)}}
+                                </button>
+                                <button type="button" class="btn btn-default" ng-click="add(anime)">+</button>
+                                <button type="button" class="btn btn-default"><a ng-href="#/edit/Anime/{{animeArray.indexOf(anime)}}"><i class="fa fa-pencil-square-o fa-lg"></i></a></button>
+                                <button type="button" class="btn btn-default" ng-click="delete(anime)">X</button>
+                            </div>
+                            <a ng-show='anime["isNewEpAvialable"] && anime["newEpUrl"] != "url"' ng-href="{{anime['newEpUrl']}}" ng-click="add(anime,true)" target='_newtab'><span class='badge'>New</span></a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            <!--end tbody -->
+        </table>
+        <!-- end table -->
+        <div id="CurrentTable" ng-show="anyNewEps()">
+            <h4>Current Anime!<h4>
     </div>
     <table id="DefaultTable" class="table table-striped table-hover"><!-- table -->
       <thead><!-- thead -->
@@ -90,8 +103,8 @@
         <tr ng-repeat="anime in animeArray | orderBy: 'name' | filter:{isNewEpAvialable:0}" >
           <td> {{ ($index + 1)  +"." }}
           <!-- show the homeurl if it contains it -->
-          <a ng-show="anime['homeUrl'] != 'home'" ng-href="{{anime['homeUrl']}}" target="_newtab">{{anime["name"]}}</a>
-          <span ng-hide="anime['homeUrl'] != 'home'">{{anime["name"]}}</span>
+          <a ng-show="anime['homeUrl'] != 'home'" ng-href="{{anime['homeUrl']}}" target="_newtab">{{nameToShow(anime["name"])}}</a>
+          <span ng-hide="anime['homeUrl'] != 'home'">{{nameToShow(anime["name"])}}</span>
         </td>
         <td>
             <div class="btn-toolbar">
