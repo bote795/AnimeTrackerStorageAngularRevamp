@@ -19,6 +19,7 @@
     }
     $.when(jqReady).then(function()
     {
+        sendTitle();
         $('a').unbind('click', handler);
         // Code here will run when doc is ready/ state === 'resolved'
         $('a').on('click', handler);
@@ -49,7 +50,7 @@
                 },
                 function(response)
                 {
-                    if (response.status === 200)
+                    if (response && response.status === 200)
                     {
                         $(e.target).css("color", "green");
                     }
@@ -67,11 +68,28 @@
                 },
                 function(response)
                 {
-                    if (response.status === 200)
+                    if (response && response.status === 200)
                     {
                         // $(e.target).css("color", "green");
                     }
                 });
         }
+    }
+
+    function sendTitle()
+    {
+        console.log("sending title");
+        chrome.runtime.sendMessage(
+            {
+                method: "EpUpdateFromTitle",
+                title: document.getElementsByTagName("title")[0].text
+            },
+            function(response)
+            {
+                if (response && response.status === 200)
+                {
+                    console.log("checked the title");
+                }
+            });
     }
 })();

@@ -87,6 +87,15 @@ chrome.runtime.onMessage.addListener(
                 });
             });
         } // close if
+        else if (request.method === "EpUpdateFromTitle")
+        {
+            //title of web page
+            var title = request.title;
+            sendResponse(
+            {
+                status: 200
+            });
+        }
     });
 
 //30min = 1800000 milliseconds
