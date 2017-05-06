@@ -56,8 +56,10 @@ when ap first run check for updates
 app.run(function($rootScope, userSrv, animeRetrieveSrv, anilistFac)
 {
     var spintarget = document.getElementById('foo');
+    var spinner = new Spinner().spin(spintarget);
+    $(spintarget).data('spinner', spinner);
 
-    //    var spinner = new Spinner().spin(spintarget);
+    //    
     //check for updates then check for total eps
     /*    var checkForUpdates = updates().then(FindTotalEps())
             .then(function()

@@ -2,43 +2,32 @@ app.service('animeRetrieveSrv', function($rootScope)
 {
     var self = this;
     this.animeArray = [];
-    try
+    this.checkForUpdates = function()
     {
-        if (typeof Spinner() !== "undefined")
-        {
-            var spintarget = document.getElementById('foo');
-            self.spinner = new Spinner().spin(spintarget);
-        }
-    }
-    catch (e)
-    {
-
+        spintarget = document.getElementById('foo');
+        self.spinner = new Spinner().spin(spintarget);
+        //check for updates then check for total eps
+        return updates()
+            .then(FindTotalEps())
+            .then(function()
+            {
+                self.spinner.stop();
+                return {};
+            })
+            .then(function()
+            {
+                return animeDataManager.load()
+            })
+            .then(function(data)
+            {
+                self.set(data);
+                return {};
+            });
     }
     animeDataManager.load().then(function(data)
     {
         self.set(data);
         return data;
-    }).then(function()
-    {
-        //check for updates then check for total eps
-        if (typeof self.spinner !== "undefined")
-        {
-            updates()
-                .then(FindTotalEps())
-                .then(function()
-                {
-                    self.spinner.stop();
-                    return {};
-                })
-                .then(function()
-                {
-                    return animeDataManager.load()
-                })
-                .then(function(data)
-                {
-                    self.set(data);
-                });
-        }
     });
     $rootScope.$on('reloadAnime', function(event, args)
     {

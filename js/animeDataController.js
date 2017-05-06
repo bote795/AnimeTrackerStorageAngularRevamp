@@ -1,5 +1,5 @@
-app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routeParams', '$rootScope', 'anilistFac',
-    function(animeRetrieveSrv, $scope, $routeParams, $rootScope, anilistFac)
+app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routeParams', '$rootScope', 'anilistFac', 'userSrv',
+    function(animeRetrieveSrv, $scope, $routeParams, $rootScope, anilistFac, userSrv)
     {
         //used to handle form on home for new anime
         $scope.newAnimeName = "";
@@ -8,11 +8,12 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
         $scope.isCollapsed = false;
         $scope.key = "savedAnimes";
         $scope.animeArray = animeRetrieveSrv.get();
+        $scope.user = userSrv.get();
 
         function updateFromRemoteServices()
         {
             var promise;
-            if (user.providers && user.providers.anilist)
+            if ($scope.user.providers && $scope.user.providers.anilist)
             {
                 promise = updateFromAnilist();
             }
@@ -34,9 +35,8 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
                 })
                 .then(function(watchingList)
                 {
-                    localAnimelist = $scope.animeArray;
                     //go through chrome extension anime
-                    localAnimelist.forEach(function(anime, index)
+                    $scope.animeArray.forEach(function(anime, index)
                     {
                         //if anime is from anilist 
                         if ('provider' in anime && anime.provider && anime.anilist)
@@ -60,13 +60,14 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
                             //make sure that anime is not equal to same episode
                             if (remoteAnime.episodes_watched !== anime.ep)
                             {
-                                //console.log(anime.name,localAnimelist[index],remoteAnime.episodes_watched);
+                                //console.log(anime.name,$scope.animeArray[index],remoteAnime.episodes_watched);
                                 //server number is bigger 
                                 if (remoteAnime.episodes_watched > anime.ep)
                                 {
-                                    localAnimelist[index].ep = remoteAnime.episodes_watched;
-                                    console.log(localAnimelist[index].name + " replace ep with" + localAnimelist[index].ep);
-                                    resetNewEpFields(localAnimelist[index]);
+                                    $scope.animeArray[index].ep = remoteAnime.episodes_watched;
+                                    console.log($scope.animeArray[index].name + " replace ep with" + $scope.animeArray[index].ep);
+                                    resetNewEpFields($scope.animeArray[index]);
+                                    $scope.$apply();
                                 }
                                 //local number is bigger must save that in anilist
                                 else
@@ -86,7 +87,7 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
                 })
                 .catch(function(err)
                 {
-                    Promse.reject("Error: " + err);
+                    Promise.reject("Error: " + err);
                 });
         }
 
@@ -145,6 +146,7 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
             }
             return string;
         }
+
         $scope.toggleMultiple = function()
         {
             $scope.mutlipleNewAnime = !$scope.mutlipleNewAnime;
@@ -206,9 +208,29 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
             };
             return false;
         }
-        $scope.init = function() {
-
+        $scope.init = function()
+        {
+            if (!$scope.user.checkedSynced)
+            {
+                $scope.user.checkedSynced = true;
+                console.log("it just went in");
+                updateFromRemoteServices()
+                    .then(function()
+                    {
+                        $('#foo').data('spinner').stop();
+                        console.log("finish updating from remote api if avilable")
+                    })
+                    .then(animeRetrieveSrv.checkForUpdates())
+                    .then(function()
+                    {
+                        console.log("completed checking for new eps form websites");
+                    });
+            }
         }
+        setTimeout(function()
+        {
+            $scope.init();
+        }, 2000);
         $scope.nameToShow = function(name)
         {
             if (name.length > 40)
@@ -218,5 +240,6 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
             else
                 return name;
         }
+
     }
 ]);

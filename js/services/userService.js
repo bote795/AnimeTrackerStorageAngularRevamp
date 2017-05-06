@@ -2,6 +2,7 @@ app.service('userSrv', function($rootScope)
 {
     var self = this;
     this.user = {};
+    this.checkedSynced = false;
     this.userSignedIn = false;
     this.load = function()
     {
