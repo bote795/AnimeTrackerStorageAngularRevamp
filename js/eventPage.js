@@ -1,6 +1,13 @@
 /*  
   Listens to events send by scripts injected to pages
 */
+//filter anime removes following characters
+// ! || : || ( || ) || / || & || ,
+function filter(anime)
+{
+    var regex = /!|:|\(|\)|\/|\.|&|,/g;
+    return anime.replace(regex, '');
+}
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse)
     {
@@ -26,6 +33,7 @@ chrome.runtime.onMessage.addListener(
                         break;
                     }
                 }
+                temp2 = filter(temp2);
                 //checks for duplicate if so dont insert
                 var duplicate = false;
                 var titleColumn = 0;
