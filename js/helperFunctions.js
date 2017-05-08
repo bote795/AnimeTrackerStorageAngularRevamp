@@ -318,6 +318,20 @@ function NextEp(url, Name, ep)
 
 }
 
+function checkForEpisode(title, Ep)
+{
+    //check if string contains episode/ep/e and the digit
+    var expr = /(Episode|ep|e)\s*(\d{1,4})/gmi;
+    var results = expr.exec(title);
+    if (!results)
+    {
+        return false;
+    }
+    var ep = results[2];
+    return (Ep + 1) == ep;
+
+}
+
 function notificationClicked(ID)
 {
     var x = JSON.parse(ID);
@@ -525,4 +539,15 @@ function savemyanimelist(keys)
         myanimelist: true
     };
     userManager.save(keys);
+}
+
+
+function howMuchMemoryInUse()
+{
+    chrome.storage.sync.getBytesInUse(
+        ["savedAnimes", "savedUpdateAnimeList", "user"],
+        function(num)
+        {
+            console.log(num + "in bytes");
+        })
 }
