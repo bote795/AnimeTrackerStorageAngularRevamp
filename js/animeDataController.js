@@ -220,7 +220,7 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
                         $('#foo').data('spinner').stop();
                         console.log("finish updating from remote api if avilable")
                     })
-                    .then(animeRetrieveSrv.checkForUpdates())
+                    .then(animeRetrieveSrv.checkForUpdates)
                     .then(function()
                     {
                         console.log("completed checking for new eps form websites");
