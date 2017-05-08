@@ -418,12 +418,38 @@ function updates()
             }; //end up main for loop
             //save new anime data
             animeDataManager.save(anime);
+            setBadgeNumbers(anime);
             return resolve();
         })
     });
     return promise;
 }
 
+function setBadgeNumbers(anime)
+{
+    var numberOfUpdates = 0;
+    for (var i = 0; i < anime.length; i++)
+    {
+        if (anime[i]["isNewEpAvialable"])
+        {
+            numberOfUpdates++;
+        }
+    }
+    if (numberOfUpdates > 0)
+    {
+        chrome.browserAction.setBadgeText(
+        {
+            text: "" + numberOfUpdates
+        });
+    }
+    else
+    {
+        chrome.browserAction.setBadgeText(
+        {
+            text: ""
+        });
+    }
+}
 /*
 Function to check if link is for watching a new episode
 */
@@ -490,10 +516,12 @@ function anilistEditor(anime, ep, animeRetrieveSrv, anilistFac)
                     updateLocalValues(anime, ep);
                     animeRetrieveSrv.edit(anime,
                     {
-                        key: "ep",
-                        value: ep
+                        "ep": ep,
+                        "isNewEpAvialable": anime["isNewEpAvialable"],
+                        "newEpUrl": anime["newEpUrl"]
                     });
                     animeRetrieveSrv.save();
+                    setBadgeNumbers(animeRetrieveSrv.get());
                 });
         }
     }
@@ -503,10 +531,12 @@ function anilistEditor(anime, ep, animeRetrieveSrv, anilistFac)
         updateLocalValues(anime, ep);
         animeRetrieveSrv.edit(anime,
         {
-            key: "ep",
-            value: ep
+            "ep": ep,
+            "isNewEpAvialable": anime["isNewEpAvialable"],
+            "newEpUrl": anime["newEpUrl"]
         });
         animeRetrieveSrv.save();
+        setBadgeNumbers(animeRetrieveSrv.get());
     }
 }
 /**

@@ -42,7 +42,7 @@ app.service('animeRetrieveSrv', function($rootScope)
      * edit saves edit for anime
      * @param  {object} anime    [anime object before edit]
      * field to update is the key, value is the value to update the field with
-     * @param  {object} {key: , value:} [object with key, value dictionary]
+     * @param  {object} {key:  value} [object with key, value paires dictionary]
      */
     this.edit = function(anime, field)
     {
@@ -54,7 +54,11 @@ app.service('animeRetrieveSrv', function($rootScope)
         }).indexOf(anime.name);
         if (key > -1)
         {
-            self.animeArray[key][field.key] = field.value;
+            var keys = Object.keys(field);
+            keys.forEach(function(item)
+            {
+                self.animeArray[key][item] = field[item];
+            })
         }
         $rootScope.$apply();
     }
