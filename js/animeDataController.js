@@ -223,6 +223,7 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
                     .then(animeRetrieveSrv.checkForUpdates)
                     .then(function()
                     {
+                        $scope.$apply();
                         console.log("completed checking for new eps form websites");
                     });
             }
