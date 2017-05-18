@@ -1,6 +1,30 @@
 /*  
   Listens to events send by scripts injected to pages
 */
+chrome.browserAction.
+onClicked.addListener(function(tab)
+{
+    userManager.load()
+        .then(function(user)
+        {
+            if (user.newtab)
+            {
+                chrome.tabs.
+                create(
+                {
+                    'url': chrome.extension.getURL('popup.html'),
+                    'selected': true
+                });
+            }
+            else
+            {
+                chrome.browserAction.setPopup(
+                {
+                    popup: "popup.html"
+                });
+            }
+        });
+});
 //filter anime removes following characters
 // ! || : || ( || ) || / || & || ,
 function filter(anime)

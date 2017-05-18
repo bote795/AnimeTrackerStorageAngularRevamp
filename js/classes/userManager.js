@@ -5,7 +5,14 @@ var userManager = function()
 inheritsFrom(userManager, Manager);
 userManager.prototype.default = function()
 {
-    return {};
+    return {
+        providers:
+        {
+            anilist: false,
+            myanimelist: false
+        },
+        newtab: false
+    };
 };
 var userManager = new userManager();
 
