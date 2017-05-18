@@ -36,7 +36,9 @@
             <div ng-show="error" class="alert alert-danger">
                 <strong>{{message}}</strong>
             </div>
-            <input type='checkbox' ng-model="anilist"> AniList List Provider </input>
+            <div>
+                <input type='checkbox' ng-model="anilist"> AniList List Provider </input>
+            </div>
             <div ng-show="anilist">
                 <div ng-hide="userSignIn">
                     <p>To be able to link Anilist. Please click on the link bellow and <b>Accept</b> permissons to edit, create or remove your AniList data. Then Copy and paste the pin code into the "Pase Pin Code" input. </p>
@@ -81,6 +83,10 @@
                     </div>
                 </div>
             </div>
+            <div>
+                <input type='checkbox' ng-model="preferences"> Preferences </input>
+            </div>
+            <user-pref ng-show="preferences"></user-pref>
         </div>
         <!-- end container -->
         <script src="js/anilogin/bundle.min.js"></script>
@@ -101,6 +107,7 @@
         <script src="js/animeDataController.js"></script>
         <script src="js/updateWebsitesController.js"></script>
         <script src="js/options/optionsController.js"></script>
+        <script src="js/options/preferencesController.js"></script>
 </body>
 
 </html>

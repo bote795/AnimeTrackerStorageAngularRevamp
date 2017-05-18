@@ -1,8 +1,8 @@
 /*  
   Listens to events send by scripts injected to pages
 */
-chrome.browserAction.
-onClicked.addListener(function(tab)
+
+function broswerActionHandler()
 {
     userManager.load()
         .then(function(user)
@@ -24,7 +24,15 @@ onClicked.addListener(function(tab)
                 });
             }
         });
+}
+chrome.browserAction.
+onClicked.addListener(function(tab)
+{
+    broswerActionHandler();
 });
+
+userManager.save()
+
 //filter anime removes following characters
 // ! || : || ( || ) || / || & || ,
 function filter(anime)
@@ -115,6 +123,27 @@ chrome.runtime.onMessage.addListener(
         {
             //title of web page
             var title = request.title;
+            sendResponse(
+            {
+                status: 200
+            });
+        }
+        else if (request.method === "updatePopup")
+        {
+            if (!request.newtab)
+            {
+                chrome.browserAction.setPopup(
+                {
+                    popup: "popup.html"
+                });
+            }
+            else
+            {
+                chrome.browserAction.setPopup(
+                {
+                    popup: ""
+                });
+            }
             sendResponse(
             {
                 status: 200

@@ -12,6 +12,7 @@ app.controller('anilistController', ['anilistFac', '$scope', '$http', 'userSrv',
         $scope.sucess = false;
         $scope.error = false;
         $scope.anilist = false;
+        $scope.preferences = false;
         $scope.message = "";
         $scope.userSignIn = userSrv.getSignedIn();
         $scope.animeArray = animeRetrieveSrv.get();
