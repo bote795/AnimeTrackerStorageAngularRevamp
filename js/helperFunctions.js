@@ -176,9 +176,10 @@ function FindTotalEps()
                     var x = 0;
                     for (x = 0; x < animeArray.length; x++)
                     {
-                        if (filtered[i]["name"] == animeArray[x]["name"])
+                        if (filtered[i]["name"] == animeArray[x]["name"] && animeArray[x]["totalEps"] === 0)
                         {
                             animeArray[x]["totalEps"] = filtered[i]["totalEps"];
+                            animeArray[x]["nextCheckForTotalEps"] = filtered[i]["nextCheckForTotalEps"];
                             break;
                         }
                     }
@@ -205,12 +206,12 @@ function checkForTotalEps(animeInfo)
     var query = 'select anime from xml where url="' + url + '"';
     var yqlAPI = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent(query) + ' &format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=?';
     //if chrome extension is old and hasn't been used field will not exist fix it
-    if (typeof animeInfo["totalEps"] === 'undefined')
-        animeInfo["totalEps"] = 0;
+    if (typeof animeInfo["nextCheckForTotalEps"] === 'undefined')
+        animeInfo["nextCheckForTotalEps"] = 0;
     //make sure that it doesn't already know the numbers of eps 
     //and its equal to the number of eps to reduce the number of times sent
     //or its equal to 0 hasnt been checked
-    if (typeof animeInfo["totalEps"] !== "string" && (animeInfo["totalEps"] === animeInfo["ep"] || animeInfo["totalEps"] === 0))
+    if (animeInfo["totalEps"] === 0 && (animeInfo["nextCheckForTotalEps"] === animeInfo["ep"] || animeInfo["nextCheckForTotalEps"] === 0))
     {
         var found = false;
         $.getJSON(yqlAPI, function()
@@ -231,7 +232,7 @@ function checkForTotalEps(animeInfo)
                                 {
                                     console.log(anime);
                                     console.log(this.content);
-                                    animeInfo["totalEps"] = " out of " + this.content;
+                                    animeInfo["totalEps"] = this.content;
                                     found = true;
 
                                 }
@@ -240,11 +241,12 @@ function checkForTotalEps(animeInfo)
                     }
                 }
                 if (!found)
-                    animeInfo["totalEps"] = animeInfo["totalEps"] + 2;
+                    animeInfo["nextCheckForTotalEps"] = animeInfo["nextCheckForTotalEps"] + 2;
                 deferred.resolve(
                 {
                     name: animeInfo["name"],
-                    totalEps: animeInfo["totalEps"]
+                    totalEps: animeInfo["totalEps"],
+                    totalEps: animeInfo["nextCheckForTotalEps"]
                 });
             })
             .fail(function(r)
@@ -476,6 +478,56 @@ function LinkContainsNewEp(temp, cb)
     });
 }
 
+//check manifest what version is currently running
+function getVersion()
+{
+    var details = chrome.app.getDetails();
+    return details.version;
+}
+
+function callupdate(prevVersion, currVersion)
+{
+    return onUpdate(prevVersion, currVersion)
+        .then(function()
+        {
+            return userManager.load();
+        })
+        .then(function(userData)
+        {
+            if (userData === [])
+            {
+                userData = {};
+            }
+            //need to update the version
+            userData['version'] = currVersion;
+            return userManager.save(userData);
+        });
+}
+
+function checkIfVersionChanged()
+{
+    var promise;
+    var currVersion = getVersion();
+    return userManager.load()
+        .then(function(userData)
+        {
+            var prevVersion = userData["version"];
+            if (currVersion != prevVersion)
+            {
+
+                if (typeof prevVersion === "undefined")
+                {
+                    return callupdate("1.99", currVersion);
+                }
+                else
+                {
+                    return callupdate(prevVersion, currVersion);
+                }
+            }
+            else
+                return Promise.resolve();
+        });
+}
 ///////////////////////////////
 // Functions for controllers //
 ///////////////////////////////
@@ -545,17 +597,15 @@ function anilistEditor(anime, ep, animeRetrieveSrv, anilistFac)
  */
 function saveAnilist(keys)
 {
-    var temp = {};
-    temp.refresh_token = keys;
-    temp.providers = {
-        anilist: true,
-        myanimelist: false
-    };
     userManager.load()
         .then(function(user)
         {
-            temp.username = user.username;
-            userManager.save(temp);
+            user.refresh_token = keys;
+            user.providers = {
+                anilist: true,
+                myanimelist: false
+            };
+            userManager.save(user);
         });
 }
 /**

@@ -6,14 +6,16 @@ app.service('userSrv', function($rootScope)
     this.userSignedIn = false;
     this.load = function()
     {
-        return userManager.load().then(function(data)
-        {
-            console.log("this is what the user value is: ");
-            console.log(data);
-            angular.copy(data, self.user);
-            angular.copy(self.userSignedIn(), self.userSignedIn);
-            return {};
-        });
+        //checkIfVersionChanged() //do updates if we need to
+        return userManager.load()
+            .then(function(data)
+            {
+                console.log("this is what the user value is: ");
+                console.log(data);
+                angular.copy(data, self.user);
+                angular.copy(self.userSignedIn(), self.userSignedIn);
+                return {};
+            });
     }
     this.get = function()
         {

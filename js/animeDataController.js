@@ -126,23 +126,19 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
         $scope.Episode = function(anime)
         {
             var string = "";
-            var text = "-1";
-            //does total eps have 'out of 'X
-            if (typeof anime["totalEps"] === "string")
-                text = anime["totalEps"].substring(8, anime["totalEps"].length)
-                //is it a new anime
+            //is it a new anime
             if (anime["ep"] == 0)
                 string += "New";
             //is the anime done
-            else if (anime["ep"] == parseInt(text))
+            else if (anime["ep"] === anime["totalEps"])
                 string += "done";
             //else just deplay the ep of the anime
             else
                 string += anime["ep"];
-            if (typeof anime["totalEps"] === "string" && anime["ep"] != parseInt(text))
+            if (typeof anime["totalEps"] === "string" && anime["ep"] != anime["totalEps"])
             {
                 //ep out of X
-                string += anime["totalEps"];
+                string += "/" + anime["totalEps"];
             }
             return string;
         }
@@ -178,6 +174,7 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
             tempDict["name"] = name;
             tempDict["ep"] = ep;
             tempDict["isNewEpAvialable"] = 0;
+            tempDict["nextCheckForTotalEps"] = 0;
             tempDict["newEpUrl"] = "url";
             tempDict["homeUrl"] = "home";
             tempDict["totalEps"] = 0;
