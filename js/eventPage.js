@@ -30,8 +30,26 @@ onClicked.addListener(function(tab)
 {
     broswerActionHandler();
 });
-
-userManager.save()
+//set the version on installation
+chrome.runtime.onInstalled.addListener(function(details)
+{
+    if (details.reason == "install")
+    {
+        var currVersion = getVersion();
+        userManager.load()
+            .then(function(userData)
+            {
+                userData['version'] = currVersion;
+                userManager.save(userData);
+            });
+        console.log("This is a first install!");
+    }
+    else if (details.reason == "update")
+    {
+        var thisVersion = chrome.runtime.getManifest().version;
+        console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
+    }
+});
 
 //filter anime removes following characters
 // ! || : || ( || ) || / || & || ,
@@ -87,7 +105,8 @@ chrome.runtime.onMessage.addListener(
                         isNewEpAvialable: 0,
                         newEpUrl: "url",
                         homeUrl: "home",
-                        totalEps: 0
+                        totalEps: 0,
+                        nextCheckForTotalEps: 0
                     }); // 
 
                 animeDataManager.save(anime);

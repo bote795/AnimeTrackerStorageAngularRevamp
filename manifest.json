@@ -3,7 +3,7 @@
     "name": "AnimeTrackerStorageBeta",
     "short_name": "ATS",
     "description": "Keep up to date with your Anime! Add the anime you're watching to the list it'll track what episode you are on and when its up!",
-    "version": "1.99",
+    "version": "2.00",
     "icons":
     {
         "16": "assets/icon.png",

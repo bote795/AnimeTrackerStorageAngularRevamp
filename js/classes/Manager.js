@@ -16,7 +16,7 @@ Manager.prototype.load = function()
     var tempThis = this;
     var promise = new Promise(function(resolve, reject)
     {
-        chrome.storage.sync.get(this.key, function(obj)
+        chrome.storage.sync.get(tempThis.key, function(obj)
         {
             //no error and the key is defined 
             //return data
@@ -76,6 +76,7 @@ Manager.prototype.save = function(array)
             otherwise will cause duplicate issues sometimes
         */
         if (Array.isArray(array))
+        {
             array = array.map(function(item, index)
             {
                 if (item["$$hashKey"] != undefined)
@@ -84,6 +85,7 @@ Manager.prototype.save = function(array)
                 }
                 return item;
             });
+        }
         save[self.key] = array;
         console.log(save);
         chrome.storage.sync.set(save, function()

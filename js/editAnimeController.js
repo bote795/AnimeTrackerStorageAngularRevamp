@@ -24,12 +24,7 @@ app.controller('editAnimeController', ['animeRetrieveSrv', '$scope', '$routePara
             }
             else
                 $scope.edit.homeUrl = $scope.animeArray[$scope.detailId]['homeUrl'];
-            if (typeof $scope.animeArray[$scope.detailId]['totalEps'] === 'number')
-            {
-                $scope.edit.totalEps = "";
-            }
-            else
-                $scope.edit.totalEps = $scope.animeArray[$scope.detailId]['totalEps'];
+            $scope.edit.totalEps = $scope.animeArray[$scope.detailId]['totalEps'];
             ga('send', 'pageview', "/editAnime.html");
         }
         //edit form in editAnime
@@ -60,7 +55,7 @@ app.controller('editAnimeController', ['animeRetrieveSrv', '$scope', '$routePara
 
                 if (i == 3 && !isNaN(Number($scope.edit[fields[i]])) && $scope.edit[fields[i]] != "")
                 {
-                    $scope.animeArray[$scope.detailId][fields[i]] = " out of " + $scope.edit.totalEps;
+                    $scope.animeArray[$scope.detailId][fields[i]] = $scope.edit.totalEps;
                     continue;
                 }
                 else if (i == 3)

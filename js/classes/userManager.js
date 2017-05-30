@@ -47,4 +47,5 @@ currently: only
 	["user"]
 		["id"]
 		["display_name"] 
+["version"] version of the chrome extension
 */

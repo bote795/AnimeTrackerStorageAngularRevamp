@@ -14,10 +14,11 @@ app.controller('anilistController', ['$scope', '$http', 'anilistFac', 'userSrv',
                 username: $scope.username,
                 code: $scope.PinCode
             };
-            userManager.save(
+            userSrv.edit(
             {
-                username: username
+                username: user_info.username
             });
+            userSrv.save();
             anilistFac.pin(user_info)
                 .then(function(result)
                 {
