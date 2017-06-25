@@ -1,0 +1,5 @@
+<div class="btn-group">
+    <button class="btn btn-primary" ng-repeat="choice in ctrl.choices" data-ng-model="ctrl.newtab" data-ng-value="{{choice.value}}" ng-click="ctrl.onChanged(choice.value)">
+        {{choice.text}}
+    </button>
+</div>
