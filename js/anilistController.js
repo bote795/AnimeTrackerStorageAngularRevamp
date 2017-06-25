@@ -9,7 +9,7 @@ app.controller('anilistController', ['$scope', '$http', 'anilistFac', 'userSrv',
     */
     $scope.saveCode = function()
         {
-
+            $target = $(".datareply");
             var user_info = {
                 username: $scope.username,
                 code: $scope.PinCode
@@ -23,10 +23,12 @@ app.controller('anilistController', ['$scope', '$http', 'anilistFac', 'userSrv',
                 .then(function(result)
                 {
                     console.log(result);
+                    $target.addClass('alert alert-dismissable alert-success');
                 })
                 .catch(function(err)
                 {
                     console.log(err);
+                    $target.addClass('alert alert-dismissable alert-danger');
                 });
         }
         /*
