@@ -55,7 +55,7 @@ app.controller('editAnimeController', ['animeRetrieveSrv', '$scope', '$routePara
 
                 if (i == 3 && !isNaN(Number($scope.edit[fields[i]])) && $scope.edit[fields[i]] != "")
                 {
-                    $scope.animeArray[$scope.detailId][fields[i]] = $scope.edit.totalEps;
+                    $scope.animeArray[$scope.detailId][fields[i]] = Number($scope.edit.totalEps);
                     continue;
                 }
                 else if (i == 3)

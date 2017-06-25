@@ -135,7 +135,7 @@ app.controller('AnimeDataController', ['animeRetrieveSrv', '$scope', '$routePara
             //else just deplay the ep of the anime
             else
                 string += anime["ep"];
-            if (typeof anime["totalEps"] === "string" && anime["ep"] != anime["totalEps"])
+            if (anime["ep"] != anime["totalEps"] && anime["totalEps"] !== 0)
             {
                 //ep out of X
                 string += "/" + anime["totalEps"];

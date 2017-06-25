@@ -21,11 +21,14 @@ animeDataManager.prototype.upgrade = function()
         tempDict["newEpUrl"] = animes[i][3];
         tempDict["homeUrl"] = animes[i][4];
         tempDict["totalEps"] = animes[i][5];
+        //if it was a number means the next time to check for updates
+        //if it was string the number is the number of eps
         data.push(tempDict);
     };
     return data;
 }
 var animeDataManager = new animeDataManager();
+
 
 /*
 keys per Anime in array
@@ -35,7 +38,10 @@ keys per Anime in array
     tempDict["newEpUrl"] = "url";
     tempDict["homeUrl"] = "home";
     tempDict["totalEps"] = 0;
+    tempDict["nextCheckForTotalEps"] = 0;
+
     tempDict["provider"] = true;
+
     tempDict["anilist"]  = true;
     tempDict["id"]  = ;
     tempDict["image_url_med"] = ;
