@@ -1,3 +1,4 @@
+var apiUri = "https://anime-scraper.herokuapp.com/";
 /*
   checks for New Eps for the animes returns promise
   params:
@@ -17,7 +18,9 @@
 */
 function checkForNewEps(animeUpdatesArray)
 {
-    var promise = new Promise(function(resolve, reject)
+    /*
+    
+     var promise = new Promise(function(resolve, reject)
     {
         var promises = [];
         for (var i = 0; i < animeUpdatesArray.length; i++)
@@ -31,6 +34,8 @@ function checkForNewEps(animeUpdatesArray)
         });
     });
     return promise;
+    */
+    return massageRemoteData();
 }
 /*
 sends requests to yql api 
@@ -131,6 +136,157 @@ function requestAnimeSite(animePageInfo)
                 urls: [],
                 website: animePageInfo["website"]
             });
+        });
+    return deferred.promise();
+}
+
+function massageRemoteData()
+{
+    var result = [];
+    /*
+        urls,
+        website
+     */
+    return getAllWebsitesData()
+        .then(function(remoteData)
+        {
+            remoteData.forEach(
+                function(animePageInfo)
+                {
+                    var updates = [];
+                    if (animePageInfo["type"] == "html")
+                    {
+                        $.each(animePageInfo.data.a, function()
+                        {
+                            if (typeof this.href !== 'undefined')
+                            {
+                                if (animePageInfo["domainNeeded"]) //do we need to add the domain to the url
+                                {
+                                    updates.push([this.href, "(Sub)", (animePageInfo["domain"] + this.href)]);
+                                }
+                                else
+                                {
+                                    updates.push([this.href, "(Sub)", this.href]);
+                                }
+
+                            }
+                        }); // close each
+                        result.push(
+                        {
+                            urls: updates,
+                            website: animePageInfo["website"]
+                        })
+                    }
+                });
+            console.log(result);
+            return result;
+        });
+}
+/**
+ * [getAllWebsitesData sends all uris to api to get data]
+ * @return {Object} response from api
+ */
+function getAllWebsitesData()
+{
+    var deferred = $.Deferred();
+    var animeData = [];
+    updateWebsiteManager
+        .load()
+        .then(function(data)
+        {
+            var arrayUris = [];
+            data.forEach(function(animeWebData)
+            {
+                arrayUris.push(animeWebData["website"]);
+            })
+            animeData = data;
+            return arrayUris;
+        })
+        .then(function(arrayUris)
+        {
+            return getapiAnimeData(arrayUris)
+        })
+        .then(function(data)
+        {
+            data.forEach(function(animeRespObj)
+            {
+                var localAnimeData = animeData.filter(function(websiteData)
+                {
+                    return websiteData["website"] == animeRespObj["uri"];
+                });
+                var anime = localAnimeData[0];
+                Object.assign(animeRespObj, anime);
+            });
+            deferred.resolve(data);
+        });
+    return deferred.promise();
+}
+
+/**
+ * [getapiAnimeData request to get data for the specific uris]
+ * @param  {array} arrayOfUris array of strings
+ * @return {Object}             response object 
+ */
+function getapiAnimeData(arrayOfUris)
+{
+    var deferred = $.Deferred();
+    var buildQuery = "";
+    for (var i = arrayOfUris.length - 1; i >= 0; i--)
+    {
+        buildQuery += "uri=" + encodeURIComponent(arrayOfUris[i]);
+        if (i - 1 >= 0)
+        {
+            buildQuery += "&";
+        }
+    }
+
+    var uri = apiUri + "uris?" + buildQuery;
+    $.getJSON(uri)
+        .success(function(r)
+        {
+            if (r.status === "ok")
+            {
+                deferred.resolve(
+                    r.data);
+            }
+
+        })
+        .fail(function(r)
+        {
+            console.log(r);
+            deferred.reject();
+        });
+    return deferred.promise();
+}
+
+function addURITo(animePageInfo)
+{
+    var deferred = $.Deferred();
+    var uri = apiUri + "addUri";
+    var dataUri = "http://www.animefreak.tv/tracker"; //animePageInfo["website"]
+    var xpath = "//div[@class='view-content']//tbody//tr//@href"; //animePageInfo["xpath"]    
+    $.post(uri,
+        {
+            "uri": dataUri,
+            "xpath": xpath
+        })
+        .done(function(r)
+        {
+            if (r.status === "ok")
+            {
+                console.log(r.data);
+                deferred.resolve(r.data);
+            }
+            else
+            {
+                console.log("failed");
+                deferred.reject();
+            }
+
+        })
+        .fail(function(r)
+        {
+            console.log(r);
         });
     return deferred.promise();
 }
