@@ -402,7 +402,7 @@ function checkForTotalEps(animeInfo)
                 {
                     name: animeInfo["name"],
                     totalEps: animeInfo["totalEps"],
-                    totalEps: animeInfo["nextCheckForTotalEps"]
+                    nextCheckForTotalEps: animeInfo["nextCheckForTotalEps"]
                 });
             })
             .fail(function(r)

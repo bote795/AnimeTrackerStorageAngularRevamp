@@ -137,9 +137,9 @@ app.controller('anilistController', ['anilistFac', '$scope', '$http', 'userSrv',
             */
         $scope.import = function()
             {
-                var animeList = $scope.watching;
+                var animeList = $scope.watching; //api data
                 var tempAnimeArray = [];
-                console.log($scope.animeArray);
+                console.log($scope.animeArray); //local array
                 animeList = animeList.filter(function(item)
                 {
                     for (var i = 0; i < $scope.animeArray.length; i++)
