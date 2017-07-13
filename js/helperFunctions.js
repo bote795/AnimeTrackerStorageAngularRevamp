@@ -629,6 +629,7 @@ function LinkContainsNewEp(temp, cb)
             }
         }
         animeDataManager.save(anime);
+        setBadgeNumbers(anime);
         console.log("check link for new ep activated");
         cb();
     });

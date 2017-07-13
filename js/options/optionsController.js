@@ -177,10 +177,11 @@ app.controller('anilistController', ['anilistFac', '$scope', '$http', 'userSrv',
                 tempDict["isNewEpAvialable"] = 0;
                 tempDict["newEpUrl"] = "url";
                 tempDict["homeUrl"] = "home";
+                tempDict["nextCheckForTotalEps"] = 0;
                 var eps = listProviderAnime.anime.total_episodes;
-                if (eps != 0 && eps != null)
+                if (eps && eps != 0)
                 {
-                    tempDict["totalEps"] = " out of " + eps;
+                    tempDict["totalEps"] = parseInt(eps);
                 }
                 else
                 {
