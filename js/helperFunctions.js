@@ -18,34 +18,10 @@ var apiUri = "https://anime-scraper.herokuapp.com/";
 */
 function checkForNewEps(animeUpdatesArray)
 {
-    /*
-    
-     var promise = new Promise(function(resolve, reject)
-    {
-        var promises = [];
-        for (var i = 0; i < animeUpdatesArray.length; i++)
-        {
-            promises.push(requestAnimeSite(animeUpdatesArray[i]));
-        };
-        $.when.apply($, promises).then(function()
-        {
-            var temp = arguments; // The array of resolved objects as a pseudo-array
-            resolve(temp);
-        });
-    });
-    return promise;
-    */
     return massageRemoteData();
 }
+
 /*
-sends requests to yql api 
-for each website added to check for updates
-@param animePageInfo for updates
-  ["website"]
-    ["xpath"]
-    ["type"]
-    ["domainNeeded"]
-    ["domain"]
 returns 
   promise
   urls: an array of urls from website with hopefully anime names inside the urls and ep numbers
@@ -53,93 +29,6 @@ returns
   website: website send to check
 returns urls:[] for fail website: website send to check
 */
-function requestAnimeSite(animePageInfo)
-{
-    var deferred = $.Deferred();
-    var query;
-    var updates = []; // will hold all updates
-    if (animePageInfo["type"] == "html")
-        query = 'select * from html where url ="' + animePageInfo["website"] + '" and ' + animePageInfo["xpath"];
-    else
-        query = 'select link from rss where url="' + animePageInfo["website"] + '"';
-    var yqlAPI = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent(query) + ' &format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=?';
-    $.getJSON(yqlAPI, function()
-        {
-            console.log("sucess");
-        })
-        .success(function(r)
-        {
-            //check if website is gogoAnime requires special treatement
-            if (animePageInfo["website"] == "http://www.gogoanime.com/")
-            {
-                $.each(r.query.results.li, function()
-                {
-                    if (typeof this.font !== 'undefined') //are we getting wrong info don't get it
-                    {
-                        if (this.font.content != "(Raw)") //we dont need raw anime
-                        {
-                            updates.push([this.a.href, this.font.content, this.a.href]);
-                        }
-                    }
-                }); // close each
-            }
-            //any other website
-            else
-            {
-                //check query is good
-                if (r.query !== 'undefined' && r.query.results !== null)
-                {
-                    //is type html or rss
-                    if (animePageInfo["type"] == "html")
-                    {
-                        $.each(r.query.results.a, function()
-                        {
-                            if (typeof this.href !== 'undefined')
-                            {
-                                if (animePageInfo["domainNeeded"]) //do we need to add the domain to the url
-                                {
-                                    updates.push([this.href, "(Sub)", (animePageInfo["domain"] + this.href)]);
-                                }
-                                else
-                                {
-                                    updates.push([this.href, "(Sub)", this.href]);
-                                }
-
-                            }
-                        }); // close each
-
-                    }
-                    else
-                    {
-                        $.each(r.query.results.item, function()
-                        {
-                            if (typeof this.link !== 'undefined')
-                            {
-                                updates.push([this.link, "(Sub)", (animePageInfo["domain"] + this.link)]);
-                            }
-                        }); // close each
-                    }
-                }
-            } // close else
-            deferred.resolve(
-            {
-                urls: updates,
-                website: animePageInfo["website"]
-            });
-        }) // close sucess
-        .fail(function(r)
-        {
-            console.log("fail");
-            console.log(r);
-            deferred.resolve(
-            {
-                urls: [],
-                website: animePageInfo["website"]
-            });
-        });
-    return deferred.promise();
-}
-
 function massageRemoteData()
 {
     var result = [];
@@ -178,7 +67,6 @@ function massageRemoteData()
                         })
                     }
                 });
-            console.log(result);
             return result;
         });
 }
