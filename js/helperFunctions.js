@@ -146,13 +146,36 @@ function getapiAnimeData(arrayOfUris)
         });
     return deferred.promise();
 }
-
-function addURITo(animePageInfo)
+/**
+ * testURI returns what is scraped from the uri and xpath and adds uri to urls to be scraped in interval
+ * @param  {object} animePageInfo object contains website and xpath
+ * @return {Promise}               returns the scraped data
+ */
+function addURI(animePageInfo)
+{
+    return callScrapeAPI("addUri", animePageInfo);
+}
+/**
+ * [testURI returns what is scraped from the uri and xpath]
+ * @param  {object} animePageInfo object contains website and xpath
+ * @return {Promise}               returns the scraped data
+ */
+function testURI(animePageInfo)
+{
+    return callScrapeAPI("testScrape", animePageInfo);
+}
+/**
+ * [callScrapeAPI calls api depending on path specified]
+ * @param  {String} path          the path of the api to call
+ * @param  {object} animePageInfo contains information about the anime just as the website and the xpath
+ * @return {promise}               [returns the data returned from api if request is sucessful]
+ */
+function callScrapeAPI(path, animePageInfo)
 {
     var deferred = $.Deferred();
-    var uri = apiUri + "addUri";
-    var dataUri = "http://www.animefreak.tv/tracker"; //animePageInfo["website"]
-    var xpath = "//div[@class='view-content']//tbody//tr//@href"; //animePageInfo["xpath"]    
+    var uri = apiUri + path;
+    var dataUri = animePageInfo["website"]; //"http://www.animefreak.tv/tracker" animePageInfo["website"]
+    var xpath = animePageInfo["xpath"]; // "//div[@class='view-content']//tbody//tr//@href";     
     $.post(uri,
         {
             "uri": dataUri,
