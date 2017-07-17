@@ -3,6 +3,7 @@ function onUpdate(preVersion, currentVersion)
 {
     var updates = {
         "2.00": updateUserandAnime,
+        "2.01": updateXpath,
     };
     var promises = [];
     for (var i = parseFloat(preVersion); i <= parseFloat(currentVersion); i += .01)
@@ -63,5 +64,23 @@ function updateUserandAnime()
                 }
             }
             return animeDataManager.save(animes);
+        });
+}
+
+function updateXpath()
+{
+    return updateWebsiteManager.load()
+        .then(function(websites)
+        {
+            websites.forEach(function(website)
+            {
+                if (website["xpath"].includes("xpath"))
+                {
+                    website["xpath"] = website["xpath"].replace('xpath=', '');
+                    website["xpath"] = website["xpath"].replace(new RegExp('"', 'g'), '');
+                    website["xpath"] = website["xpath"].replace('/\\', '');
+                }
+            });
+            return updateWebsiteManager.save(websites);
         });
 }
