@@ -24,11 +24,13 @@ app.controller('anilistController', ['$scope', '$http', 'anilistFac', 'userSrv',
                 {
                     console.log(result);
                     $target.addClass('alert alert-dismissable alert-success');
+                    $target.append("Sucess");
                 })
                 .catch(function(err)
                 {
                     console.log(err);
                     $target.addClass('alert alert-dismissable alert-danger');
+                    $target.append("Error calling API");
                 });
         }
         /*

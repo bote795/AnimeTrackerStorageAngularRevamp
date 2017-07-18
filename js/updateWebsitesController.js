@@ -385,11 +385,15 @@ app.controller('updateWebsitesController', function($scope, $http)
         console.log(temp);
         $scope.animeUpdatesArray.push(temp);
         $scope.save();
-        addURI(temp);
-        ga('send', 'event', "button", "successfully submited updates website", "successfully submited website to check for updates for anime eps");
-        ga('send', 'event', "website", temp["website"], "website submited");
-        alert("successfully submitted");
-        $scope.resetAddUpdatesUrl();
+        addURI(temp)
+            .then(function()
+            {
+                ga('send', 'event', "button", "successfully submited updates website", "successfully submited website to check for updates for anime eps");
+                ga('send', 'event', "website", temp["website"], "website submited");
+                alert("successfully submitted");
+                $scope.resetAddUpdatesUrl();
+            });
+
     }
     $scope.resetAddUpdatesUrl = function()
     {
