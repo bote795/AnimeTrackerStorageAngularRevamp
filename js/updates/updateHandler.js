@@ -6,9 +6,9 @@ function onUpdate(preVersion, currentVersion)
         "2.01": updateXpath,
     };
     var promises = [];
-    for (var i = parseFloat(preVersion); i <= parseFloat(currentVersion); i += .01)
+    for (var i = +(parseFloat(preVersion) + .01).toFixed(12); i <= parseFloat(currentVersion); i = +(i + 0.01).toFixed(12))
     {
-        var version = i.toFixed(2).toString();
+        var version = i.toString();
         if (updates[version])
             promises.push(updates[version]);
     }
