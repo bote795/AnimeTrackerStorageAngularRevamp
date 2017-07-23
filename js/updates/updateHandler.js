@@ -1,9 +1,15 @@
-//TODO figure out how to execute this and for it to allow for further updates
+//added wrappers for promises so they get executed when its time not when its loaded
 function onUpdate(preVersion, currentVersion)
 {
     var updates = {
-        "2.00": updateUserandAnime,
-        "2.01": updateXpath,
+        "2.00": function()
+        {
+            return updateUserandAnime();
+        },
+        "2.01": function()
+        {
+            return updateXpath();
+        },
     };
     var promises = [];
     for (var i = +(parseFloat(preVersion) + .01).toFixed(12); i <= parseFloat(currentVersion); i = +(i + 0.01).toFixed(12))
@@ -12,9 +18,19 @@ function onUpdate(preVersion, currentVersion)
         if (updates[version])
             promises.push(updates[version]);
     }
-    return Promise.all(promises);
+    return executeSequentially(promises);
 }
 
+//execute promises sequentially
+function executeSequentially(promiseFactories)
+{
+    var result = Promise.resolve();
+    promiseFactories.forEach(function(promiseFactory)
+    {
+        result = result.then(promiseFactory);
+    });
+    return result;
+}
 //"version": "2.00",
 function updateUserandAnime()
 {
