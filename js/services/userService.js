@@ -7,12 +7,12 @@ app.service('userSrv', function($rootScope)
     this.load = function()
     {
 
-        // checkIfVersionChanged() //do updates if we need to
-        //    .then(function()
-        //    {
-        //        return userManager.load();
-        //    })
-        return userManager.load()
+        return checkIfVersionChanged() //do updates if we need to
+            .then(function()
+            {
+                return userManager.load();
+            })
+            //return userManager.load()
             .then(function(data)
             {
                 console.log("this is what the user value is: ");

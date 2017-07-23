@@ -101,6 +101,15 @@ Manager.prototype.save = function(array)
     });
     return promise;
 };
+
+Manager.prototype.export = function()
+{
+    this.load()
+        .then(function(data)
+        {
+            console.log(JSON.stringify(data));
+        });
+}
 var inheritsFrom = function(child, parent)
 {
     child.prototype = Object.create(parent.prototype);

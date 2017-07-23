@@ -575,15 +575,6 @@ function howMuchMemoryInUse()
         })
 }
 
-function exportUser()
-{
-    userManager.load()
-        .then(function(user)
-        {
-            console.log(JSON.stringify(user));
-        });
-}
-
 function importUser(data)
 {
     userManager.save(data);
