@@ -18,7 +18,7 @@ app.controller('updateWebsitesController', function($scope, $http)
             domainNeeded: true,
             type: "html",
             website: "http://www.lovemyanime.net/latest-anime-episodes/",
-            xpath: 'xpath="//div[@class=\'noraml-page_in_box_mid\']//div[@class=\'noraml-page_in_box_mid_link\']//@href"'
+            xpath: "//div[@class='noraml-page_in_box_mid']//div[@class='noraml-page_in_box_mid_link']//@href"
 
         },
         {
@@ -26,26 +26,26 @@ app.controller('updateWebsitesController', function($scope, $http)
             domainNeeded: true,
             type: "html",
             domain: "http://www.animefreak.tv",
-            xpath: 'xpath="//div[@class=\'view-content\']//tbody//tr//@href"'
+            xpath: "//div[@class='view-content']//tbody//tr//@href"
         },
         {
             website: "http://www.animeseason.com/",
             domainNeeded: true,
             type: "html",
             domain: "http://www.animeseason.com",
-            xpath: 'xpath="//div[@id=\'frontpage_left_col\']//@href"'
+            xpath: "//div[@id='frontpage_left_col']//@href"
         },
         {
             website: "http://www.gogoanime.com/",
             domainNeeded: false,
             type: "html",
             domain: "",
-            xpath: 'xpath="//div[@class=\'post\']//li"'
-        }];
+            xpath: "//div[@class='post']//li"
+        }]
     }
     $scope.addNew = function()
     {
-        var temp = $scope.defaultValues($scope.formUrl, $scope.isHtml);
+        var temp = $scope.defaultValues($scope.formUrl);
         $scope.testLink(temp);
         ga('send', 'event', "button", "add updates Url button", "Attempting to add a website for checking updates from");
     }
@@ -90,20 +90,21 @@ app.controller('updateWebsitesController', function($scope, $http)
         ga('send', 'event', "button", "delete update url website", "deleted updates website");
 
     }
-    $scope.defaultValues = function(url, isHtml)
-        {
-            var tempDict = {};
-            tempDict["website"] = url;
-            tempDict["xpath"] = "//@href";
-            tempDict["type"] = isHtml ? "rss" : "html";
-            tempDict["domainNeeded"] = false;
-            tempDict["domain"] = "";
-            return tempDict;
-        }
-        //creates the yqlapi request
-        //taking in animePageInfo which contains the url of the webpage
-        //and the xpath and if its type is html or rss
-        //returns the complete url to yqlapi with the page we are going to retrieve data from
+    $scope.defaultValues = function(url)
+    {
+        var tempDict = {};
+        tempDict["website"] = url;
+        tempDict["xpath"] = "//@href";
+        tempDict["type"] = "html";
+        tempDict["domainNeeded"] = false;
+        tempDict["domain"] = "";
+        return tempDict;
+    }
+
+    //creates the yqlapi request
+    //taking in animePageInfo which contains the url of the webpage
+    //and the xpath and if its type is html or rss
+    //returns the complete url to yqlapi with the page we are going to retrieve data from
     $scope.queryCreationYqlAPI = function(animePageInfo)
         {
             var query = "";
@@ -119,15 +120,14 @@ app.controller('updateWebsitesController', function($scope, $http)
         //that can be used for yql api
     $scope.testLink = function(animePageInfo)
         {
-            //work around since queryCreationApi doesn't automatically have xpath for this test
-            animePageInfo["xpath"] = "xpath='" + animePageInfo["xpath"] + "'";
-            var yqlAPI = $scope.queryCreationYqlAPI(animePageInfo);
+
             var test = false;
             var reply;
             var $target = $(".datareply");
-            $http.get(yqlAPI)
+            testURI(animePageInfo)
                 .then(function function_name(r)
                 {
+                    var key = Object.keys(r)[0];
                     console.log("sucessesfully sent request for yqlapi 1st attempt");
                     console.log(r);
                     //if any part of the data retrieved back is undefined return
@@ -143,7 +143,7 @@ app.controller('updateWebsitesController', function($scope, $http)
                     //data seems to be good is it html or rss
                     else if (animePageInfo["type"] == "html")
                     {
-                        $.each(r.data.query.results.a, function()
+                        $.each(r[key], function()
                         {
                             if (typeof this.href === 'undefined')
                             {
@@ -161,13 +161,13 @@ app.controller('updateWebsitesController', function($scope, $http)
                         if (!test)
                         {
                             console.log("sucess");
-                            cutTest = (r.data.query.count / 2);
-                            console.log(r.data.query.results.a[Math.floor(cutTest)].href);
+                            cutTest = (r[key].length / 2);
+                            console.log(r[key][Math.floor(cutTest)].href);
                             //display
                             $target.html("");
-                            $target.append("Success <br> count:" + r.data.query.count + "<br>");
+                            $target.append("Success <br> count:" + r[key].length + "<br>");
 
-                            reply = $scope.similarRegex(animePageInfo["website"], r.data.query.results.a[Math.floor(cutTest)].href);
+                            reply = $scope.similarRegex(animePageInfo["website"], r[key][Math.floor(cutTest)].href);
 
                             $target.append(reply.message);
 
@@ -189,40 +189,6 @@ app.controller('updateWebsitesController', function($scope, $http)
                         }
 
                     }
-                    else //rss
-                    {
-                        var test = false;
-                        $.each(r.data.query.results.item, function()
-                        {
-                            if (typeof this.link === 'undefined')
-                            {
-                                $target.html("");
-                                $target.append("Error");
-                                test = true;
-                                $target.addClass('alert alert-dismissable alert-danger');
-                                ga('send', 'event', "website", animePageInfo["website"], "website failed");
-                                return false;
-                            }
-                            else
-                                return;
-                        }); // close each
-                        if (!test)
-                        {
-                            $target.addClass('alert alert-dismissable alert-success');
-                            console.log("sucess");
-                            cutTest = (r.query.count / 2);
-                            console.log(r.query.results.item[Math.floor(cutTest)].link);
-                            $target.html("");
-                            $target.append("Success <br> count:" + r.query.count + "<br>");
-                            reply = $scope.similarRegex(temp["website"], r.query.results.item[Math.floor(cutTest)].link);
-                            $target.append(reply.message);
-                            $scope.isReady(
-                            {
-                                bool: false
-                            }, temp);
-                        }
-
-                    }
 
                 }, function errorCallback(response)
                 {
@@ -235,7 +201,7 @@ app.controller('updateWebsitesController', function($scope, $http)
         //is undefined if so return error / true
     $scope.checkForErrors = function(r)
         {
-            if (typeof r === 'undefined' || typeof r.data === 'undefined' || typeof r.data.query === 'undefined' || r.data.query.results == null || typeof r.data.query.results === 'undefined' || r.data.query.results.a == null || typeof r.data.query.results.a === 'undefined')
+            if (typeof r === 'undefined')
 
                 return true;
 
@@ -324,24 +290,27 @@ app.controller('updateWebsitesController', function($scope, $http)
     $scope.addMainUrl = function(url, path, temp, callback)
         {
             var query;
-            var sucessfulUrl;
+            var sucessfulUrl, tempPageInfo;
+            tempPageInfo = {};
             var $target = $(".datareply");
             if (temp["domainNeeded"])
             {
                 query = 'select * from html where url ="' + temp["domain"] + path + '" and xpath="//@href"';
+                tempPageInfo["website"] = temp["domain"] + path;
                 sucessfulUrl = temp["domain"];
             }
             else
             {
                 query = 'select * from html where url ="' + url + path + '" and xpath="//@href"';
                 sucessfulUrl = url;
+                tempPageInfo["website"] = url + path;
             }
-            console.log(query);
-            var yqlAPI = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent(query) + ' &format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys';
-            $http.get(yqlAPI)
+            tempPageInfo["xpath"] = "//@href";
+            testURI(tempPageInfo)
                 .then(function(r)
                 {
                     var cutTest;
+                    var key = Object.keys(r)[0];
                     if ($scope.checkForErrors(r))
                     {
                         console.log("Error");
@@ -359,7 +328,7 @@ app.controller('updateWebsitesController', function($scope, $http)
                     else if (temp["type"] == "html")
                     {
                         ga('send', 'event', "website", temp["website"], "website failed");
-                        $.each(r.data.query.results.a, function()
+                        $.each(r[key], function()
                         {
                             if (typeof this.href === 'undefined')
                             {
@@ -409,21 +378,22 @@ app.controller('updateWebsitesController', function($scope, $http)
             $target.prop('checked', true);
             if (temp["website"] == "http://www.gogoanime.com/")
             {
-                temp["xpath"] = 'xpath="//div[@class=\'post\']//li"';
-            }
-            if (temp["xpath"] == "//@href")
-            {
-                temp["xpath"] = 'xpath="//@href"';
+                temp["xpath"] = "//div[@class='post']//li";
             }
         }
         //save url to list
         console.log(temp);
         $scope.animeUpdatesArray.push(temp);
         $scope.save();
-        ga('send', 'event', "button", "successfully submited updates website", "successfully submited website to check for updates for anime eps");
-        ga('send', 'event', "website", temp["website"], "website submited");
-        alert("successfully submitted");
-        $scope.resetAddUpdatesUrl();
+        addURI(temp)
+            .then(function()
+            {
+                ga('send', 'event', "button", "successfully submited updates website", "successfully submited website to check for updates for anime eps");
+                ga('send', 'event', "website", temp["website"], "website submited");
+                alert("successfully submitted");
+                $scope.resetAddUpdatesUrl();
+            });
+
     }
     $scope.resetAddUpdatesUrl = function()
     {

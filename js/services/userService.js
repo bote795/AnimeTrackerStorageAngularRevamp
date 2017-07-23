@@ -6,8 +6,13 @@ app.service('userSrv', function($rootScope)
     this.userSignedIn = false;
     this.load = function()
     {
-        //checkIfVersionChanged() //do updates if we need to
-        return userManager.load()
+
+        return checkIfVersionChanged() //do updates if we need to
+            .then(function()
+            {
+                return userManager.load();
+            })
+            //return userManager.load()
             .then(function(data)
             {
                 console.log("this is what the user value is: ");
@@ -34,6 +39,10 @@ app.service('userSrv', function($rootScope)
     }
     this.save = function()
     {
+        if (self.user.checkedSynced)
+        {
+            delete self.user.checkedSynced;
+        }
         userManager.save(self.user);
     }
     this.userSignedIn = function()

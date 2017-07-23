@@ -8,7 +8,6 @@ app.service('animeRetrieveSrv', function($rootScope)
         self.spinner = new Spinner().spin(spintarget);
         //check for updates then check for total eps
         return updates()
-            .then(FindTotalEps())
             .then(function()
             {
                 self.spinner.stop();
